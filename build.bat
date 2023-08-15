@@ -1,2 +1,2 @@
-cmake . -B build
+cmake . --fresh -B build -Wno-dev
 devenv ./build/vtkdemo.sln /build Release
