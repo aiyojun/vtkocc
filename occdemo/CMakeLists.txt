@@ -20,7 +20,9 @@ include_directories("${QT5_HOME}/include")
 
 
 
-add_executable(${APP} main.cpp)
+add_executable(${APP} main.cpp
+        QOccWidget.cpp
+        QOccWidget.h moc_QOccWidget.cpp)
 
 
 foreach (LIB ${OpenCASCADE_LIBRARIES})
