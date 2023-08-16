@@ -1,0 +1,42 @@
+{
+  "name":"TopLayer",
+  "x":0,
+  "y":0,
+  "width":900,
+  "height":600,
+  "children":[
+    {
+      "name":"Header",
+      "x":0,
+      "y":0,
+      "width":900,
+      "height":50,
+      "background":"#E0C3FC",
+      "children":[
+
+      ]
+    },
+    {
+      "name":"Main",
+      "x":0,
+      "y":50,
+      "width":900,
+      "height":500,
+      "background":"#8EC5FC",
+      "children":[
+
+      ]
+    },
+    {
+      "name":"Footer",
+      "x":0,
+      "y":550,
+      "width":900,
+      "height":50,
+      "background":"#9599E2",
+      "children":[
+
+      ]
+    }
+  ]
+}

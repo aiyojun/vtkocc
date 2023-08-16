@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>roboto-font/RobotoRegular-3m4L.ttf</file>
+        <file>widget.json</file>
+    </qresource>
+</RCC>

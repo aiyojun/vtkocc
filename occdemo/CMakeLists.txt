@@ -20,9 +20,20 @@ include_directories("${QT5_HOME}/include")
 
 
 
+
 add_executable(${APP} main.cpp
         QOccWidget.cpp
-        QOccWidget.h moc_QOccWidget.cpp)
+        QOccWidget.h moc_QOccWidget.cpp
+        OccViewController.cpp
+        OccViewController.h
+        QOccTools.cpp
+        QOccTools.h
+        ../libshare/QxWidget.cpp
+        ../libshare/QxWidget.h ../libshare/moc_QxWidget.cpp
+        ../libshare/imp.h
+        ../libshare/QtTools.cpp
+        ../libshare/QtTools.h
+)
 
 
 foreach (LIB ${OpenCASCADE_LIBRARIES})
@@ -30,3 +41,4 @@ foreach (LIB ${OpenCASCADE_LIBRARIES})
 endforeach ()
 target_link_libraries(${APP} ${QT5_HOME}/lib/Qt5Widgets.lib)
 target_link_libraries(${APP} ${QT5_HOME}/lib/Qt5Core.lib)
+target_link_libraries(${APP} ${QT5_HOME}/lib/Qt5Gui.lib)
