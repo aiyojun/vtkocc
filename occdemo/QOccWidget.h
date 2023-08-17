@@ -35,6 +35,8 @@ protected:
     void mouseDoubleClickEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;
+public Q_SLOTS:
+    void projection1();
 private:
     bool ctrlKeyPressed;
     bool altKeyPressed;

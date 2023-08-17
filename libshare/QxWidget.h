@@ -3,6 +3,7 @@
 
 #include "imp.h"
 #include <QtWidgets/QWidget>
+#include <QtWidgets/QPushButton>
 #include "json.hpp"
 using nlohmann::json;
 
@@ -23,6 +24,8 @@ using WidgetHandle = std::function<QxWidget* (WidgetContext &)>;
 
 class QxWidget : public QWidget {
     Q_OBJECT
+Q_SIGNALS:
+    void clicked();
 public:
     explicit QxWidget(QWidget *parent);
     QxWidget(std::string type, QWidget *parent);

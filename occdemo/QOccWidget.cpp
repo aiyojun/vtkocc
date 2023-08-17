@@ -192,3 +192,8 @@ QOccWidget *QOccWidget::build(WidgetContext &context) {
     p->setQxWidgetGeometryByTemplate();
     return p;
 }
+
+void QOccWidget::projection1() {
+    view->SetProj(ctrlKeyPressed ? V3d_Zpos : V3d_Zneg);
+    repaint();
+}
