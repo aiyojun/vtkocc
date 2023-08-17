@@ -1,7 +1,3 @@
-//
-// Created by jun.dai on 2023/8/16.
-//
-
 #include "QOccTools.h"
 
 Graphic3d_Vec2i QOccTools::QPoint2Graphic3d_Vec2i(const QPoint &p) {

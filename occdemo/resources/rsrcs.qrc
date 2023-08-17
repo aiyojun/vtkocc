@@ -1,6 +1,9 @@
 <RCC>
     <qresource prefix="/">
         <file>roboto-font/RobotoRegular-3m4L.ttf</file>
+
+        <file>icons/laptop.svg</file>
+
         <file>widget.json</file>
     </qresource>
 </RCC>

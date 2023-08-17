@@ -15,11 +15,14 @@
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <WNT_Window.hxx>
 #include "OccViewController.h"
+#include "imp.h"
 
-class QOccWidget : public QWidget {
+class QOccWidget : public QxWidget {
     Q_OBJECT
 public:
     explicit QOccWidget(QWidget* parent);
+    virtual ~QOccWidget() = default;
+    static QOccWidget* build(WidgetContext& context);
     QPaintEngine* paintEngine() const override { return nullptr; }
     void init();
 protected:

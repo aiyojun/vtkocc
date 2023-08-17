@@ -12,7 +12,7 @@
 
 #include "QOccTools.h"
 
-QOccWidget::QOccWidget(QWidget *parent) : QWidget(parent), initialized(false), ctrlKeyPressed(false), altKeyPressed(false), shiftKeyPressed(false) {
+QOccWidget::QOccWidget(QWidget *parent) : QxWidget(TO_STR(QOccWidget), parent), initialized(false), ctrlKeyPressed(false), altKeyPressed(false), shiftKeyPressed(false) {
     setAttribute(Qt::WA_PaintOnScreen);
     setAttribute(Qt::WA_NoSystemBackground);
     setMouseTracking(true);
@@ -182,4 +182,13 @@ void QOccWidget::keyReleaseEvent(QKeyEvent *event) {
             break;
         default:;
     }
+}
+
+QOccWidget *QOccWidget::build(WidgetContext &context) {
+    auto* p = new QOccWidget(context._parent);
+    p->setTemplate(context._template);
+    auto& root = context._template;
+    p->setObjectName(QString(root["name"].get<std::string>().c_str()));
+    p->setQxWidgetGeometryByTemplate();
+    return p;
 }

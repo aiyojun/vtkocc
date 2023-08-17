@@ -1,7 +1,3 @@
-//
-// Created by jun.dai on 2023/8/16.
-//
-
 #ifndef VTKOCC_QTTOOLS_H
 #define VTKOCC_QTTOOLS_H
 
@@ -17,6 +13,22 @@ public:
     static QString readFile(const QString& path);
     static inline std::string to_string(const QString& s)
     { return s.toStdString(); }
+
+//    static inline void setColor(QWidget* p, const std::string& color)
+//    { p->setStyleSheet(QString("color: ").append(color.c_str()).append(";")); }
+//    static inline void setBackgroundColor(QWidget* p, const std::string& color)
+//    { p->setStyleSheet(QString("background-color: ").append(color.c_str()).append(";")); }
+    static inline void setBackgroundImage(QWidget* p, const std::string& path) {
+        p->setStyleSheet(QString("")
+            .append("background: url(").append(path.c_str()).append("); ")
+            .append("background-repeat: no-repeat; ")
+            .append("background-position: center; ")
+        );
+    }
+
+    static bool match(const std::string& text, const std::regex& re) {
+        return std::regex_match(text, re);
+    }
 };
 
 #endif //VTKOCC_QTTOOLS_H

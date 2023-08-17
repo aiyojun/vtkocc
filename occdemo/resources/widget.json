@@ -1,41 +1,57 @@
 {
-  "name":"TopLayer",
-  "x":0,
-  "y":0,
-  "width":900,
-  "height":600,
-  "children":[
+  "name": "TopLayer",
+  "type": "widget",
+  "x": "0px",
+  "y": "0px",
+  "width": "100%",
+  "height": "100%",
+  "direction": "vertical",
+  "alignment": "center",
+  "qss": "background-color: #272727;",
+  "global-qss": "QLabel {color: white; font-family: Roboto; font-size: 16px;}\nQxDockButton:hover { background-color: rgba(255,255,255,.1); }",
+  "children": [
     {
-      "name":"Header",
-      "x":0,
-      "y":0,
-      "width":900,
-      "height":50,
-      "background":"#E0C3FC",
-      "children":[
-
+      "name": "Header",
+      "type": "widget",
+      "x": "0px",
+      "y": "0px",
+      "width": "100%",
+      "height": "50px",
+      "direction": "horizontal",
+      "qss": "background-color: #E0C3FC;",
+      "children": [
+        {
+          "type": "dock-button",
+          "name": "view-button",
+          "width": "120px",
+          "height": "50px",
+          "text": "View",
+          "icon": ":/icons/laptop.svg",
+          "icon-size": 24,
+          "space": 5,
+          "button-direction": "horizontal"
+        }
       ]
     },
     {
-      "name":"Main",
-      "x":0,
-      "y":50,
-      "width":900,
-      "height":500,
-      "background":"#8EC5FC",
-      "children":[
-
-      ]
+      "name": "Main",
+      "type": "occ-viewer",
+      "x": "0px",
+      "y": "50px",
+      "width": "100%",
+      "height": "calc(100% - 50px - 32px)"
     },
     {
-      "name":"Footer",
-      "x":0,
-      "y":550,
-      "width":900,
-      "height":50,
-      "background":"#9599E2",
-      "children":[
-
+      "name": "Footer",
+      "type": "widget",
+      "x": "0px",
+      "y": "calc(100% - 32px)",
+      "width": "100%",
+      "height": "32px",
+      "direction": "horizontal",
+      "background": "blue",
+      "qss": "background-color: #222222;",
+      "children": [
       ]
     }
   ]
