@@ -150,7 +150,7 @@ QxDockButton *QxDockButton::build(WidgetContext &context) {
 }
 
 void QxDockButton::mousePressEvent(QMouseEvent *event) {
-
+    emit clicked();
 }
 
 void QxDockButton::mouseReleaseEvent(QMouseEvent *event) {
