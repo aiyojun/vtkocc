@@ -1,7 +1,3 @@
-//
-// Created by jun.dai on 2023/8/16.
-//
-
 #include "OccViewController.h"
 
 OccViewController::OccViewController(const opencascade::handle<V3d_View> &view,

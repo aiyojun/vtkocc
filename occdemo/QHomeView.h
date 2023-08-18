@@ -1,7 +1,3 @@
-//
-// Created by jun.dai on 2023/8/17.
-//
-
 #ifndef VTKOCC_QHOMEVIEW_H
 #define VTKOCC_QHOMEVIEW_H
 

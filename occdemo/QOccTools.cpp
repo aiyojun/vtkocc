@@ -1,4 +1,12 @@
 #include "QOccTools.h"
+#include "imp.h"
+#include <STEPControl_Reader.hxx>
+#include <XSControl_WorkSession.hxx>
+#include <Transfer_TransientProcess.hxx>
+#include <StlAPI_Reader.hxx>
+#include <IGESControl_Reader.hxx>
+#include <BRep_Builder.hxx>
+#include <BRepTools.hxx>
 
 Graphic3d_Vec2i QOccTools::QPoint2Graphic3d_Vec2i(const QPoint &p) {
     Graphic3d_Vec2i pos(p.x(), p.y());
@@ -37,13 +45,79 @@ void QOccTools::useRayTracing(Handle(V3d_View) view) {
     renderParams.CollectedStats = Graphic3d_RenderingParams::PerfCounters_NONE;
 }
 
-//Aspect_VKeyFlags QOccTools::buildAspect_VKeyFlags(bool ctrlkey, bool altkey, bool shiftkey) {
-//    Aspect_VKeyFlags flags = Aspect_VKeyFlags_NONE;
-//    if (ctrlkey)
-//        flags |= Aspect_VKeyFlags_CTRL;
-//    if (altkey)
-//        flags |= Aspect_VKeyFlags_ALT;
-//    if (shiftkey)
-//        flags |= Aspect_VKeyFlags_SHIFT;
-//    return flags;
-//}
+std::vector<TopoDS_Shape> QOccTools::ReadModelFile(const std::string &filepath) {
+    std::vector<TopoDS_Shape> shapes;
+    if (std::regex_match(filepath, std::regex("(.)+\\.(step|stp|STEP|STP)$"))) {
+        STEPControl_Reader reader;
+        reader.ReadFile(filepath.c_str());
+        reader.WS()->MapReader()->SetTraceLevel(2);
+        reader.PrintCheckLoad(Standard_False, IFSelect_ItemsByEntity);
+        for (Standard_Integer i = 1; i <= reader.NbRootsForTransfer(); i++) {
+            reader.TransferRoot(i);
+        }
+        for (Standard_Integer i = 1; i <= reader.NbRootsForTransfer(); i++) {
+            shapes.emplace_back(reader.Shape(i));
+        }
+        return shapes;
+    }
+    if (std::regex_match(filepath, std::regex("(.)+\\.(stl|STL)$"))) {
+        TopoDS_Shape shape;
+        StlAPI_Reader reader;
+        reader.Read(shape, filepath.c_str());
+        shapes.emplace_back(shape);
+        return shapes;
+    }
+    if (std::regex_match(filepath, std::regex("(.)+\\.(igs|iges|IGS|IGES)$"))) {
+        IGESControl_Reader reader;
+        reader.ReadFile(filepath.c_str());
+        reader.TransferRoots();
+        shapes.emplace_back(reader.OneShape());
+        return shapes;
+    }
+    if (std::regex_match(filepath, std::regex("(.)+\\.(brep|BREP)$"))) {
+        TopoDS_Shape shape;
+        BRep_Builder builder;
+        BRepTools::Read(shape, filepath.c_str(), builder);
+        shapes.emplace_back(shape);
+        return shapes;
+    }
+    throw std::runtime_error("error file format : " + filepath + ", only support STEP/STL/IGES|BREP.");
+}
+
+void QOccTools::adjustHeadLight(Handle(V3d_View) view) {
+    V3d_ListOfLight lights = view->ActiveLights();
+    for (auto& light : lights) {
+        if (light->IsHeadlight())
+            light->SetColor(Quantity_NOC_WHITESMOKE);
+    }
+    view->Redraw();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

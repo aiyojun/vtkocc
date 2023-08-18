@@ -1,7 +1,6 @@
 #ifndef VTKOCC_QTTOOLS_H
 #define VTKOCC_QTTOOLS_H
 
-
 #include "imp.h"
 
 class QtTools {

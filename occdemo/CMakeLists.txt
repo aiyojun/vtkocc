@@ -35,6 +35,7 @@ add_executable(${APP} main.cpp
         ../libshare/QtTools.h
         QHomeView.cpp
         QHomeView.h moc_QHomeView.cpp
+        ../libshare/imp.cpp
 )
 
 

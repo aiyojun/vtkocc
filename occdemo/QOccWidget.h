@@ -35,8 +35,11 @@ protected:
     void mouseDoubleClickEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;
+Q_SIGNALS:
+    void sendStatusMessage(QString msg);
 public Q_SLOTS:
     void projection1();
+    void loadModel();
 private:
     bool ctrlKeyPressed;
     bool altKeyPressed;

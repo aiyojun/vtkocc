@@ -15,6 +15,8 @@ void QHomeView::parse(json &_template) {
     auto* container = (QxWidget*) QxWidget::parse(_template, this, pool);
     setCentralWidget(container);
     QObject::connect(pool["view-button"], SIGNAL(clicked()), pool["Main"], SLOT(projection1()));
+    QObject::connect(pool["Main"], SIGNAL(sendStatusMessage(QString)), pool["Footer"], SLOT(setStatus(QString)));
+    QObject::connect(pool["loadmodel"], SIGNAL(clicked()), pool["Main"], SLOT(loadModel()));
 }
 
 void QHomeView::resizeQxWidget(QxWidget* p) {

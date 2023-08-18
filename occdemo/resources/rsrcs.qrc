@@ -3,6 +3,9 @@
         <file>roboto-font/RobotoRegular-3m4L.ttf</file>
 
         <file>icons/laptop.svg</file>
+        <file>icons/box-left.svg</file>
+        <file>icons/box-top.svg</file>
+        <file>icons/box-front.svg</file>
 
         <file>widget.json</file>
     </qresource>

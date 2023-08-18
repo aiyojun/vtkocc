@@ -5,6 +5,10 @@ set PATH=%PATH%;C:\OpenCASCADE-7.7.0-vc14-64\vtk-6.1.0-vc14-64\bin;
 set PATH=%PATH%;C:\OpenCASCADE-7.7.0-vc14-64\qt5.11.2-vc14-64\bin
 set QT_QPA_PLATFORM_PLUGIN_PATH=C:\OpenCASCADE-7.7.0-vc14-64\qt5.11.2-vc14-64\plugins
 
+set QTDIR=C:\OpenCASCADE-7.7.0-vc14-64\qt5.11.2-vc14-64\bin
+set QTWEBENGINEPROCESS_PATH=C:\OpenCASCADE-7.7.0-vc14-64\qt5.11.2-vc14-64\bin\QtWebEngineProcess.exe
+
+
 rem vc编译器路径
 set PATH=%PATH%;C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.37.32822\bin\Hostx64\x64
 
@@ -14,3 +18,6 @@ rem devenv.exe
 rem devenv vtkdemo.sln /build Release /rebuild /clean
 
 
+set OpenCASCADE_DIR=C:\OpenCASCADE-7.7.0-vc14-64\opencascade-7.7.0
+set CMAKE_PREFIX_PATH=C:\OpenCASCADE-7.7.0-vc14-64\opencascade-7.7.0\cmake
+set freetype_DIR=C:\OpenCASCADE-7.7.0-vc14-64\freetype-2.5.5-vc14-64

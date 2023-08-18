@@ -1,7 +1,3 @@
-//
-// Created by jun.dai on 2023/8/16.
-//
-
 #ifndef VTKOCC_OCCVIEWCONTROLLER_H
 #define VTKOCC_OCCVIEWCONTROLLER_H
 

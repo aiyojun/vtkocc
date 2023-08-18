@@ -44,8 +44,9 @@ QxWidget::~QxWidget() {
 }
 
 std::map<std::string, WidgetHandle> QxWidget::handles {
-    {"widget",      QxBaseWidget::build},
-    {"dock-button", QxDockButton::build},
+    {"widget",        QxBaseWidget::build},
+    {"dock-button",   QxDockButton::build},
+    {"status-bar" , QxStatusWidget::build},
 };
 
 QxWidget* QxWidget::uiParse(WidgetContext& context) {
@@ -127,6 +128,7 @@ QxDockButton *QxDockButton::build(WidgetContext &context) {
         throw std::runtime_error("DockButton lack of button-direction");
 
     p->setObjectName(QString(root["name"].get<std::string>().c_str()));
+    p->setQxWidgetGeometryByTemplate();
     if (root.contains("qss"))
         p->setStyleSheet(QString("#").append(root["name"].get<std::string>().c_str()).append("{").append(root["qss"].get<std::string>().c_str()).append("}"));
 
@@ -144,7 +146,7 @@ QxDockButton *QxDockButton::build(WidgetContext &context) {
     flex->addWidget(ptr_image);
     flex->addWidget(ptr_label);
     flex->setSpacing(space);
-    flex->setAlignment(Qt::AlignmentFlag::AlignCenter);
+    flex->setAlignment(Qt::AlignmentFlag::AlignCenter); //direction == "vertical" ? Qt::AlignmentFlag::AlignHCenter : Qt::AlignmentFlag::AlignVCenter
     flex->setGeometry(QRect(0, 0, width, height));
     return p;
 }
@@ -197,6 +199,29 @@ void QxWidget::setQxWidgetGeometryByTemplate() {
 }
 
 
+QxStatusWidget *QxStatusWidget::build(WidgetContext &context) {
+    auto* p = new QxStatusWidget(context._parent);
+    p->setTemplate(context._template);
+    auto& root = context._template;
+    p->setObjectName(QString(root["name"].get<std::string>().c_str()));
+    p->setQxWidgetGeometryByTemplate();
+    if (root.contains("qss"))
+        p->setStyleSheet(QString("#").append(root["name"].get<std::string>().c_str()).append("{").append(root["qss"].get<std::string>().c_str()).append("}"));
 
+    auto* statusBar = new QLabel(p);
+//    statusBar->resize();
+//    statusBar->setAlignment(Qt::AlignmentFlag::AlignVCenter);
+    statusBar->setText("Prepared !");
+    p->statusBar = statusBar;
+    auto* flex = p->buildFlex(QBoxLayout::Direction::LeftToRight);
+    flex->setGeometry(QRect(0, 0, p->width(), p->height()));
+    flex->setAlignment(Qt::AlignmentFlag::AlignVCenter);
+    flex->setMargin(5);
+    flex->addWidget(statusBar);
 
+    return p;
+}
 
+void QxStatusWidget::setStatus(QString message) {
+    statusBar->setText(message);
+}

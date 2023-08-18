@@ -28,7 +28,7 @@ void QOccWidget::init() {
     lightDir->SetDirection(1.0, -2.0, -10.0);
     viewer->AddLight(lightDir);
     viewer->AddLight(lightAmb);
-    viewer->SetLightOn(lightDir);
+//    viewer->SetLightOn(lightDir);
     viewer->SetLightOn(lightAmb);
     context = new AIS_InteractiveContext(viewer);
     const Handle(Prs3d_Drawer) &contextDrawer = context->DefaultDrawer();
@@ -47,11 +47,16 @@ void QOccWidget::init() {
 
 
     controller = new OccViewController(view, context);
-    // view->SetBackgroundColor(Quantity_NOC_BLACK);
-    Aspect_SkydomeBackground skydome;
-    skydome.SetCloudiness(1.0);
-    skydome.SetFogginess(1.0);
-    view->SetBackgroundSkydome(skydome);
+//    QOccTools::useSolidWorksStyle(view);
+//    LOG("-- Use SolidWorks Style");
+//    QOccTools::useDefaultRenderStyle(view);
+//    LOG("-- Use Default Style");
+//     view->SetBackgroundColor(Quantity_NOC_GRAY10);
+//     view->SetBackgroundColor();
+//    Aspect_SkydomeBackground skydome;
+//    skydome.SetCloudiness(1.0);
+//    skydome.SetFogginess(1.0);
+//    view->SetBackgroundSkydome(skydome);
     // same as freecad
     // view->SetBgGradientColors(Quantity_NOC_BLUE, Quantity_NOC_WHITE, Aspect_GFM_VER);
     // Aspect window creation
@@ -68,6 +73,9 @@ void QOccWidget::init() {
     RenderParams.NbMsaaSamples = 8; // Anti-aliasing by multi-sampling
     RenderParams.IsShadowEnabled = false;
     RenderParams.CollectedStats = Graphic3d_RenderingParams::PerfCounters_NONE;
+//    RenderParams.UseEnvironmentMapBackground  = true;
+    RenderParams.TransparencyMethod  = Graphic3d_RTM_BLEND_OIT;
+
 
 
     auto box = BRepPrimAPI_MakeBox(50, 50, 80);
@@ -82,7 +90,8 @@ void QOccWidget::paintEvent(QPaintEvent *theEvent) {
         init();
         initialized = true;
     }
-    view->Redraw();
+//    view->Redraw();
+    QOccTools::adjustHeadLight(view);
 }
 
 void QOccWidget::resizeEvent(QResizeEvent *theEvent) {
@@ -196,4 +205,36 @@ QOccWidget *QOccWidget::build(WidgetContext &context) {
 void QOccWidget::projection1() {
     view->SetProj(ctrlKeyPressed ? V3d_Zpos : V3d_Zneg);
     repaint();
+    emit sendStatusMessage("- z view");
+}
+
+std::vector<TopoDS_Shape> g_shapes;
+
+class ReadModelTask : public QRunnable {
+public:
+    void run() override {
+        g_shapes = std::move(QOccTools::ReadModelFile(modelpath));
+        for (auto &shape : g_shapes) {
+            Handle(AIS_Shape) ais_shape = new AIS_Shape(shape);
+            context->Display(ais_shape, true);
+            context->SetDisplayMode(ais_shape, AIS_Shaded, true);
+        }
+    }
+    std::string modelpath;
+    Handle(V3d_View) view;
+    Handle(AIS_InteractiveContext) context;
+};
+
+void QOccWidget::loadModel() {
+    std::string modelpath("C:\\Users\\jun.dai\\Desktop\\modelstep3d\\xxx_01.STL");
+    emit sendStatusMessage(("-- loading... " + modelpath).c_str());
+
+    ReadModelTask rmt;
+    rmt.modelpath = modelpath;
+    rmt.context   = context;
+    rmt.view      = view;
+    QThreadPool::globalInstance()->start(&rmt);
+
+
+//    emit sendStatusMessage("-- Model read complete!");
 }

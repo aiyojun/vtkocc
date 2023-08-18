@@ -2,8 +2,6 @@
 #define VTKOCC_QXWIDGET_H
 
 #include "imp.h"
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QPushButton>
 #include "json.hpp"
 using nlohmann::json;
 
@@ -59,6 +57,19 @@ public:
     explicit QxBaseWidget(QWidget* parent): QxWidget(TO_STR(QxBaseWidget), parent) {}
     ~QxBaseWidget() = default;
     static QxBaseWidget* build(WidgetContext& context);
+};
+
+
+class QxStatusWidget : public QxWidget {
+Q_OBJECT
+public:
+    explicit QxStatusWidget(QWidget* parent): QxWidget(TO_STR(QxStatusWidget), parent) {}
+    ~QxStatusWidget() { if (statusBar != nullptr) delete statusBar; };
+    static QxStatusWidget* build(WidgetContext& context);
+public Q_SLOTS:
+    void setStatus(QString message);
+private:
+    QLabel* statusBar;
 };
 
 
