@@ -7,8 +7,12 @@ devenv ./build/occdemo/occdemo.sln /build Release
 @REM 运行
 build\occdemo\Release\occdemo.exe
 
-devenv ./build/qtdemo/qtdemo.sln /build Release
-build\qtdemo\Release\qtdemo.exe
-
 
 mklink /D C:\jpro\vtkocc\build\qtdemo\Release\qtwebengine_locales C:\OpenCASCADE-7.7.0-vc14-64\qt5.11.2-vc14-64\translations\qtwebengine_locales
+
+
+moc qtdemo\QCoreWindow.h -o qtdemo\moc_QCoreWindow.cpp
+moc qtdemo\QTestChannel.h -o qtdemo\moc_QTestChannel.cpp
+rcc -binary qtdemo\resources\rsrcs.qrc -o qtdemo\rsrcs.rcc
+devenv ./build/qtdemo/qtdemo.sln /build Release
+build\qtdemo\Release\qtdemo.exe

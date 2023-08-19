@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'QxWidget.h'
 **
-** Created by: The Qt Meta Object Compiler version 67 (Qt 5.11.2)
+** Created by: The Qt Meta Object Compiler version 67 (Qt 5.12.0)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
@@ -12,7 +12,7 @@
 #if !defined(Q_MOC_OUTPUT_REVISION)
 #error "The header file 'QxWidget.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
-#error "This file was generated using the moc from 5.11.2. It"
+#error "This file was generated using the moc from 5.12.0. It"
 #error "cannot be used with the include files from this version of Qt."
 #error "(The moc has changed too much.)"
 #endif
@@ -43,7 +43,7 @@ QT_MOC_LITERAL(2, 17, 0) // ""
 static const uint qt_meta_data_QxWidget[] = {
 
  // content:
-       7,       // revision
+       8,       // revision
        0,       // classname
        0,    0, // classinfo
        1,   14, // methods
@@ -84,10 +84,14 @@ void QxWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, vo
     Q_UNUSED(_a);
 }
 
-QT_INIT_METAOBJECT const QMetaObject QxWidget::staticMetaObject = {
-    { &QWidget::staticMetaObject, qt_meta_stringdata_QxWidget.data,
-      qt_meta_data_QxWidget,  qt_static_metacall, nullptr, nullptr}
-};
+QT_INIT_METAOBJECT const QMetaObject QxWidget::staticMetaObject = { {
+    &QWidget::staticMetaObject,
+    qt_meta_stringdata_QxWidget.data,
+    qt_meta_data_QxWidget,
+    qt_static_metacall,
+    nullptr,
+    nullptr
+} };
 
 
 const QMetaObject *QxWidget::metaObject() const
@@ -146,7 +150,7 @@ QT_MOC_LITERAL(0, 0, 12) // "QxBaseWidget"
 static const uint qt_meta_data_QxBaseWidget[] = {
 
  // content:
-       7,       // revision
+       8,       // revision
        0,       // classname
        0,    0, // classinfo
        0,    0, // methods
@@ -167,10 +171,14 @@ void QxBaseWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id
     Q_UNUSED(_a);
 }
 
-QT_INIT_METAOBJECT const QMetaObject QxBaseWidget::staticMetaObject = {
-    { &QxWidget::staticMetaObject, qt_meta_stringdata_QxBaseWidget.data,
-      qt_meta_data_QxBaseWidget,  qt_static_metacall, nullptr, nullptr}
-};
+QT_INIT_METAOBJECT const QMetaObject QxBaseWidget::staticMetaObject = { {
+    &QxWidget::staticMetaObject,
+    qt_meta_stringdata_QxBaseWidget.data,
+    qt_meta_data_QxBaseWidget,
+    qt_static_metacall,
+    nullptr,
+    nullptr
+} };
 
 
 const QMetaObject *QxBaseWidget::metaObject() const
@@ -215,7 +223,7 @@ QT_MOC_LITERAL(3, 26, 7) // "message"
 static const uint qt_meta_data_QxStatusWidget[] = {
 
  // content:
-       7,       // revision
+       8,       // revision
        0,       // classname
        0,    0, // classinfo
        1,   14, // methods
@@ -246,10 +254,14 @@ void QxStatusWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _
     }
 }
 
-QT_INIT_METAOBJECT const QMetaObject QxStatusWidget::staticMetaObject = {
-    { &QxWidget::staticMetaObject, qt_meta_stringdata_QxStatusWidget.data,
-      qt_meta_data_QxStatusWidget,  qt_static_metacall, nullptr, nullptr}
-};
+QT_INIT_METAOBJECT const QMetaObject QxStatusWidget::staticMetaObject = { {
+    &QxWidget::staticMetaObject,
+    qt_meta_stringdata_QxStatusWidget.data,
+    qt_meta_data_QxStatusWidget,
+    qt_static_metacall,
+    nullptr,
+    nullptr
+} };
 
 
 const QMetaObject *QxStatusWidget::metaObject() const
@@ -302,7 +314,7 @@ QT_MOC_LITERAL(0, 0, 12) // "QxDockButton"
 static const uint qt_meta_data_QxDockButton[] = {
 
  // content:
-       7,       // revision
+       8,       // revision
        0,       // classname
        0,    0, // classinfo
        0,    0, // methods
@@ -323,10 +335,14 @@ void QxDockButton::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id
     Q_UNUSED(_a);
 }
 
-QT_INIT_METAOBJECT const QMetaObject QxDockButton::staticMetaObject = {
-    { &QxWidget::staticMetaObject, qt_meta_stringdata_QxDockButton.data,
-      qt_meta_data_QxDockButton,  qt_static_metacall, nullptr, nullptr}
-};
+QT_INIT_METAOBJECT const QMetaObject QxDockButton::staticMetaObject = { {
+    &QxWidget::staticMetaObject,
+    qt_meta_stringdata_QxDockButton.data,
+    qt_meta_data_QxDockButton,
+    qt_static_metacall,
+    nullptr,
+    nullptr
+} };
 
 
 const QMetaObject *QxDockButton::metaObject() const
