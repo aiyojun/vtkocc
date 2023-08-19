@@ -1,12 +1,10 @@
-//
-// Created by Administrator on 2023/8/19.
-//
-
 #ifndef VTKOCC_QCOREWINDOW_H
 #define VTKOCC_QCOREWINDOW_H
 
 #include "imp.h"
 #include "QTestChannel.h"
+#include "QWebBridge.h"
+#include "../occdemo/QOccWidget.h"
 #include <QtWebEngineWidgets/QWebEngineView>
 
 class QCoreWindow : public QMainWindow {
@@ -15,9 +13,10 @@ public:
     QCoreWindow(QWidget* parent = nullptr);
     virtual ~QCoreWindow() = default;
 private:
-    QWebChannel* channel;
-    QWebEngineView *webview;
-    QTestChannel* occ;
+    QWebChannel*    channel;
+    QWebEngineView* webview;
+    QOccWidget*     occview;
+    QWebBridge*     bridge;
 };
 
 

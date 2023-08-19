@@ -13,6 +13,7 @@ mklink /D C:\jpro\vtkocc\build\qtdemo\Release\qtwebengine_locales C:\OpenCASCADE
 
 moc qtdemo\QCoreWindow.h -o qtdemo\moc_QCoreWindow.cpp
 moc qtdemo\QTestChannel.h -o qtdemo\moc_QTestChannel.cpp
+moc qtdemo\QWebBridge.h -o qtdemo\moc_QWebBridge.cpp
 rcc -binary qtdemo\resources\rsrcs.qrc -o qtdemo\rsrcs.rcc
 devenv ./build/qtdemo/qtdemo.sln /build Release
 build\qtdemo\Release\qtdemo.exe

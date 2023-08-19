@@ -1,16 +1,16 @@
 /****************************************************************************
-** Meta object code from reading C++ file 'QOccWidget.h'
+** Meta object code from reading C++ file 'QWebBridge.h'
 **
 ** Created by: The Qt Meta Object Compiler version 67 (Qt 5.12.0)
 **
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
 
-#include "QOccWidget.h"
+#include "QWebBridge.h"
 #include <QtCore/qbytearray.h>
 #include <QtCore/qmetatype.h>
 #if !defined(Q_MOC_OUTPUT_REVISION)
-#error "The header file 'QOccWidget.h' doesn't include <QObject>."
+#error "The header file 'QWebBridge.h' doesn't include <QObject>."
 #elif Q_MOC_OUTPUT_REVISION != 67
 #error "This file was generated using the moc from 5.12.0. It"
 #error "cannot be used with the include files from this version of Qt."
@@ -20,37 +20,35 @@
 QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
-struct qt_meta_stringdata_QOccWidget_t {
-    QByteArrayData data[6];
-    char stringdata0[56];
+struct qt_meta_stringdata_QWebBridge_t {
+    QByteArrayData data[5];
+    char stringdata0[33];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
-    qptrdiff(offsetof(qt_meta_stringdata_QOccWidget_t, stringdata0) + ofs \
+    qptrdiff(offsetof(qt_meta_stringdata_QWebBridge_t, stringdata0) + ofs \
         - idx * sizeof(QByteArrayData)) \
     )
-static const qt_meta_stringdata_QOccWidget_t qt_meta_stringdata_QOccWidget = {
+static const qt_meta_stringdata_QWebBridge_t qt_meta_stringdata_QWebBridge = {
     {
-QT_MOC_LITERAL(0, 0, 10), // "QOccWidget"
-QT_MOC_LITERAL(1, 11, 17), // "sendStatusMessage"
-QT_MOC_LITERAL(2, 29, 0), // ""
-QT_MOC_LITERAL(3, 30, 3), // "msg"
-QT_MOC_LITERAL(4, 34, 11), // "projection1"
-QT_MOC_LITERAL(5, 46, 9) // "loadModel"
+QT_MOC_LITERAL(0, 0, 10), // "QWebBridge"
+QT_MOC_LITERAL(1, 11, 7), // "uispace"
+QT_MOC_LITERAL(2, 19, 0), // ""
+QT_MOC_LITERAL(3, 20, 4), // "data"
+QT_MOC_LITERAL(4, 25, 7) // "qtspace"
 
     },
-    "QOccWidget\0sendStatusMessage\0\0msg\0"
-    "projection1\0loadModel"
+    "QWebBridge\0uispace\0\0data\0qtspace"
 };
 #undef QT_MOC_LITERAL
 
-static const uint qt_meta_data_QOccWidget[] = {
+static const uint qt_meta_data_QWebBridge[] = {
 
  // content:
        8,       // revision
        0,       // classname
        0,    0, // classinfo
-       3,   14, // methods
+       2,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -58,38 +56,35 @@ static const uint qt_meta_data_QOccWidget[] = {
        1,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    1,   29,    2, 0x06 /* Public */,
+       1,    1,   24,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       4,    0,   32,    2, 0x0a /* Public */,
-       5,    0,   33,    2, 0x0a /* Public */,
+       4,    1,   27,    2, 0x0a /* Public */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::QString,    3,
 
  // slots: parameters
-    QMetaType::Void,
-    QMetaType::Void,
+    QMetaType::Void, QMetaType::QString,    3,
 
        0        // eod
 };
 
-void QOccWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
+void QWebBridge::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void **_a)
 {
     if (_c == QMetaObject::InvokeMetaMethod) {
-        QOccWidget *_t = static_cast<QOccWidget *>(_o);
+        QWebBridge *_t = static_cast<QWebBridge *>(_o);
         Q_UNUSED(_t)
         switch (_id) {
-        case 0: _t->sendStatusMessage((*reinterpret_cast< QString(*)>(_a[1]))); break;
-        case 1: _t->projection1(); break;
-        case 2: _t->loadModel(); break;
+        case 0: _t->uispace((*reinterpret_cast< QString(*)>(_a[1]))); break;
+        case 1: _t->qtspace((*reinterpret_cast< QString(*)>(_a[1]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
         int *result = reinterpret_cast<int *>(_a[0]);
         {
-            using _t = void (QOccWidget::*)(QString );
-            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&QOccWidget::sendStatusMessage)) {
+            using _t = void (QWebBridge::*)(QString );
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&QWebBridge::uispace)) {
                 *result = 0;
                 return;
             }
@@ -97,48 +92,48 @@ void QOccWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
     }
 }
 
-QT_INIT_METAOBJECT const QMetaObject QOccWidget::staticMetaObject = { {
-    &QxWidget::staticMetaObject,
-    qt_meta_stringdata_QOccWidget.data,
-    qt_meta_data_QOccWidget,
+QT_INIT_METAOBJECT const QMetaObject QWebBridge::staticMetaObject = { {
+    &QObject::staticMetaObject,
+    qt_meta_stringdata_QWebBridge.data,
+    qt_meta_data_QWebBridge,
     qt_static_metacall,
     nullptr,
     nullptr
 } };
 
 
-const QMetaObject *QOccWidget::metaObject() const
+const QMetaObject *QWebBridge::metaObject() const
 {
     return QObject::d_ptr->metaObject ? QObject::d_ptr->dynamicMetaObject() : &staticMetaObject;
 }
 
-void *QOccWidget::qt_metacast(const char *_clname)
+void *QWebBridge::qt_metacast(const char *_clname)
 {
     if (!_clname) return nullptr;
-    if (!strcmp(_clname, qt_meta_stringdata_QOccWidget.stringdata0))
+    if (!strcmp(_clname, qt_meta_stringdata_QWebBridge.stringdata0))
         return static_cast<void*>(this);
-    return QxWidget::qt_metacast(_clname);
+    return QObject::qt_metacast(_clname);
 }
 
-int QOccWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
+int QWebBridge::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 {
-    _id = QxWidget::qt_metacall(_c, _id, _a);
+    _id = QObject::qt_metacall(_c, _id, _a);
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 3)
+        if (_id < 2)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 3;
+        _id -= 2;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 3)
+        if (_id < 2)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 3;
+        _id -= 2;
     }
     return _id;
 }
 
 // SIGNAL 0
-void QOccWidget::sendStatusMessage(QString _t1)
+void QWebBridge::uispace(QString _t1)
 {
     void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);

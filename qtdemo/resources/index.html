@@ -11,26 +11,22 @@
 <body>
     <div id="xxx">
     </div>
-    <input type="text"/>
     <script>
-
         function echoWrite(s) {
             document.getElementById("xxx").innerText += s;
         }
 
         new QWebChannel(qt.webChannelTransport, function(channel) {
-            channel.objects.occ.sendMessage.connect(function (message) {
+            window.bridge = channel.objects.bridge;
+
+            bridge.uispace.connect(function (message) {
                 echoWrite("-- ", typeof(message), " : ", message);
-            })
-            window.occ = channel.objects.occ;
-            occ.add(1, 3, function (r) {
-                echoWrite(`1 + 3 = ${r}`)
             })
         });
 
         setTimeout(() => {
-            occ.receiveFromWeb("oh~ i'm web");
-        }, 2000)
+            bridge.qtspace("oh~ i'm web");
+        }, 1000)
     </script>
 </body>
 </html>

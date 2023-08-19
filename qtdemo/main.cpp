@@ -9,7 +9,7 @@ int main(int argc, char* argv[]) {
     QtTools::loadResources("C:\\jpro\\vtkocc\\qtdemo\\rsrcs.rcc");
     auto* window = new QCoreWindow();
     window->setWindowTitle("Web View");
-    window->resize(900, 600);
+//    window->resize(900, 600);
     window->show();
 //    auto* mainWindow = new QWebEngineView();
 //    std::cout << argv[1] << std::endl;
