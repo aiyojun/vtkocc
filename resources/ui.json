@@ -1,0 +1,27 @@
+{
+  "name": "topLayer", "type": "QVBoxLayout",
+  "width": "900px", "height": "600px",
+  "children": [
+    { "name": "header", "type": "QHBoxLayout", "width": "100%", "height": "31px", "children": [
+      { "name": "logoText", "type": "QLabel", "width": "200px", "height": "31px", "text": "VTK OCC" },
+      { "name": "headerCtrlGroup", "type": "QHBoxLayout", "reverse": true, "width": "calc(100% - 200px)", "height": "31px", "children": [
+        { "name": "projLeft" , "type": "QPushButton", "width": "64px", "height": "31px" },
+        { "name": "projTop"  , "type": "QPushButton", "width": "64px", "height": "31px" },
+        { "name": "projFront", "type": "QPushButton", "width": "64px", "height": "31px" },
+        { "name": "openFolder","type": "QPushButton", "width": "70px", "height": "31px" }
+      ] }
+    ] },
+    { "name": "headerBack", "type": "QFrame", "width": "100%", "height": "1px" },
+    { "name": "main", "type": "QHBoxLayout", "width": "100%", "height": "calc(100% - 32px - 24px)", "children": [
+      { "name": "sidebar", "type": "QVBoxLayout", "width": "239px", "height": "100%", "children": [
+
+      ] },
+      { "name": "mainSlider", "type": "QFrame", "width": "1px", "height": "100%" },
+      { "name": "occViewer", "type": "QOccWidget", "width": "calc(100% - 240px)", "height": "100%" }
+    ] },
+    { "name": "statusBar", "type": "QHBoxLayout", "width": "100%", "height": "24px", "children": [
+      { "name": "statusBarBack", "type": "QFrame", "width": "100%", "height": "100%", "position": "absolute" },
+      { "name": "statusText", "type": "QLabel", "width": "100%", "height": "24px", "text": "- VTK OCC is prepared for you!" }
+    ] }
+  ]
+}

@@ -1,0 +1,4 @@
+build/
+moc_*.cpp
+*.rcc
+*.zip

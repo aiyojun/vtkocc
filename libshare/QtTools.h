@@ -7,12 +7,13 @@ class QtTools {
 public:
     static void loadResources(const QString& path);
     static void printSystemFontFamily();
-    static void loadFontFamily(const QString& path);
+    static int  loadFontFamily(const QString& path);
     static void setDefaultFont(const QString& font);
     static QString readFile(const QString& path);
     static inline std::string to_string(const QString& s)
     { return s.toStdString(); }
     static int calc(QWidget* p, const std::string& str, bool isVertical = false);
+    static int calcSize(int dis, const std::string& str);
     /**
      * @deprecated
      */

@@ -1,0 +1,17 @@
+<RCC>
+    <qresource prefix="/">
+        <file>ui.json</file>
+        <file>ui.qss</file>
+        <file>index.html</file>
+        <file>index.css</file>
+        <file>titillium-web-font/TitilliumWeb-1eq2.ttf</file>
+        <file>icons/open-folder.svg</file>
+        <file>icons/box-front.svg</file>
+        <file>icons/box-left.svg</file>
+        <file>icons/box-top.svg</file>
+        <file>icons/window-close.svg</file>
+        <file>icons/window-maximize.svg</file>
+        <file>icons/window-minus.svg</file>
+        <file>qwebchannel.js</file>
+    </qresource>
+</RCC>

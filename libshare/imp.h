@@ -13,6 +13,8 @@
 #include <iostream>
 #define TO_STR(S) #S
 #define LOG(STR) std::cout << STR << std::endl
+#include <QtCore/QMap>
+#include <QtCore/QVector>
 #include <QtCore/QString>
 #include <QtCore/QFile>
 #include <QtCore/QResource>
@@ -28,13 +30,17 @@
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLayout>
+#include <QtWidgets/QLineEdit>
 #include <QtWidgets/QBoxLayout>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QScrollArea>
+#include <QtWidgets/QFileDialog.h>
 #include <QtWidgets/qstyleoption.h>
 #include <QtWidgets/qstylepainter.h>
 
-#include "QxWidget.h"
 #include "QtTools.h"
+
+#define R_PTR(P) if (!P) {delete P; P = nullptr;}
 
 std::string toLowerCase(const std::string& text);
 std::string toUpperCase(const std::string& text);

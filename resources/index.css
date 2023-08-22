@@ -1,0 +1,94 @@
+@font-face {
+    font-family: "Titillium Web";
+    src: url(./titillium-web-font/TitilliumWeb-1eq2.ttf);
+}
+
+html body {
+    background: #f8f8f8;
+    font-size: .75rem;
+    font-family: "Titillium Web", "Microsoft YaHei", sans-serif;
+    cursor: default;
+}
+
+#app {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+#app > div {
+    width: 100%;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.header {
+    height: 2rem;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    /*justify-content: space-between;*/
+    align-items: center;
+}
+
+.footer {
+    height: 1.5rem;
+    border-top: 1px solid #eee;
+    padding: 0 .5rem;
+    display: flex;
+    align-items: center;
+}
+
+.main {
+    height: calc(100% - 2rem - 1.5rem);
+    display: flex;
+}
+
+.dock {
+    height: 100%;
+    width: 15rem;
+    box-sizing: border-box;
+    border-right: 1px solid #eee;
+}
+
+.main > div {
+    height: 100%;
+}
+
+#occ-view {
+    width: calc(100% - 15rem - 1rem);
+}
+
+.logo {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-left: .5rem;
+    white-space: nowrap;
+}
+
+.title-bar-ctrl {
+    height: 100%;
+    width: 100%;
+    -webkit-app-region: drag;
+}
+
+.title-bar {
+    height: 2rem;
+    display: flex;
+}
+
+.head-ctrl {
+    height: 2rem;
+    width: 2rem;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.head-ctrl:hover {
+    background-color: #ddd;
+}

@@ -1,0 +1,25 @@
+QJsonView { background-color: #fff; }
+
+QLabel { font-size: 14px; margin-left: 8px; }
+QLineEdit { padding-left: 5px; border-radius: 4px; font-size: 14px; border: 1px solid #ddd; }
+
+
+#main { border-top: 1px solid #ddd; }
+#statusBar { border-top: 1px solid #ddd; }
+#logoText { font-size: 20px; margin-left: 8px; }
+#statusText { font-size: 14px; color: #888; margin-left: 8px; }
+#sidebar {  }
+#mainSlider { background-color: #ddd; }
+#occViewer { background-color: lightpink; }
+#headerBack { border-top: 1px solid #ddd; }
+#statusBarBack { border-top: 1px solid #ddd; }
+
+
+#projFront { background-color: #fff; border: none; font-size: 14px; qproperty-text: "Front"; qproperty-icon: url(":/icons/box-front.svg"); qproperty-iconSize: 16px 16px; }
+#projTop   { background-color: #fff; border: none; font-size: 14px; qproperty-text: "Top";   qproperty-icon: url(":/icons/box-top.svg");   qproperty-iconSize: 16px 16px; }
+#projLeft  { background-color: #fff; border: none; font-size: 14px; qproperty-text: "Left";  qproperty-icon: url(":/icons/box-left.svg");  qproperty-iconSize: 16px 16px; }
+#openFolder{ background-color: #fff; border: none; font-size: 14px; qproperty-text: "Open";  qproperty-icon: url(":/icons/open-folder.svg");  qproperty-iconSize: 20px 20px; }
+#projFront:hover {background-color: rgba(0,0,0,0.1);}
+#projTop:hover   {background-color: rgba(0,0,0,0.1);}
+#projLeft:hover  {background-color: rgba(0,0,0,0.1);}
+#openFolder:hover  {background-color: rgba(0,0,0,0.1);}

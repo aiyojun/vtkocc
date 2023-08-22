@@ -1,0 +1,73 @@
+<html lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8">
+    <title>Qt Web Engine View</title>
+    <link rel="stylesheet" href="index.css" type="text/css">
+    <script type="application/javascript" src="qwebchannel.js"></script>
+</head>
+<body>
+    <div id="app">
+        <div class="header">
+            <div class="logo">VTK OCC</div>
+            <div class="title-bar-ctrl"></div>
+            <div class="title-bar">
+                <div id="occ-proj-main" class="head-ctrl"><img width="16" height="16" alt="" src="icons/box-front.svg"/></div>
+                <div id="occ-proj-top"  class="head-ctrl"><img width="16" height="16" alt="" src="icons/box-top.svg"  /></div>
+                <div id="occ-proj-left" class="head-ctrl"><img width="16" height="16" alt="" src="icons/box-left.svg" /></div>
+<!--                <div id="window-min" class="head-ctrl"><img width="16" height="16" alt="" src="icons/window-minus.svg"/></div>-->
+<!--                <div id="window-max" class="head-ctrl"><img width="16" height="16" alt="" src="icons/window-maximize.svg"/></div>-->
+<!--                <div id="window-cls" class="head-ctrl"><img width="16" height="16" alt="" src="icons/window-close.svg"/></div>-->
+            </div>
+        </div>
+        <div class="main">
+            <div class="dock">
+
+            </div>
+            <div id="occ-view">
+
+            </div>
+        </div>
+        <div class="footer" id="status-bar">
+            · status bar
+        </div>
+    </div>
+    <script>
+        // document.getElementById('window-min').addEventListener('click', () => {qbridge.webdriveibus("#MIN_APP");})
+        // document.getElementById('window-max').addEventListener('click', () => {qbridge.webdriveibus("#MAX_APP");})
+        // document.getElementById('window-cls').addEventListener('click', () => {qbridge.webdriveibus("#CLS_APP");})
+        document.getElementById('occ-proj-main').addEventListener('click', () => {qbridge.webdriveibus("#OCC_MAIN");})
+        document.getElementById('occ-proj-top') .addEventListener('click', () => {qbridge.webdriveibus("#OCC_TOP");})
+        document.getElementById('occ-proj-left').addEventListener('click', () => {qbridge.webdriveibus("#OCC_LEFT");})
+        function resizeWidgets() {
+            const occView = document.getElementById("occ-view")
+            console.info("occ-view :", document.getElementById("occ-view"))
+            qbridge.setWidgetGeometry('occ', 15*16, 2*16, occView.clientWidth, occView.clientHeight);
+        }
+        function setStatusBar(text) {
+            const statusBar = document.getElementById("status-bar")
+            statusBar.innerText = text;
+        }
+        window.addEventListener('resize', () => {
+            resizeWidgets()
+        })
+        window.addEventListener('load', () => {
+            new QWebChannel(qt.webChannelTransport, function(channel) {
+                window.qbridge = channel.objects.qbridge;
+                qbridge.webbindibus.connect(function (message) {
+                    if (/^#STATUSBAR /.test(message)) {
+                        setStatusBar(message.substring(10));
+                        return;
+                    }
+                    if (/^#RESIZEWINDOW /.test(message)) {
+                        resizeWidgets()
+                    }
+                })
+                resizeWidgets();
+            });
+            setTimeout(() => {
+                qbridge.webdriveibus("oh~ i'm web");
+            }, 1000)
+        })
+    </script>
+</body>
+</html>

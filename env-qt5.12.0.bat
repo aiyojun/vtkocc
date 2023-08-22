@@ -1,3 +1,0 @@
-set QT_DIR=C:\Qt\Qt5.12.0\5.12.0\msvc2017_64\bin
-set PATH=%PATH%;%QT_DIR%
-set QT_QPA_PLATFORM_PLUGIN_PATH=C:\Qt\Qt5.12.0\5.12.0\msvc2017_64\plugins

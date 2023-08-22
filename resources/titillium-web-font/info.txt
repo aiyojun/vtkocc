@@ -1,0 +1,2 @@
+﻿license: SIL Open Font License (OFL)
+link: https://www.fontspace.com/titillium-web-font-f17244
