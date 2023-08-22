@@ -4,6 +4,17 @@ learning opencascade, try to develop a opensource project based on VTK and OCCT.
 
 Most code is in a mess, and in developing stage. After several days, I will refactor them.
 
+
+## Build
+
+```shell
+# Now, only support windows, linux will soon
+# Make sure Visual Studio 2022 Community, OpenCASCADE, Qt5.12.0 in your computer!
+env.bat
+build.bat
+build_occviewer.bat
+```
+
 ## OCCT Resources
 
 ```txt
