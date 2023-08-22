@@ -2,7 +2,7 @@
 
 learning opencascade, try to develop a opensource project based on VTK and OCCT.
 
-Most code is in a mess, and in developping stage. After servel days, I will refactor them.
+Most code is in a mess, and in developing stage. After several days, I will refactor them.
 
 ## OCCT Resources
 
@@ -15,7 +15,7 @@ https://gitlab.com/ssv/lessons
 Two ways of constructing graphic interface by Qt:
 
 1.   Qt original approach, we will reap ugly UI;
-2.   Use QWebEngineView, good idea, front-end developper friendly, but trashy UI painting mechnism.
+2.   Use QWebEngineView, good idea, front-end developer friendly, but trashy UI painting mechanism.
 
 Therefore, we are supposed to rebuild UI design system first!
 
