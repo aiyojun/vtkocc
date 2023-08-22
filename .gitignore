@@ -2,3 +2,5 @@ build/
 moc_*.cpp
 *.rcc
 *.zip
+.idea/
+cmake-build-debug/

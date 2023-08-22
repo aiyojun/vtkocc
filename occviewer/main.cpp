@@ -8,8 +8,8 @@ using nlohmann::json;
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
-    json cfg = json::parse(QtTools::readFile("C:\\jpro\\vtkocc\\vtkocc.config.json").toStdString());
-    QtTools::loadResources("C:\\jpro\\vtkocc\\rsrcs.rcc");
+    json cfg = json::parse(QtTools::readFile("vtkocc.config.json").toStdString());
+    QtTools::loadResources("rsrcs.rcc");
     QtTools::loadFontFamily(":/titillium-web-font/TitilliumWeb-1eq2.ttf");
     QtTools::setDefaultFont("Titillium Web");
     QJsonView window;

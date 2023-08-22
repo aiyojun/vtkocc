@@ -1,3 +1,4 @@
+@echo off
 rem 1. dll搜索顺序 
 rem 2. 也受PATH环境变量影响f
 set PATH=%PATH%;C:\OpenCASCADE-7.7.0-vc14-64\freeimage-3.17.0-vc14-64\bin;C:\OpenCASCADE-7.7.0-vc14-64\tbb_2021.5-vc14-64\bin;C:\OpenCASCADE-7.7.0-vc14-64\ffmpeg-3.3.4-64\bin;C:\OpenCASCADE-7.7.0-vc14-64\openvr-1.14.15-64\bin\win64;C:\OpenCASCADE-7.7.0-vc14-64\opencascade-7.7.0\win64\vc14\bin;
@@ -19,3 +20,6 @@ rem devenv vtkdemo.sln /build Release /rebuild /clean
 set OpenCASCADE_DIR=C:\OpenCASCADE-7.7.0-vc14-64\opencascade-7.7.0
 set CMAKE_PREFIX_PATH=C:\OpenCASCADE-7.7.0-vc14-64\opencascade-7.7.0\cmake
 set freetype_DIR=C:\OpenCASCADE-7.7.0-vc14-64\freetype-2.5.5-vc14-64
+
+
+echo -- Prepared OpenCASCADE, Qt5.12.0, msvc2017_64, Visual Studio 2022 Community environment!
