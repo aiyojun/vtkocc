@@ -4,3 +4,4 @@ moc_*.cpp
 *.zip
 .idea/
 cmake-build-debug/
+cmake-build-release/

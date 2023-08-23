@@ -162,7 +162,8 @@ void QJsonView::setstatusbar(QString text) {
 
 void QJsonView::chooseLocalFile() {
     QString filepath = QFileDialog::getOpenFileName((QWidget *) this, QStringLiteral("Select a file"));
-    LOG("-- Choose : " + filepath.toStdString());
+    if (filepath.isEmpty()) return;
+    Message::SendInfo() << "-- Choose : " << filepath.toStdString().c_str();
     auto *occViewer = (QOccWidget *) getWidget("occViewer");
     occViewer->ReadModel(filepath.toStdString().c_str());
     setstatusbar("Reading " + filepath + "...");

@@ -18,13 +18,6 @@ add_executable(${APP}
         moc_QJsonView.cpp
         QJsonView.cpp
         QJsonView.h
-#        QOccTools.cpp
-#        moc_QModelReader.cpp
-#        QModelReader.cpp
-#        QModelReader.h
-#        moc_QStepReadThread.cpp
-#        QStepReadThread.cpp
-#        QStepReadThread.h
 )
 
 foreach (LIB ${OpenCASCADE_LIBRARIES})
