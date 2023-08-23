@@ -9,14 +9,38 @@
 
 #include <QtGui/QMouseEvent>
 #include <QtCore/QPoint>
+#include <XCAFApp_Application.hxx>
 
-#include "QOccTools.h"
+#include "HighRender.h"
 
-QOccWidget::QOccWidget(QWidget *parent) : QWidget(parent), initialized(false), ctrlKeyPressed(false), altKeyPressed(false), shiftKeyPressed(false) {
+Graphic3d_Vec2i QPoint2Graphic3d_Vec2i(const QPoint &p) {
+    Graphic3d_Vec2i pos(p.x(), p.y());
+    return pos;
+}
+
+Aspect_VKeyMouse QtMouseButton2Aspect_VKeyMouse(const Qt::MouseButton &button) {
+    Aspect_VKeyMouse rb = Aspect_VKeyMouse_NONE;
+    switch (button) {
+        case Qt::LeftButton:
+            rb = Aspect_VKeyMouse_LeftButton;
+            break;
+        case Qt::RightButton:
+            rb = Aspect_VKeyMouse_RightButton;
+            break;
+        case Qt::MidButton:
+            rb = Aspect_VKeyMouse_MiddleButton;
+            break;
+        default:;
+    }
+    return rb;
+}
+
+QOccWidget::QOccWidget(QWidget *parent) : QWidget(parent), initialized(false), ctrlKeyPressed(false), altKeyPressed(false), shiftKeyPressed(false), _reader(new PerformanceImporter(this)) {
     setAttribute(Qt::WA_PaintOnScreen);
     setAttribute(Qt::WA_NoSystemBackground);
     setMouseTracking(true);
     setFocusPolicy(Qt::StrongFocus);
+    QObject::connect(_reader, SIGNAL(finished()), this, SLOT(loadShapes()));
 }
 
 void QOccWidget::init() {
@@ -48,9 +72,9 @@ void QOccWidget::init() {
 
 
     controller = new OccViewController(view, context);
-//    QOccTools::useSolidWorksStyle(view);
+//    useSolidWorksStyle(view);
 //    LOG("-- Use SolidWorks Style");
-//    QOccTools::useDefaultRenderStyle(view);
+//    useDefaultRenderStyle(view);
 //    LOG("-- Use Default Style");
      view->SetBackgroundColor(Quantity_NOC_WHITE);
 //     view->SetBackgroundColor();
@@ -87,11 +111,11 @@ void QOccWidget::init() {
 
 
 
-    auto box = BRepPrimAPI_MakeBox(50, 50, 80);
-    auto &shape = box.Shape();
-    basicShape = new AIS_Shape(shape);
-    context->Display(basicShape, true);
-    context->SetDisplayMode(basicShape, AIS_Shaded, true);
+//    auto box = BRepPrimAPI_MakeBox(50, 50, 80);
+//    auto &shape = box.Shape();
+//    basicShape = new AIS_Shape(shape);
+//    context->Display(basicShape, true);
+//    context->SetDisplayMode(basicShape, AIS_Shaded, true);
 }
 
 void QOccWidget::paintEvent(QPaintEvent *theEvent) {
@@ -100,7 +124,7 @@ void QOccWidget::paintEvent(QPaintEvent *theEvent) {
         initialized = true;
     }
 //    view->Redraw();
-    QOccTools::adjustHeadLight(view);
+    HighRender::AdjustHeadLight(view, Quantity_NOC_WHITESMOKE);
 }
 
 void QOccWidget::resizeEvent(QResizeEvent *theEvent) {
@@ -118,7 +142,7 @@ void QOccWidget::mousePressEvent(QMouseEvent *event) {
                                    | (ctrlKeyPressed ? Aspect_VKeyFlags_CTRL : Aspect_VKeyFlags_NONE)
                                    | (altKeyPressed  ? Aspect_VKeyFlags_ALT  : Aspect_VKeyFlags_NONE)
                                    | (shiftKeyPressed? Aspect_VKeyFlags_SHIFT: Aspect_VKeyFlags_NONE);
-    Aspect_VKeyMouse button = QOccTools::QtMouseButton2Aspect_VKeyMouse(event->button());
+    Aspect_VKeyMouse button = QtMouseButton2Aspect_VKeyMouse(event->button());
     controller->PressMouseButton(pos, button, flags, false);
     controller->FlushViewEvents(context, view, true);
 }
@@ -130,7 +154,7 @@ void QOccWidget::mouseReleaseEvent(QMouseEvent *event) {
                                    | (ctrlKeyPressed ? Aspect_VKeyFlags_CTRL : Aspect_VKeyFlags_NONE)
                                    | (altKeyPressed  ? Aspect_VKeyFlags_ALT  : Aspect_VKeyFlags_NONE)
                                    | (shiftKeyPressed? Aspect_VKeyFlags_SHIFT: Aspect_VKeyFlags_NONE);
-    Aspect_VKeyMouse button = QOccTools::QtMouseButton2Aspect_VKeyMouse(event->button());
+    Aspect_VKeyMouse button = QtMouseButton2Aspect_VKeyMouse(event->button());
     controller->ReleaseMouseButton(pos, button, flags, false);
     controller->FlushViewEvents(context, view, true);
 }
@@ -146,7 +170,7 @@ void QOccWidget::mouseMoveEvent(QMouseEvent *event) {
                                    | (ctrlKeyPressed ? Aspect_VKeyFlags_CTRL : Aspect_VKeyFlags_NONE)
                                    | (altKeyPressed  ? Aspect_VKeyFlags_ALT  : Aspect_VKeyFlags_NONE)
                                    | (shiftKeyPressed? Aspect_VKeyFlags_SHIFT: Aspect_VKeyFlags_NONE);
-    Aspect_VKeyMouse button = QOccTools::QtMouseButton2Aspect_VKeyMouse(event->button());
+    Aspect_VKeyMouse button = QtMouseButton2Aspect_VKeyMouse(event->button());
     controller->UpdateMousePosition(pos, button, flags, false);
     controller->FlushViewEvents(context, view, true);
 }
@@ -208,53 +232,6 @@ void QOccWidget::projection1() {
     emit sendStatusMessage("- z view");
 }
 
-std::vector<TopoDS_Shape> g_shapes;
-
-class ReadModelTask : public QRunnable {
-public:
-    void run() override {
-        g_shapes = std::move(QOccTools::ReadModelFile(modelpath));
-        for (auto &shape : g_shapes) {
-            Handle(AIS_Shape) ais_shape = new AIS_Shape(shape);
-            context->Display(ais_shape, true);
-            context->SetDisplayMode(ais_shape, AIS_Shaded, true);
-        }
-    }
-    std::string modelpath;
-    Handle(V3d_View) view;
-    Handle(AIS_InteractiveContext) context;
-};
-
-void QOccWidget::loadModel() {
-    std::string modelpath("C:\\Users\\jun.dai\\Desktop\\modelstep3d\\xxx_01.STL");
-    emit sendStatusMessage(("-- loading... " + modelpath).c_str());
-
-    ReadModelTask rmt;
-    rmt.modelpath = modelpath;
-    rmt.context   = context;
-    rmt.view      = view;
-    QThreadPool::globalInstance()->start(&rmt);
-
-
-//    emit sendStatusMessage("-- Model read complete!");
-}
-
-void QOccWidget::dispatchibus(QString message) {
-    LOG("QOccWidget::dispatchibus : " + message.toStdString());
-    if (std::regex_match(message.toStdString(), std::regex("^#OCC_MAIN"))) {
-        view->SetProj(V3d_Yneg);
-        return;
-    }
-    if (std::regex_match(message.toStdString(), std::regex("^#OCC_TOP"))) {
-        view->SetProj(V3d_Zpos);
-        return;
-    }
-    if (std::regex_match(message.toStdString(), std::regex("^#OCC_LEFT"))) {
-        view->SetProj(V3d_Xpos);
-        return;
-    }
-}
-
 void QOccWidget::projfront() {
     view->SetProj(V3d_Yneg);
     view->Redraw();
@@ -274,15 +251,20 @@ void QOccWidget::projtop() {
 }
 
 void QOccWidget::loadShapes() {
-//    context->RemoveAll(true);
-    context->Erase(basicShape, true);
-    LOG("Current shapes : " + std::to_string(g_shapes.size()));
-    emit sendStatusMessage(QString("Loading models, please hold on..."));
-    for (auto &shape : g_shapes) {
-        Handle(AIS_Shape) ais_shape = new AIS_Shape(shape);
-        context->Display(ais_shape, true);
-        context->SetDisplayMode(ais_shape, AIS_Shaded, true);
+    LOG("-- QOccWidget::loadShapes");
+    emit sendStatusMessage(QString("Rendering models..."));
+    if (_reader->GetDocument().IsNull()) {
+        emit sendStatusMessage(QString("Read model failed!"));
+        return;
     }
+    LOG("-- QOccWidget::loadShapes RenderDocument");
+    HighRender::RenderDocument(context, _reader->GetDocument());
     view->Redraw();
-    emit sendStatusMessage(QString("Read models success!"));
+    emit sendStatusMessage(QString("Load models success!"));
+}
+
+void QOccWidget::ReadModel(QString filename) {
+    _reader->SetTask(filename, PerformanceImporter::ReadTask::BUILD_DOC);
+    _reader->ValidateTask();
+    _reader->ReadAsync();
 }

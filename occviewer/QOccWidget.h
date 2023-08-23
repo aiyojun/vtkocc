@@ -16,8 +16,10 @@
 #include <WNT_Window.hxx>
 #include <AIS_ViewCube.hxx>
 #include <AIS_Shape.hxx>
+#include <TDocStd_Document.hxx>
 #include "OccViewController.h"
 #include "imp.h"
+#include "PerformanceImporter.h"
 
 class QOccWidget : public QWidget {
     Q_OBJECT
@@ -26,7 +28,9 @@ public:
     ~QOccWidget() override = default;
     QPaintEngine* paintEngine() const override { return nullptr; }
     void init();
-    std::vector<TopoDS_Shape>& refShapes() { return g_shapes; }
+//    inline void SetDocument(Handle(TDocStd_Document) doc) { document = std::move(doc); }
+    const PerformanceImporter* GetReader() const { return _reader; }
+    void ReadModel(QString filename);
 protected:
     void paintEvent(QPaintEvent* theEvent) override;
     void resizeEvent(QResizeEvent* theEvent) override;
@@ -44,8 +48,6 @@ public Q_SLOTS:
     void projfront();
     void projleft();
     void projtop();
-    void loadModel();
-    void dispatchibus(QString message);
     void loadShapes();
 private:
     bool ctrlKeyPressed;
@@ -59,7 +61,9 @@ private:
     Handle(AIS_InteractiveContext) context;
     Handle(OccViewController) controller;
     Handle(AIS_ViewCube) viewCube;
-    std::vector<TopoDS_Shape> g_shapes;
+//    Handle(TDocStd_Document) document;
+
+    PerformanceImporter* _reader;
 };
 
 #endif //VTKOCC_QOCCWIDGET_H

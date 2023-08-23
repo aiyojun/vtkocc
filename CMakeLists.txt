@@ -17,6 +17,7 @@ include_directories(SYSTEM ${OpenCASCADE_INCLUDE_DIR})
 
 include_directories(libs3rd)
 include_directories(libshare)
+include_directories(occutils)
 
 add_subdirectory(vtk)
 add_subdirectory(occviewer)

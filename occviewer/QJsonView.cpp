@@ -1,6 +1,5 @@
 #include "QJsonView.h"
 #include "QOccWidget.h"
-#include "QModelReader.h"
 
 namespace js {
 
@@ -162,13 +161,9 @@ void QJsonView::setstatusbar(QString text) {
 }
 
 void QJsonView::chooseLocalFile() {
-    QString filepath = QFileDialog::getOpenFileName(this, QStringLiteral("Select a file"));
-    LOG("-- Select file : " + filepath.toStdString());
+    QString filepath = QFileDialog::getOpenFileName((QWidget *) this, QStringLiteral("Select a file"));
+    LOG("-- Choose : " + filepath.toStdString());
     auto *occViewer = (QOccWidget *) getWidget("occViewer");
-    delete reader;
-    reader = new QModelReader(filepath, occViewer->refShapes());
-    reader->start(QThread::HighPriority);
-    QObject::connect(reader, SIGNAL(complete()), occViewer, SLOT(loadShapes()));
-    LOG("Reading " + filepath.toStdString() + "...");
+    occViewer->ReadModel(filepath.toStdString().c_str());
     setstatusbar("Reading " + filepath + "...");
 }

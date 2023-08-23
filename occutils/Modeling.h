@@ -1,16 +1,6 @@
-#ifndef VTKOCC_QOCCTOOLS_H
-#define VTKOCC_QOCCTOOLS_H
+#ifndef VTKOCC_MODELING_H
+#define VTKOCC_MODELING_H
 
-#include <QtCore/QPoint>
-#include <Graphic3d_Vec2.hxx>
-#include <Aspect_VKeyFlags.hxx>
-#include <V3d_View.hxx>
-#include <Quantity_Color.hxx>
-#include <Quantity_TypeOfColor.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Vec.hxx>
-#include <TopoDS_Edge.hxx>
-#include <TopoDS_Face.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <BRepPrimAPI_MakePrism.hxx>
@@ -23,35 +13,9 @@
 #include <BRepAlgoAPI_Fuse.hxx>
 // Bool operations : virtual base class
 #include <BRepAlgoAPI_BooleanOperation.hxx>
-#include <TDocStd_Application.hxx>
-#include <AIS_InteractiveContext.hxx>
-#include <XCAFDoc_ShapeTool.hxx>
-#include "imp.h"
 
-class QOccTools {
+class Modeling {
 public:
-    // Basic functions about graphic underlying APIs
-    static Graphic3d_Vec2i QPoint2Graphic3d_Vec2i(const QPoint& p);
-    static Aspect_VKeyMouse QtMouseButton2Aspect_VKeyMouse(const Qt::MouseButton& button);
-    static void useRayTracing(Handle(V3d_View) view);
-//    Quantity_NOC_BLUE Quantity_NOC_CADETBLUE Quantity_NOC_CORNFLOWERBLUE
-//   Aspect_GradientFillMethod_Elliptical Aspect_GFM_VER
-    inline static void useDefaultRenderStyle(Handle(V3d_View) view)
-    { view->SetBgGradientColors(Quantity_NOC_GRAY0, Quantity_NOC_WHITE, Aspect_GradientFillMethod_Elliptical); }
-    inline static void useFreeCADStyle(Handle(V3d_View) view)
-    { view->SetBgGradientColors(Quantity_NOC_BLUE, Quantity_NOC_WHITE, Aspect_GFM_VER); }
-    inline static void useSolidWorksStyle(Handle(V3d_View) view)
-    { view->SetBgGradientColors(Quantity_Color(226, 243, 252, Quantity_TypeOfColor::Quantity_TOC_RGB), Quantity_Color(245, 245, 245, Quantity_TypeOfColor::Quantity_TOC_RGB), Aspect_GFM_VER); }
-    // 如果你发现正面对你的面颜色发生变化 变成了白色,可以调整或关闭头部光源
-    static void adjustHeadLight(Handle(V3d_View) view);
-    // Load model
-    static std::vector<TopoDS_Shape> ReadModelFile(const std::string& filepath);
-    static void SaveAsColoredStep(TopoDS_Shape shape, const std::string& filepath);
-    // Read model file by XDE
-    static Handle(TDocStd_Document) ReadStepWithMeta(const std::string& filepath);
-    static Handle(TDocStd_Document) ReadStepWayTwo(const std::string& filepath);
-    static void ShowDoc(const Handle(AIS_InteractiveContext)& context, const Handle(TDocStd_Document)& doc);
-
     // Modeling
     // 1. stretch/swept -> point/line/volume
     inline static const TopoDS_Shape& ModelingStretch(const TopoDS_Vertex& vertex, gp_Vec vec)
@@ -89,5 +53,4 @@ public:
     // other bool operations please research BRepAlgoAPI_BooleanOperation with its subclasses
 };
 
-
-#endif //VTKOCC_QOCCTOOLS_H
+#endif //VTKOCC_MODELING_H

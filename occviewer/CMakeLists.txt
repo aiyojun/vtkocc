@@ -7,19 +7,24 @@ include_directories(.)
 
 add_executable(${APP}
         main.cpp
+        ../occutils/impl.cpp
+        ../occutils/moc_PerformanceImporter.cpp
         ../libshare/imp.cpp
         ../libshare/QtTools.cpp
         OccViewController.cpp
-        QOccWidget.cpp
         moc_QOccWidget.cpp
+        QOccWidget.cpp
         QOccWidget.h
-        QOccTools.cpp
         moc_QJsonView.cpp
         QJsonView.cpp
         QJsonView.h
-        moc_QModelReader.cpp
-        QModelReader.cpp
-        QModelReader.h
+#        QOccTools.cpp
+#        moc_QModelReader.cpp
+#        QModelReader.cpp
+#        QModelReader.h
+#        moc_QStepReadThread.cpp
+#        QStepReadThread.cpp
+#        QStepReadThread.h
 )
 
 foreach (LIB ${OpenCASCADE_LIBRARIES})

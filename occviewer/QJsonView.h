@@ -3,7 +3,6 @@
 
 #include "imp.h"
 #include "json.hpp"
-#include "QModelReader.h"
 
 using nlohmann::json;
 
@@ -40,7 +39,6 @@ private:
         pool[QString(name.c_str())] = p; }
     QMap<QString, QWidget*> pool;
     json ui;
-    QModelReader *reader = nullptr;
 };
 
 
