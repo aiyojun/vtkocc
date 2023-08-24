@@ -1,6 +1,7 @@
 #ifndef VTKOCC_OCCVIEWCONTROLLER_H
 #define VTKOCC_OCCVIEWCONTROLLER_H
 
+#include <Standard_Handle.hxx>
 #include <Standard_Type.hxx>
 #include <AIS_ViewController.hxx>
 #include <V3d_View.hxx>

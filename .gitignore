@@ -5,3 +5,4 @@ moc_*.cpp
 .idea/
 cmake-build-debug/
 cmake-build-release/
+*~

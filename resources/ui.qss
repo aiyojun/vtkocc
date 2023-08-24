@@ -1,8 +1,8 @@
 QJsonView { background-color: #fff; }
 
 QLabel { font-size: 14px; margin-left: 8px; }
-QLineEdit { padding-left: 5px; border-radius: 4px; font-size: 14px; border: 1px solid #ddd; }
-
+QColorfulLabel { border-radius: 8px; margin: 2px 8px; background-color: lightpink; color: #333; }
+QLineEdit { padding-left: 5px; border-radius: 4px; font-size: 14px; border: 1px solid #ddd; padding-left: 8px; }
 
 #main { border-top: 1px solid #ddd; }
 #statusBar { border-top: 1px solid #ddd; }
@@ -19,7 +19,20 @@ QLineEdit { padding-left: 5px; border-radius: 4px; font-size: 14px; border: 1px 
 #projTop   { background-color: #fff; border: none; font-size: 14px; qproperty-text: "Top";   qproperty-icon: url(":/icons/box-top.svg");   qproperty-iconSize: 16px 16px; }
 #projLeft  { background-color: #fff; border: none; font-size: 14px; qproperty-text: "Left";  qproperty-icon: url(":/icons/box-left.svg");  qproperty-iconSize: 16px 16px; }
 #openFolder{ background-color: #fff; border: none; font-size: 14px; qproperty-text: "Open";  qproperty-icon: url(":/icons/open-folder.svg");  qproperty-iconSize: 20px 20px; }
-#projFront:hover {background-color: rgba(0,0,0,0.1);}
-#projTop:hover   {background-color: rgba(0,0,0,0.1);}
-#projLeft:hover  {background-color: rgba(0,0,0,0.1);}
-#openFolder:hover  {background-color: rgba(0,0,0,0.1);}
+
+#func0     { background-color: #fff; border: none; font-size: 14px; qproperty-text: "Sky dome"; qproperty-icon: url(":/icons/x-layerdown.svg"); qproperty-iconSize: 32px 32px; qproperty-toolButtonStyle: "ToolButtonTextUnderIcon"; }
+#func1     { background-color: #fff; border: none; font-size: 14px; qproperty-text: "Render"; qproperty-icon: url(":/icons/x-mess.svg"); qproperty-iconSize: 32px 32px; qproperty-toolButtonStyle: "ToolButtonTextUnderIcon"; }
+#func2     { background-color: #fff; border: none; font-size: 14px; qproperty-text: "LOG"; qproperty-icon: url(":/icons/x-order.svg"); qproperty-iconSize: 32px 32px; qproperty-toolButtonStyle: "ToolButtonTextUnderIcon"; }
+#func3     { background-color: #fff; border: none; font-size: 14px; qproperty-text: "Setting"; qproperty-icon: url(":/icons/x-setting.svg"); qproperty-iconSize: 32px 32px; qproperty-toolButtonStyle: "ToolButtonTextUnderIcon"; }
+#func4     { background-color: #fff; border: none; font-size: 14px; qproperty-text: "Module"; qproperty-icon: url(":/icons/x-game.svg"); qproperty-iconSize: 32px 32px; qproperty-toolButtonStyle: "ToolButtonTextUnderIcon"; }
+
+#func3:hover, #func2:hover, #func0:hover, #func1:hover, #projFront:hover, #projTop:hover, #projLeft:hover, #openFolder:hover {background-color: rgba(0,0,0,0.1);}
+
+#secTitle0, #secTitle1 { margin-left: 0; padding-left: 8px; font-weight: bolder; }
+
+#clText0 { background-color: lightpink; }
+#clText1 { background-color: #9599E2; }
+#clText2 { background-color: #E0C3FC; }
+#clText3 { background-color: #FBAB7E; }
+#clText4 { background-color: #97D9E1; }
+#clText5 { background-color: #6284FF; }

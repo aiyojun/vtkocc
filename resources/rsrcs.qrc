@@ -5,6 +5,17 @@
         <file>index.html</file>
         <file>index.css</file>
         <file>titillium-web-font/TitilliumWeb-1eq2.ttf</file>
+        <file>icons/3d.svg</file>
+        <file>icons/CAD.svg</file>
+        <file>icons/x-database.svg</file>
+        <file>icons/x-game.svg</file>
+        <file>icons/x-layer.svg</file>
+        <file>icons/x-layerdown.svg</file>
+        <file>icons/x-mess.svg</file>
+        <file>icons/x-module.svg</file>
+        <file>icons/x-order.svg</file>
+        <file>icons/x-setting.svg</file>
+        <file>icons/laptop.svg</file>
         <file>icons/open-folder.svg</file>
         <file>icons/box-front.svg</file>
         <file>icons/box-left.svg</file>

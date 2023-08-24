@@ -1,7 +1,7 @@
 #include "OccViewController.h"
 
 OccViewController::OccViewController(const opencascade::handle<V3d_View> &view,
-                                     const opencascade::handle<AIS_InteractiveContext> &ctx) {
+                                     const opencascade::handle<AIS_InteractiveContext> &ctx){
 
 }
 

@@ -41,7 +41,9 @@ int QtTools::calc(QWidget* p, const std::string& str, bool isVertical) {
 int QtTools::calcSize(int dis, const std::string &str) {
     std::string xStr = std::regex_replace(str, std::regex(" "), "");
     double r;
-    if (std::regex_match(xStr, std::regex("^[0-9]+px$"))) {
+    if (std::regex_match(xStr, std::regex("^auto$"))) {
+        r = -1;
+    } else if (std::regex_match(xStr, std::regex("^[0-9]+px$"))) {
         r = std::stoi(xStr.substr(0, xStr.length() - 2));
     } else if (std::regex_match(xStr, std::regex("^[0-9]+%$"))) {
         r = dis * std::stod(xStr.substr(0, xStr.length() - 1)) * 0.01;

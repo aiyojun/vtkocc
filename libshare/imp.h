@@ -6,6 +6,8 @@
 #include <utility>
 #include <functional>
 #include <string>
+#include <sstream>
+#include <strstream>
 #include <vector>
 #include <tuple>
 #include <map>
@@ -13,6 +15,7 @@
 #include <iostream>
 #define TO_STR(S) #S
 #define LOG(STR) std::cout << STR << std::endl
+#include <QtCore/QJsonObject>
 #include <QtCore/QMap>
 #include <QtCore/QVector>
 #include <QtCore/QString>
@@ -33,6 +36,7 @@
 #include <QtWidgets/QLineEdit>
 #include <QtWidgets/QBoxLayout>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QToolButton>
 #include <QtWidgets/QScrollArea>
 #include <QtWidgets/QFileDialog.h>
 #include <QtWidgets/qstyleoption.h>

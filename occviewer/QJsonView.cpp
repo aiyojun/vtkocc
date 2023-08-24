@@ -1,5 +1,6 @@
 #include "QJsonView.h"
 #include "QOccWidget.h"
+#include "QLinearSpinner.h"
 
 namespace js {
 
@@ -80,6 +81,12 @@ void QJsonView::parse(JvContext context) {
     } else if (type == "QOccWidget") {
         auto *widget = new QOccWidget(this);
         addWidget(name, (QWidget *) widget);
+    } else if (type == "QColorfulLabel") {
+        js::expectString(ui, "text");
+        auto text = ui["text"].get<std::string>();
+        auto *label = new QColorfulLabel(QString(text.c_str()), this);
+        label->setAlignment(Qt::AlignVCenter);
+        addWidget(name, (QWidget *) label);
     } else if (type == "QLabel") {
         js::expectString(ui, "text");
         auto text = ui["text"].get<std::string>();
@@ -88,6 +95,12 @@ void QJsonView::parse(JvContext context) {
         addWidget(name, (QWidget *) label);
     } else if (type == "QPushButton") {
         auto *button = new QPushButton(this);
+        addWidget(name, (QWidget *) button);
+    } else if (type == "QLinearSpinner") {
+        auto *spinner = new QLinearSpinner(this);
+        addWidget(name, (QWidget *) spinner);
+    } else if (type == "QToolButton") {
+        auto *button = new QToolButton(this);
         addWidget(name, (QWidget *) button);
     } else if (type == "QLineEdit") {
         auto *input = new QLineEdit(this);
@@ -107,7 +120,16 @@ void QJsonView::loopSetGeometry(const json& ui, QRect area) {
     auto type = ui["type"].get<std::string>();
     auto *widget = getWidget(name);
     if (widget != nullptr) {
-        widget->setGeometry(area.x(), area.y(), area.width(), area.height());
+        if (type == "QColorfulLabel") {
+            auto *label = (QColorfulLabel *) widget;
+            auto padding = QtTools::calcSize(0, ui["padding"].get<std::string>());
+            QFontMetrics metrics(label->font());
+            label->setGeometry(area.x(), area.y(), metrics.width(label->text()) + padding * 2, area.height());
+        } else {
+            widget->setGeometry(area.x(), area.y(), area.width(), area.height());
+        }
+        if (js::hasBool(ui, "visible") && !ui["visible"].get<bool>())
+            widget->hide();
     }
     if (type == "QHBoxLayout") {
         bool reverse = js::hasBool(ui, "reverse") && ui["reverse"].get<bool>();
@@ -165,6 +187,27 @@ void QJsonView::chooseLocalFile() {
     if (filepath.isEmpty()) return;
     Message::SendInfo() << "-- Choose : " << filepath.toStdString().c_str();
     auto *occViewer = (QOccWidget *) getWidget("occViewer");
+    occViewer->hide();
+    getWidget("occViewerSpinner")->show();
     occViewer->ReadModel(filepath.toStdString().c_str());
     setstatusbar("Reading " + filepath + "...");
+}
+
+void QJsonView::setSidebar(QString text) {
+    json j = json::parse(text.toStdString());
+    //{"depth":1,"document_format":"BinXCAF","filename":"carving-machine.stp","filetype":"stp","is_assembly":true,"node_number":632}
+    ((QLabel *) getWidget("clText0"))->setText(QString("Filename: ").append(j["filename"].get<std::string>().c_str()));
+    ((QLabel *) getWidget("clText1"))->setText(QString("Format: ").append(j["filetype"].get<std::string>().c_str()));
+    ((QLabel *) getWidget("clText2"))->setText(QString("Document: ").append(j["document_format"].get<std::string>().c_str()));
+    ((QLabel *) getWidget("clText3"))->setText(QString("Parts: ").append(std::to_string(j["node_number"].get<int>()).c_str()));
+    ((QLabel *) getWidget("clText4"))->setText(QString("Assembly: ").append(j["is_assembly"].get<bool>() ? "yes" : "no"));
+    ((QLabel *) getWidget("clText5"))->setText(QString("Depth: ").append(std::to_string(j["depth"].get<int>()).c_str()));
+    auto size = rect();
+    loopSetGeometry(ui, QRect(0, 0, size.width(), size.height()));
+}
+
+void QJsonView::hideSpinner() {
+    getWidget("occViewerSpinner")->hide();
+    getWidget("occViewer")->show();
+    getWidget("occViewer")->repaint();
 }

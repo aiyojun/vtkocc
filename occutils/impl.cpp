@@ -26,6 +26,9 @@
 #include <Message.hxx>
 #include "imp.h"
 
+#include "json.hpp"
+using nlohmann::json;
+
 void PerformanceImporter::run() {
     if (_filename.empty()) {
         emit finished();
@@ -173,10 +176,10 @@ void HighRender::UseFreeCADStyle(const Handle(V3d_View)& view) {
     view->SetBgGradientColors(Quantity_NOC_BLUE, Quantity_NOC_WHITE, Aspect_GFM_VER);
 }
 
-void HighRender::UseGradientBackground(const Handle(V3d_View)& view, Standard_CString c0, Standard_CString c1, Aspect_GradientFillMethod dir) {
+void HighRender::UseGradientBackground(const Handle(V3d_View)& view, const std::string& c0, const std::string& c1, Aspect_GradientFillMethod dir) {
     Quantity_Color qc0, qc1;
-    Quantity_Color::ColorFromHex(c0, qc0);
-    Quantity_Color::ColorFromHex(c1, qc1);
+    Quantity_Color::ColorFromHex(c0.c_str(), qc0);
+    Quantity_Color::ColorFromHex(c1.c_str(), qc1);
     view->SetBgGradientColors(qc0, qc1, dir);
 }
 
@@ -209,4 +212,55 @@ void HighRender::RenderDocument(const Handle(AIS_InteractiveContext)& ctx, const
         ctx->Display(shape, true);
         ctx->SetDisplayMode(shape, AIS_Shaded, true);
     }
+}
+
+void HighRender::ActivateSelection(const opencascade::handle<AIS_InteractiveContext> &context) {
+    Handle(Prs3d_Drawer) drawer = new Prs3d_Drawer();
+    drawer->SetLink                ( context->DefaultDrawer() );
+    drawer->SetFaceBoundaryDraw    ( true );
+    drawer->SetDisplayMode         ( 1 ); // Shaded
+    drawer->SetTransparency        ( 0.5f );
+    drawer->SetZLayer              ( Graphic3d_ZLayerId_Topmost );
+    drawer->SetColor               ( Quantity_NOC_GOLD );
+    drawer->SetBasicFillAreaAspect ( new Graphic3d_AspectFillArea3d() );
+    // Adjust fill area aspect.
+    const Handle(Graphic3d_AspectFillArea3d)& fillArea = drawer->BasicFillAreaAspect();
+    fillArea->SetInteriorColor     (Quantity_NOC_GOLD);
+    fillArea->SetBackInteriorColor (Quantity_NOC_GOLD);
+    fillArea->ChangeFrontMaterial() .SetMaterialName(Graphic3d_NOM_NEON_GNC);
+    fillArea->ChangeFrontMaterial() .SetTransparency(0.4f);
+    fillArea->ChangeBackMaterial()  .SetMaterialName(Graphic3d_NOM_NEON_GNC);
+    fillArea->ChangeBackMaterial()  .SetTransparency(0.4f);
+    drawer->UnFreeBoundaryAspect()->SetWidth(1.0);
+    // Update AIS context.
+    context->SetHighlightStyle(Prs3d_TypeOfHighlight_LocalSelected, drawer);
+}
+
+void RecordModelInfo(json& j, const TDF_Label& label, int depth=1) {
+    if (depth > j["depth"].get<int>()) j["depth"] = depth;
+    j["node_number"] = j["node_number"].get<int>() + 1;
+    if (label.HasChild()) {
+        for (int i = 1; i <= label.NbChildren(); i++) {
+            RecordModelInfo(j, label.FindChild(i), depth+1);
+        }
+    }
+}
+
+QString PerformanceImporter::GetDocumentInformation() {
+    TDF_Label mainLabel = _document->Main();
+    Handle(XCAFDoc_ShapeTool) shapeTool = XCAFDoc_DocumentTool::ShapeTool(mainLabel);
+    Handle(XCAFDoc_ColorTool) colorTool = XCAFDoc_DocumentTool::ColorTool(mainLabel);
+    TDF_LabelSequence FreeShape;
+    shapeTool->GetFreeShapes(FreeShape);
+    json j; j["node_number"] = 0; j["depth"] = 0;
+    RecordModelInfo(j, mainLabel);
+    j["depth"] = mainLabel.Depth();
+    std::string filename(_filename.substr(_filename.find_last_of('/') + 1));
+    j["filename"] = filename.substr(0, filename.find_last_of('.'));
+    j["filetype"] = filename.substr(filename.find_last_of('.') + 1);
+    char buf[512] = {0}; char *p = (char *) buf;
+    _document->StorageFormat().ToUTF8CString(p);
+    j["document_format"] = std::string(p);
+    j["is_assembly"] = j["node_number"].get<int>() > 1;
+    return {to_string(j).c_str()};
 }

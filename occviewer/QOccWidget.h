@@ -2,6 +2,7 @@
 #define VTKOCC_QOCCWIDGET_H
 
 #include <QtWidgets/QWidget>
+#include <Standard_Handle.hxx>
 #include <V3d_DirectionalLight.hxx>
 #include <V3d_AmbientLight.hxx>
 #include <V3d_Viewer.hxx>
@@ -28,7 +29,6 @@ public:
     ~QOccWidget() override = default;
     QPaintEngine* paintEngine() const override { return nullptr; }
     void init();
-//    inline void SetDocument(Handle(TDocStd_Document) doc) { document = std::move(doc); }
     const PerformanceImporter* GetReader() const { return _reader; }
     void ReadModel(QString filename);
 protected:
@@ -43,6 +43,8 @@ protected:
     void wheelEvent(QWheelEvent *event) override;
 Q_SIGNALS:
     void sendStatusMessage(QString msg);
+    void recordModelInformation(QString text);
+    void finishedLoadModel();
 public Q_SLOTS:
     void projection1();
     void projfront();
@@ -61,7 +63,6 @@ private:
     Handle(AIS_InteractiveContext) context;
     Handle(OccViewController) controller;
     Handle(AIS_ViewCube) viewCube;
-//    Handle(TDocStd_Document) document;
 
     PerformanceImporter* _reader;
 };

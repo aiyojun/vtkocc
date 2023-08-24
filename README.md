@@ -7,11 +7,14 @@ Most code is in a mess, and in developing stage. After several days, I will refa
 
 ## Build
 
+Clion open the project, directly! Click 'Build' and 'Run'.
+
+Or:
+
 ```shell
 # Now, only support windows, linux will soon
 # Make sure Visual Studio 2022 Community, OpenCASCADE, Qt5.12.0 in your computer!
 env.bat
-build.bat
 build_occviewer.bat
 ```
 

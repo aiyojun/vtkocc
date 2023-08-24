@@ -13,6 +13,14 @@ public:
     JvContext(const json& ui, QRect a): ui(ui), area(a) {}
 };
 
+class QColorfulLabel : public QLabel {
+    Q_OBJECT
+public:
+    explicit QColorfulLabel(QWidget* parent = nullptr): QLabel(parent) {}
+    explicit QColorfulLabel(QString text, QWidget* parent = nullptr): QLabel(std::move(text), parent) {}
+    ~QColorfulLabel() override = default;
+};
+
 class QJsonView : public QMainWindow {
     Q_OBJECT
 public:
@@ -31,6 +39,8 @@ Q_SIGNALS:
 public Q_SLOTS:
     void setstatusbar(QString text);
     void chooseLocalFile();
+    void setSidebar(QString text);
+    void hideSpinner();
 protected:
     void resizeEvent(QResizeEvent *event) override;
 private:

@@ -76,7 +76,8 @@ void QOccWidget::init() {
 //    LOG("-- Use SolidWorks Style");
 //    useDefaultRenderStyle(view);
 //    LOG("-- Use Default Style");
-     view->SetBackgroundColor(Quantity_NOC_WHITE);
+//     view->SetBackgroundColor(Quantity_NOC_WHITE);
+    HighRender::UseGradientBackground(view, "#f8f8ff", "#fff");
 //     view->SetBackgroundColor();
 //    Aspect_SkydomeBackground skydome;
 //    skydome.SetCloudiness(1.0);
@@ -110,10 +111,20 @@ void QOccWidget::init() {
     context->Display(viewCube, true);
 
 
+    HighRender::ActivateSelection    (context);
+    HighRender::ActivateSelectionEdge(context);
+    HighRender::ActivateSelectionFace(context);
+
+
 
 //    auto box = BRepPrimAPI_MakeBox(50, 50, 80);
 //    auto &shape = box.Shape();
 //    basicShape = new AIS_Shape(shape);
+//    Graphic3d_MaterialAspect material;
+//    material.SetColor(Quantity_Color(1.0, 0.0, 0.0, Quantity_TOC_RGB));
+//    material.SetShininess(0.6);
+//    material.SetReflectionMode(Graphic3d_TOR_AMBIENT_AND_DIFFUSE);
+//    basicShape->SetMaterial(material);
 //    context->Display(basicShape, true);
 //    context->SetDisplayMode(basicShape, AIS_Shaded, true);
 }
@@ -123,8 +134,8 @@ void QOccWidget::paintEvent(QPaintEvent *theEvent) {
         init();
         initialized = true;
     }
-//    view->Redraw();
     HighRender::AdjustHeadLight(view, Quantity_NOC_WHITESMOKE);
+    view->Redraw();
 }
 
 void QOccWidget::resizeEvent(QResizeEvent *theEvent) {
@@ -189,7 +200,7 @@ void QOccWidget::wheelEvent(QWheelEvent *event) {
 }
 
 void QOccWidget::keyPressEvent(QKeyEvent *event) {
-    std::cout << "QOccWidget::keyPressEvent " << event->key() << std::endl;
+    Message::SendTrace() << "QOccWidget::keyPressEvent " << event->key();
     switch (event->key()) {
         case Qt::Key::Key_Control:
             ctrlKeyPressed = true;
@@ -210,7 +221,7 @@ void QOccWidget::keyPressEvent(QKeyEvent *event) {
             view->Redraw();
             break;
         default:
-            std::cout << "QOccWidget::keyPressEvent uncached QKeyEvent" << std::endl;
+            Message::SendTrace() << "QOccWidget::keyPressEvent uncached QKeyEvent";
     }
 }
 
@@ -251,14 +262,18 @@ void QOccWidget::projtop() {
 }
 
 void QOccWidget::loadShapes() {
-    LOG("-- QOccWidget::loadShapes");
     emit sendStatusMessage(QString("Rendering models..."));
     if (_reader->GetDocument().IsNull()) {
         emit sendStatusMessage(QString("Read model failed!"));
         return;
     }
-    LOG("-- QOccWidget::loadShapes RenderDocument");
+//    std::ostringstream oss;
+//    _reader->GetDocument()->DumpJson(oss);
+//    std::string info(oss.str());
+//    std::cout << _reader->GetDocumentInformation().toStdString() << std::endl;
+    emit recordModelInformation(_reader->GetDocumentInformation());
     HighRender::RenderDocument(context, _reader->GetDocument());
+    emit finishedLoadModel();
     view->Redraw();
     emit sendStatusMessage(QString("Load models success!"));
 }

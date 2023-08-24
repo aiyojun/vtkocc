@@ -29,6 +29,7 @@ public:
     const Handle(TDocStd_Document)& GetDocument() const { return _document; }
     const TopoDS_Shape& GetShape() const { return _shape; }
     void ValidateTask();
+    QString GetDocumentInformation();
 
     void ReadSync();
     void ReadAsync();
