@@ -4,11 +4,13 @@ set(APP occviewer)
 project(${APP})
 
 include_directories(.)
+#set(CMAKE_CXX_STANDARD 17)
 
 set(QT5_MOC_DIR ${CMAKE_BINARY_DIR}/gen)
 file(MAKE_DIRECTORY ${QT5_MOC_DIR})
 add_moc(../occutils/PerformanceImporter.h ${QT5_MOC_DIR}/moc_PerformanceImporter.cpp)
 add_moc(../libshare/QLinearSpinner.h ${QT5_MOC_DIR}/moc_QLinearSpinner.cpp)
+add_moc(../libshare/qasync.h ${QT5_MOC_DIR}/moc_qasync.cpp)
 add_moc(QOccWidget.h ${QT5_MOC_DIR}/moc_QOccWidget.cpp)
 add_moc(QJsonView.h ${QT5_MOC_DIR}/moc_QJsonView.cpp)
 add_rcc(../resources/rsrcs.qrc ${CMAKE_SOURCE_DIR}/rsrcs.rcc)
@@ -18,12 +20,12 @@ add_executable(${APP}
         ${QT5_MOC_DIR}/moc_QLinearSpinner.cpp
         ${QT5_MOC_DIR}/moc_QOccWidget.cpp
         ${QT5_MOC_DIR}/moc_QJsonView.cpp
+        ${QT5_MOC_DIR}/moc_qasync.cpp
         ../occutils/impl.cpp
         ../libshare/imp.cpp
         ../libshare/QtTools.cpp
         ../libshare/QLinearSpinner.cpp
         main.cpp
-        OccViewController.cpp
         QOccWidget.cpp
         QOccWidget.h
         QJsonView.cpp

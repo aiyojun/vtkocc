@@ -7,9 +7,8 @@
 #include <vtkInteractorStyleTrackballCamera.h>
 #include <vtkObjectFactory.h>
 
-VTK_MODULE_INIT(vtkRenderingOpenGL);
-
-VTK_MODULE_INIT(vtkInteractionStyle);
+VTK_MODULE_INIT(vtkRenderingOpenGL)
+VTK_MODULE_INIT(vtkInteractionStyle)
 
 #include <iostream>
 

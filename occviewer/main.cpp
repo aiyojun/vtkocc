@@ -7,7 +7,8 @@ using nlohmann::json;
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
-    json cfg = json::parse(QtTools::readFile("vtkocc.config.json").toStdString());
+    QThreadPool::globalInstance()->setMaxThreadCount(3);
+//    json cfg = json::parse(QtTools::readFile("vtkocc.config.json").toStdString());
     QtTools::loadResources("rsrcs.rcc");
     QtTools::loadFontFamily(":/titillium-web-font/TitilliumWeb-1eq2.ttf");
     QtTools::setDefaultFont("Titillium Web");
@@ -25,9 +26,6 @@ int main(int argc, char *argv[]) {
     } catch (std::exception &e) {
         Message::SendFail() << e.what();
     }
-//    auto *occViewer = (QOccWidget *) window.getWidget("occViewer");
-//    auto path = "C:\\Users\\jun.dai\\Desktop\\modelstep3d\\xxx_01.STL"; //"C:\\jpro\\vtkocc\\r8.stl"
-//    QModelReader reader(cfg["model"].get<std::string>().c_str(), occViewer->refShapes());
     QObject::connect((QPushButton *) window.getWidget("projFront"), SIGNAL(clicked()),
                      (QOccWidget *) window.getWidget("occViewer"), SLOT(projfront()));
     QObject::connect((QPushButton *) window.getWidget("projLeft"), SIGNAL(clicked()),
@@ -41,10 +39,7 @@ int main(int argc, char *argv[]) {
     QObject::connect((QOccWidget *) window.getWidget("occViewer"), SIGNAL(recordModelInformation(QString)), &window,
                      SLOT(setSidebar(QString)));
     QObject::connect((QOccWidget *) window.getWidget("occViewer"), SIGNAL(finishedLoadModel()), &window,
-                     SLOT(setSidebar(QString)));
-    //finishedLoadModel
-//    QObject::connect(&reader, SIGNAL(complete()), occViewer, SLOT(loadShapes()));
-//    reader.start(QThread::HighPriority);
+                     SLOT(hideSpinner()));
     window.show();
     return QApplication::exec();
 }

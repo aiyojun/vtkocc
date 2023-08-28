@@ -21,7 +21,7 @@ class PerformanceImporter : public QThread {
 public:
     enum ReadTask { BUILD_SHAPE, BUILD_DOC };
 
-    PerformanceImporter(QObject* parent = nullptr): QThread(parent), _taskType(BUILD_DOC) {}
+    explicit PerformanceImporter(QObject* parent = nullptr): QThread(parent), _taskType(BUILD_DOC) {}
     ~PerformanceImporter() override = default;
 
     void SetTask(QString filename, PerformanceImporter::ReadTask task)

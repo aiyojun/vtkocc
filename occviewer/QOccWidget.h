@@ -18,9 +18,9 @@
 #include <AIS_ViewCube.hxx>
 #include <AIS_Shape.hxx>
 #include <TDocStd_Document.hxx>
-#include "OccViewController.h"
 #include "imp.h"
 #include "PerformanceImporter.h"
+#include "qasync.h"
 
 class QOccWidget : public QWidget {
     Q_OBJECT
@@ -41,16 +41,18 @@ protected:
     void mouseDoubleClickEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;
+private:
+    void renderDocument();
 Q_SIGNALS:
     void sendStatusMessage(QString msg);
     void recordModelInformation(QString text);
     void finishedLoadModel();
 public Q_SLOTS:
-    void projection1();
     void projfront();
     void projleft();
     void projtop();
-    void loadShapes();
+    void loadDocument();
+    void loadDocumentComplete();
 private:
     bool ctrlKeyPressed;
     bool altKeyPressed;
@@ -61,10 +63,18 @@ private:
     Handle(AIS_Shape) basicShape;
     Handle(V3d_Viewer) viewer;
     Handle(AIS_InteractiveContext) context;
-    Handle(OccViewController) controller;
-    Handle(AIS_ViewCube) viewCube;
+    Handle(AIS_InteractiveContext) _viewContext;
+    Handle(AIS_InteractiveContext) _cubeContext;
+//    Handle(OccViewController) controller;
+
+
+
+//    Handle(AIS_ViewCube) viewCube;
 
     PerformanceImporter* _reader;
+    AIS_ViewController _viewController;
+    AIS_ViewController _cubeController;
+    QRunnableLambda *_lambda;
 };
 
 #endif //VTKOCC_QOCCWIDGET_H

@@ -26,7 +26,7 @@ class QLinearSpinner : public QWidget {
     Q_OBJECT
     Q_PROPERTY(int spinnerRadius READ spinnerRadius WRITE setSpinnerRadius)
     Q_PROPERTY(int spinnerDistance READ spinnerDistance WRITE setSpinnerDistance)
-    Q_PROPERTY(int spinnerColor READ spinnerColor WRITE setSpinnerColor)
+    Q_PROPERTY(QString spinnerColor READ spinnerColor WRITE setSpinnerColor)
 
 public:
     explicit QLinearSpinner(QWidget *parent = nullptr);

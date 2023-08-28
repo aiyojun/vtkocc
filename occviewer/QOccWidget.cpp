@@ -3,6 +3,7 @@
 #include <BRepTools.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <AIS_Shape.hxx>
+#include <AIS_ViewController.hxx>
 #include <Aspect_SkydomeBackground.hxx>
 
 #include <iostream>
@@ -12,6 +13,7 @@
 #include <XCAFApp_Application.hxx>
 
 #include "HighRender.h"
+#include "qasync.h"
 
 Graphic3d_Vec2i QPoint2Graphic3d_Vec2i(const QPoint &p) {
     Graphic3d_Vec2i pos(p.x(), p.y());
@@ -40,93 +42,32 @@ QOccWidget::QOccWidget(QWidget *parent) : QWidget(parent), initialized(false), c
     setAttribute(Qt::WA_NoSystemBackground);
     setMouseTracking(true);
     setFocusPolicy(Qt::StrongFocus);
-    QObject::connect(_reader, SIGNAL(finished()), this, SLOT(loadShapes()));
+    QObject::connect(_reader, SIGNAL(finished()), this, SLOT(loadDocument()));
 }
 
 void QOccWidget::init() {
-    Handle(Aspect_DisplayConnection) displayConnection = new Aspect_DisplayConnection();
-    Handle(OpenGl_GraphicDriver) graphicDriver = new OpenGl_GraphicDriver(displayConnection, false);
-    viewer = new V3d_Viewer(graphicDriver);
-    Handle(V3d_DirectionalLight) lightDir = new V3d_DirectionalLight(V3d_Zneg, Quantity_Color(Quantity_NOC_GRAY97), 1);
-    Handle(V3d_AmbientLight) lightAmb = new V3d_AmbientLight();
+    viewer = HighRender::BuildViewer();
+    _viewContext = HighRender::BuildContext(viewer);
+    _cubeContext = HighRender::BuildContext(viewer);
+    HighRender::UseDefaultDrawer(_viewContext);
+    view = HighRender::BuildView(viewer, (Aspect_Handle) winId());
+    HighRender::UseGradientBackground(view, "#f8f8ff", "#fff");
+    view->SetImmediateUpdate(false);
+    view->MustBeResized();
+    HighRender::UseDefaultRenderMode(view);
+    HighRender::ActivateViewCube(_cubeContext);
+
+    Handle(V3d_DirectionalLight) lightDir   = new V3d_DirectionalLight(V3d_Zneg, Quantity_Color(Quantity_NOC_GRAY97), 1);
+    Handle(V3d_AmbientLight) lightAmb       = new V3d_AmbientLight();
     lightDir->SetDirection(1.0, -2.0, -10.0);
     viewer->AddLight(lightDir);
     viewer->AddLight(lightAmb);
 //    viewer->SetLightOn(lightDir);
     viewer->SetLightOn(lightAmb);
-    context = new AIS_InteractiveContext(viewer);
-    const Handle(Prs3d_Drawer) &contextDrawer = context->DefaultDrawer();
-    if (!contextDrawer.IsNull()) {
-        const Handle(Prs3d_ShadingAspect) &SA = contextDrawer->ShadingAspect();
-        const Handle(Graphic3d_AspectFillArea3d) &FA = SA->Aspect();
-//        SA->SetColor(Quantity_NOC_GRAY);
-        SA->SetColor(Quantity_NOC_WHITESMOKE);
-        contextDrawer->SetFaceBoundaryDraw(true); // Draw edges.
-        FA->SetEdgeOff();
-        // Fix for infinite lines has been reduced to 1000 from its default value 500000.
-        contextDrawer->SetMaximalParameterValue(1000);
-    }
-
-    view = viewer->CreateView();
-    view->SetImmediateUpdate(false);
 
 
-    controller = new OccViewController(view, context);
-//    useSolidWorksStyle(view);
-//    LOG("-- Use SolidWorks Style");
-//    useDefaultRenderStyle(view);
-//    LOG("-- Use Default Style");
-//     view->SetBackgroundColor(Quantity_NOC_WHITE);
-    HighRender::UseGradientBackground(view, "#f8f8ff", "#fff");
-//     view->SetBackgroundColor();
-//    Aspect_SkydomeBackground skydome;
-//    skydome.SetCloudiness(1.0);
-//    skydome.SetFogginess(1.0);
-//    view->SetBackgroundSkydome(skydome);
-    // same as freecad
-    // view->SetBgGradientColors(Quantity_NOC_BLUE, Quantity_NOC_WHITE, Aspect_GFM_VER);
-    // Aspect window creation
-    Handle(Aspect_Window) wnd = new WNT_Window((Aspect_Handle) winId());
-
-    view->SetWindow(wnd, nullptr);
-    if (!wnd->IsMapped()) wnd->Map();
-    view->MustBeResized();
-    // View settings.
-    view->SetShadingModel(V3d_PHONG);
-    // Configure rendering parameters
-    Graphic3d_RenderingParams &RenderParams = view->ChangeRenderingParams();
-    RenderParams.IsAntialiasingEnabled = true;
-    RenderParams.NbMsaaSamples = 8; // Anti-aliasing by multi-sampling
-    RenderParams.IsShadowEnabled = false;
-    RenderParams.CollectedStats = Graphic3d_RenderingParams::PerfCounters_NONE;
-//    RenderParams.UseEnvironmentMapBackground  = true;
-    RenderParams.TransparencyMethod  = Graphic3d_RTM_BLEND_OIT;
-
-
-
-
-    viewCube = new AIS_ViewCube();
-    viewCube->SetTransformPersistence(new Graphic3d_TransformPers (Graphic3d_TMF_TriedronPers, Aspect_TOTP_RIGHT_UPPER, Graphic3d_Vec2i (100, 100)));
-    viewCube->SetContext(context);
-    context->Display(viewCube, true);
-
-
-    HighRender::ActivateSelection    (context);
-    HighRender::ActivateSelectionEdge(context);
-    HighRender::ActivateSelectionFace(context);
-
-
-
-//    auto box = BRepPrimAPI_MakeBox(50, 50, 80);
-//    auto &shape = box.Shape();
-//    basicShape = new AIS_Shape(shape);
-//    Graphic3d_MaterialAspect material;
-//    material.SetColor(Quantity_Color(1.0, 0.0, 0.0, Quantity_TOC_RGB));
-//    material.SetShininess(0.6);
-//    material.SetReflectionMode(Graphic3d_TOR_AMBIENT_AND_DIFFUSE);
-//    basicShape->SetMaterial(material);
-//    context->Display(basicShape, true);
-//    context->SetDisplayMode(basicShape, AIS_Shaded, true);
+    _lambda = new QRunnableLambda([this] () { renderDocument(); });
+    QObject::connect(_lambda, SIGNAL(finished()), this, SLOT(loadDocumentComplete()));
 }
 
 void QOccWidget::paintEvent(QPaintEvent *theEvent) {
@@ -154,8 +95,10 @@ void QOccWidget::mousePressEvent(QMouseEvent *event) {
                                    | (altKeyPressed  ? Aspect_VKeyFlags_ALT  : Aspect_VKeyFlags_NONE)
                                    | (shiftKeyPressed? Aspect_VKeyFlags_SHIFT: Aspect_VKeyFlags_NONE);
     Aspect_VKeyMouse button = QtMouseButton2Aspect_VKeyMouse(event->button());
-    controller->PressMouseButton(pos, button, flags, false);
-    controller->FlushViewEvents(context, view, true);
+    _viewController.PressMouseButton(pos, button, flags, false);
+    _viewController.FlushViewEvents(_viewContext, view, true);
+    _cubeController.PressMouseButton(pos, button, flags, false);
+    _cubeController.FlushViewEvents(_cubeContext, view, true);
 }
 
 void QOccWidget::mouseReleaseEvent(QMouseEvent *event) {
@@ -166,12 +109,14 @@ void QOccWidget::mouseReleaseEvent(QMouseEvent *event) {
                                    | (altKeyPressed  ? Aspect_VKeyFlags_ALT  : Aspect_VKeyFlags_NONE)
                                    | (shiftKeyPressed? Aspect_VKeyFlags_SHIFT: Aspect_VKeyFlags_NONE);
     Aspect_VKeyMouse button = QtMouseButton2Aspect_VKeyMouse(event->button());
-    controller->ReleaseMouseButton(pos, button, flags, false);
-    controller->FlushViewEvents(context, view, true);
+    _viewController.ReleaseMouseButton(pos, button, flags, false);
+    _viewController.FlushViewEvents(_viewContext, view, true);
+    _cubeController.ReleaseMouseButton(pos, button, flags, false);
+    _cubeController.FlushViewEvents(_cubeContext, view, true);
 }
 
 void QOccWidget::mouseDoubleClickEvent(QMouseEvent *event) {
-    QWidget::mouseDoubleClickEvent(event);
+//    QWidget::mouseDoubleClickEvent(event);
 }
 
 void QOccWidget::mouseMoveEvent(QMouseEvent *event) {
@@ -182,8 +127,10 @@ void QOccWidget::mouseMoveEvent(QMouseEvent *event) {
                                    | (altKeyPressed  ? Aspect_VKeyFlags_ALT  : Aspect_VKeyFlags_NONE)
                                    | (shiftKeyPressed? Aspect_VKeyFlags_SHIFT: Aspect_VKeyFlags_NONE);
     Aspect_VKeyMouse button = QtMouseButton2Aspect_VKeyMouse(event->button());
-    controller->UpdateMousePosition(pos, button, flags, false);
-    controller->FlushViewEvents(context, view, true);
+    _viewController.UpdateMousePosition(pos, button, flags, false);
+    _viewController.FlushViewEvents(_viewContext, view, true);
+    _cubeController.UpdateMousePosition(pos, button, flags, false);
+    _cubeController.FlushViewEvents(_cubeContext, view, true);
 }
 
 void QOccWidget::wheelEvent(QWheelEvent *event) {
@@ -195,8 +142,10 @@ void QOccWidget::wheelEvent(QWheelEvent *event) {
             | (altKeyPressed  ? Aspect_VKeyFlags_ALT  : Aspect_VKeyFlags_NONE)
             | (shiftKeyPressed? Aspect_VKeyFlags_SHIFT: Aspect_VKeyFlags_NONE);
     const Graphic3d_Vec2i pos(cursor.x(), cursor.y());
-    controller->UpdateMouseScroll(Aspect_ScrollDelta(pos, deltaF, flags));
-    controller->FlushViewEvents(context, view, true);
+    _viewController.UpdateMouseScroll(Aspect_ScrollDelta(pos, deltaF, flags));
+    _viewController.FlushViewEvents(_viewContext, view, true);
+    _cubeController.UpdateMouseScroll(Aspect_ScrollDelta(pos, deltaF, flags));
+    _cubeController.FlushViewEvents(_cubeContext, view, true);
 }
 
 void QOccWidget::keyPressEvent(QKeyEvent *event) {
@@ -237,12 +186,6 @@ void QOccWidget::keyReleaseEvent(QKeyEvent *event) {
     }
 }
 
-void QOccWidget::projection1() {
-    view->SetProj(ctrlKeyPressed ? V3d_Zpos : V3d_Zneg);
-    repaint();
-    emit sendStatusMessage("- z view");
-}
-
 void QOccWidget::projfront() {
     view->SetProj(V3d_Yneg);
     view->Redraw();
@@ -261,20 +204,29 @@ void QOccWidget::projtop() {
     emit sendStatusMessage(QString("Switch to top view"));
 }
 
-void QOccWidget::loadShapes() {
+void QOccWidget::renderDocument() {
+    HighRender::RenderDocument(_viewContext, _reader->GetDocument());
+    HighRender::ActivateSelection(_viewContext);
+    HighRender::ActivateSelectionEdge(_viewContext);
+    HighRender::ActivateSelectionFace(_viewContext);
+    view->Redraw();
+    Message::SendInfo() << "complete render document";
+}
+
+void QOccWidget::loadDocument() {
     emit sendStatusMessage(QString("Rendering models..."));
     if (_reader->GetDocument().IsNull()) {
         emit sendStatusMessage(QString("Read model failed!"));
         return;
     }
-//    std::ostringstream oss;
-//    _reader->GetDocument()->DumpJson(oss);
-//    std::string info(oss.str());
-//    std::cout << _reader->GetDocumentInformation().toStdString() << std::endl;
     emit recordModelInformation(_reader->GetDocumentInformation());
-    HighRender::RenderDocument(context, _reader->GetDocument());
+
+//    QThreadPool::globalInstance()->start(_lambda, QThread::HighPriority);
+}
+
+void QOccWidget::loadDocumentComplete() {
+    Message::SendInfo() << "emit finishedLoadModel";
     emit finishedLoadModel();
-    view->Redraw();
     emit sendStatusMessage(QString("Load models success!"));
 }
 

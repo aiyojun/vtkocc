@@ -19,11 +19,16 @@
 #include <TDocStd_Application.hxx>
 #include <Graphic3d_RenderingParams.hxx>
 #include <Quantity_Color.hxx>
+#include <AIS_ViewCube.hxx>
+#include <Aspect_DisplayConnection.hxx>
+#include <OpenGl_GraphicDriver.hxx>
 
 #include <string>
 #include <regex>
 #include <algorithm>
 #include <Message.hxx>
+#include <WNT_Window.hxx>
+#include <BRepPrimAPI_MakeBox.hxx>
 #include "imp.h"
 
 #include "json.hpp"
@@ -214,7 +219,7 @@ void HighRender::RenderDocument(const Handle(AIS_InteractiveContext)& ctx, const
     }
 }
 
-void HighRender::ActivateSelection(const opencascade::handle<AIS_InteractiveContext> &context) {
+void HighRender::ActivateSelection(const Handle(AIS_InteractiveContext) &context) {
     Handle(Prs3d_Drawer) drawer = new Prs3d_Drawer();
     drawer->SetLink                ( context->DefaultDrawer() );
     drawer->SetFaceBoundaryDraw    ( true );
@@ -234,6 +239,68 @@ void HighRender::ActivateSelection(const opencascade::handle<AIS_InteractiveCont
     drawer->UnFreeBoundaryAspect()->SetWidth(1.0);
     // Update AIS context.
     context->SetHighlightStyle(Prs3d_TypeOfHighlight_LocalSelected, drawer);
+}
+
+Handle(AIS_ViewCube) HighRender::ActivateViewCube(const Handle(AIS_InteractiveContext) &ctx) {
+    Handle(AIS_ViewCube) viewCube = new AIS_ViewCube();
+    viewCube->SetTransformPersistence(new Graphic3d_TransformPers(Graphic3d_TMF_TriedronPers, Aspect_TOTP_RIGHT_UPPER, Graphic3d_Vec2i(100, 100)));
+    viewCube->SetContext(ctx);
+    ctx->Display(viewCube, true);
+    return viewCube;
+}
+
+Handle(V3d_Viewer) HighRender::BuildViewer() {
+    Handle(Aspect_DisplayConnection) displayConnection = new Aspect_DisplayConnection();
+    Handle(OpenGl_GraphicDriver) graphicDriver = new OpenGl_GraphicDriver(displayConnection, false);
+    return new V3d_Viewer(graphicDriver);
+}
+
+Handle(V3d_View) HighRender::BuildView(const Handle(V3d_Viewer) &viewer, const Aspect_Handle& hdWin) {
+    Handle(V3d_View) view = viewer->CreateView();
+    Handle(Aspect_Window) wnd = new WNT_Window(hdWin);
+    view->SetWindow(wnd, nullptr);
+    if (!wnd->IsMapped()) wnd->Map();
+    view->SetShadingModel(V3d_PHONG);
+    return view;
+}
+
+void HighRender::UseDefaultRenderMode(const Handle(V3d_View) &view) {
+    // Configure rendering parameters
+    Graphic3d_RenderingParams &RenderParams = view->ChangeRenderingParams();
+    RenderParams.IsAntialiasingEnabled = true;
+    RenderParams.NbMsaaSamples = 8; // Anti-aliasing by multi-sampling
+    RenderParams.IsShadowEnabled = false;
+    RenderParams.CollectedStats = Graphic3d_RenderingParams::PerfCounters_NONE;
+//    RenderParams.UseEnvironmentMapBackground  = true;
+    RenderParams.TransparencyMethod  = Graphic3d_RTM_BLEND_OIT;
+}
+
+void HighRender::UseDefaultDrawer(const Handle(AIS_InteractiveContext) &ctx) {
+    const Handle(Prs3d_Drawer) &drawer = ctx->DefaultDrawer();
+    if (!drawer.IsNull()) {
+        const Handle(Prs3d_ShadingAspect) &SA = drawer->ShadingAspect();
+        const Handle(Graphic3d_AspectFillArea3d) &FA = SA->Aspect();
+//        SA->SetColor(Quantity_NOC_GRAY);
+        SA->SetColor(Quantity_NOC_WHITESMOKE);
+        drawer->SetFaceBoundaryDraw(true); // Draw edges.
+        FA->SetEdgeOff();
+        // Fix for infinite lines has been reduced to 1000 from its default value 500000.
+        drawer->SetMaximalParameterValue(1000);
+    }
+}
+
+void HighRender::UseMaterial(const Handle(AIS_Shape)& shape, const Graphic3d_MaterialAspect& material) {
+//    shape->SetMaterial(material);
+}
+
+Handle(AIS_InteractiveContext) HighRender::BuildContext(const Handle(V3d_Viewer)& viewer) {
+    return new AIS_InteractiveContext(viewer);
+}
+
+Handle(AIS_Shape) HighRender::MakeBox(int x, int y, int z) {
+    auto box = BRepPrimAPI_MakeBox(50, 50, 80);
+    auto &shape = box.Shape();
+    return new AIS_Shape(shape);
 }
 
 void RecordModelInfo(json& j, const TDF_Label& label, int depth=1) {
