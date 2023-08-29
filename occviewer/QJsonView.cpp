@@ -138,7 +138,9 @@ void QJsonView::loopSetGeometry(const json& ui, QRect area) {
             auto w = QtTools::calcSize(area.width() , child["width" ].get<std::string>());
             auto h = QtTools::calcSize(area.height(), child["height"].get<std::string>());
             if (js::hasString(child, "position") && child["position"].get<std::string>() == "absolute") {
-                loopSetGeometry(child, QRect(area.x(), area.y(), w, h));
+                int x = js::hasString(child, "x") ? (area.x() + QtTools::calcSize(area.width() , child["x"].get<std::string>())) : area.x();
+                int y = js::hasString(child, "y") ? (area.y() + QtTools::calcSize(area.height(), child["y"].get<std::string>())) : area.y();
+                loopSetGeometry(child, QRect(x, y, w, h));
                 continue;
             }
             loopSetGeometry(child, QRect(reverse ? (biasX - w) : biasX, area.y(), w, h));
@@ -173,24 +175,20 @@ void QJsonView::traverse(const json &ui, std::function<void(const json &)> callb
 void QJsonView::resizeEvent(QResizeEvent *event) {
 //    QWidget::resizeEvent(event);
     auto size = event->size();
-    loopSetGeometry(ui, QRect(0, 0, size.width(), size.height()));
+    loopSetGeometry(_ui, QRect(0, 0, size.width(), size.height()));
 }
 
 
-void QJsonView::setstatusbar(QString text) {
+void QJsonView::setStatusBarText(QString text) {
     auto *label = (QLabel *) getWidget("statusText");
     label->setText(QString("- ").append(text));
 }
 
-void QJsonView::chooseLocalFile() {
+void QJsonView::openLocalFileList() {
     QString filepath = QFileDialog::getOpenFileName((QWidget *) this, QStringLiteral("Select a file"));
     if (filepath.isEmpty()) return;
-    Message::SendInfo() << "-- Choose : " << filepath.toStdString().c_str();
-    auto *occViewer = (QOccWidget *) getWidget("occViewer");
-    occViewer->hide();
+    emit openLocalFile(filepath);
     getWidget("occViewerSpinner")->show();
-    occViewer->ReadModel(filepath.toStdString().c_str());
-    setstatusbar("Reading " + filepath + "...");
 }
 
 void QJsonView::setSidebar(QString text) {
@@ -203,11 +201,45 @@ void QJsonView::setSidebar(QString text) {
     ((QLabel *) getWidget("clText4"))->setText(QString("Assembly: ").append(j["is_assembly"].get<bool>() ? "yes" : "no"));
     ((QLabel *) getWidget("clText5"))->setText(QString("Depth: ").append(std::to_string(j["depth"].get<int>()).c_str()));
     auto size = rect();
-    loopSetGeometry(ui, QRect(0, 0, size.width(), size.height()));
+    loopSetGeometry(_ui, QRect(0, 0, size.width(), size.height()));
 }
 
 void QJsonView::hideSpinner() {
     getWidget("occViewerSpinner")->hide();
-    getWidget("occViewer")->show();
-    getWidget("occViewer")->repaint();
+//    getWidget("occViewer")->show();
+//    getWidget("occViewer")->repaint();
 }
+
+QWidget *QJsonView::getWidget(const std::string &name)  {
+    if (_widgets.find(QString(name.c_str())) == _widgets.end())
+        return nullptr;
+    return _widgets[QString(name.c_str())];
+}
+
+void QJsonView::addWidget(const std::string &name, QWidget *p) {
+    p->setObjectName(QString(name.c_str()));
+    _widgets[QString(name.c_str())] = p;
+}
+
+void QJsonView::link() {
+    QObject::connect((QPushButton *) getWidget("openFolder"), SIGNAL(clicked()), this, SLOT(openLocalFileList()));
+    QObject::connect(this, SIGNAL(openLocalFile(QString)), _render, SLOT(importModelFile(QString)));
+    QObject::connect(_render, SIGNAL(finishedReadModel()), this, SLOT(hideSpinner()));
+    QObject::connect(_render, SIGNAL(sendStatusMessage(QString)), this, SLOT(setStatusBarText(QString)));
+//    QObject::connect((QPushButton *) window.getWidget("projFront"), SIGNAL(clicked()),
+//                     (QOccWidget *) window.getWidget("occViewer"), SLOT(projfront()));
+//    QObject::connect((QPushButton *) window.getWidget("projLeft"), SIGNAL(clicked()),
+//                     (QOccWidget *) window.getWidget("occViewer"), SLOT(projleft()));
+//    QObject::connect((QPushButton *) window.getWidget("projTop"), SIGNAL(clicked()),
+//                     (QOccWidget *) window.getWidget("occViewer"), SLOT(projtop()));
+//    QObject::connect((QPushButton *) window.getWidget("openFolder"), SIGNAL(clicked()), &window,
+//                     SLOT(chooseLocalFile()));
+//    QObject::connect((QOccWidget *) window.getWidget("occViewer"), SIGNAL(sendStatusMessage(QString)), &window,
+//                     SLOT(setStatusBarText(QString)));
+//    QObject::connect((QOccWidget *) window.getWidget("occViewer"), SIGNAL(recordModelInformation(QString)), &window,
+//                     SLOT(setSidebar(QString)));
+//    QObject::connect((QOccWidget *) window.getWidget("occViewer"), SIGNAL(finishedLoadModel()), &window,
+//                     SLOT(hideSpinner()));
+}
+
+

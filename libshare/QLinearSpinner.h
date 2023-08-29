@@ -27,6 +27,8 @@ class QLinearSpinner : public QWidget {
     Q_PROPERTY(int spinnerRadius READ spinnerRadius WRITE setSpinnerRadius)
     Q_PROPERTY(int spinnerDistance READ spinnerDistance WRITE setSpinnerDistance)
     Q_PROPERTY(QString spinnerColor READ spinnerColor WRITE setSpinnerColor)
+    Q_PROPERTY(QString spinnerBackgroundColor READ spinnerBackgroundColor WRITE setSpinnerBackgroundColor)
+    Q_PROPERTY(int spinnerBackgroundRadius READ spinnerBackgroundRadius WRITE setSpinnerBackgroundRadius)
 
 public:
     explicit QLinearSpinner(QWidget *parent = nullptr);
@@ -38,6 +40,10 @@ public:
     void setSpinnerDistance(int d) { _spinnerDistance = d; }
     QString spinnerColor() const { return _spinnerColor; }
     void setSpinnerColor(const QString& c) { _spinnerColor = c; }
+    QString spinnerBackgroundColor() const { return _spinnerBackgroundColor; }
+    void setSpinnerBackgroundColor(const QString& c) { _spinnerBackgroundColor = c; }
+    int spinnerBackgroundRadius() const { return _spinnerBackgroundRadius; }
+    void setSpinnerBackgroundRadius(int d) { _spinnerBackgroundRadius = d; }
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -45,7 +51,9 @@ protected:
 private:
     int _spinnerRadius    = 12;
     int _spinnerDistance  = 50;
+    int _spinnerBackgroundRadius = 8;
     QString _spinnerColor = "#E0C3FC";
+    QString _spinnerBackgroundColor = "#FFFFFF";
     QRepaintAnimation* _animation;
 };
 

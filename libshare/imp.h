@@ -1,6 +1,12 @@
 #ifndef VTKOCC_IMP_H
 #define VTKOCC_IMP_H
 
+#ifdef WIN32
+#include <vcruntime_string.h>
+#include <vcruntime.h>
+#include <vcruntime_new.h>
+#include <vcruntime_typeinfo.h>
+#endif
 #include <regex>
 #include <algorithm>
 #include <utility>
@@ -16,6 +22,7 @@
 #define TO_STR(S) #S
 #define LOG(STR) std::cout << STR << std::endl
 #include <QtCore/QJsonObject>
+#include <QtCore/QDebug>
 #include <QtCore/QMap>
 #include <QtCore/QVector>
 #include <QtCore/QString>

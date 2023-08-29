@@ -20,7 +20,7 @@
 #include <TDocStd_Document.hxx>
 #include "imp.h"
 #include "PerformanceImporter.h"
-#include "qasync.h"
+#include "QRenderThread.h"
 
 class QOccWidget : public QWidget {
     Q_OBJECT
@@ -28,9 +28,7 @@ public:
     explicit QOccWidget(QWidget* parent = nullptr);
     ~QOccWidget() override = default;
     QPaintEngine* paintEngine() const override { return nullptr; }
-    void init();
-    const PerformanceImporter* GetReader() const { return _reader; }
-    void ReadModel(QString filename);
+    void setRender(QRenderThread* r) {_render = r;}
 protected:
     void paintEvent(QPaintEvent* theEvent) override;
     void resizeEvent(QResizeEvent* theEvent) override;
@@ -38,43 +36,14 @@ protected:
     void keyReleaseEvent(QKeyEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
-    void mouseDoubleClickEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;
 private:
-    void renderDocument();
-Q_SIGNALS:
-    void sendStatusMessage(QString msg);
-    void recordModelInformation(QString text);
-    void finishedLoadModel();
-public Q_SLOTS:
-    void projfront();
-    void projleft();
-    void projtop();
-    void loadDocument();
-    void loadDocumentComplete();
-private:
-    bool ctrlKeyPressed;
-    bool altKeyPressed;
-    bool shiftKeyPressed;
+    bool _ctrlKey;
+    bool _altKey;
+    bool _shiftKey;
     bool initialized;
-
-    Handle(V3d_View) view;
-    Handle(AIS_Shape) basicShape;
-    Handle(V3d_Viewer) viewer;
-    Handle(AIS_InteractiveContext) context;
-    Handle(AIS_InteractiveContext) _viewContext;
-    Handle(AIS_InteractiveContext) _cubeContext;
-//    Handle(OccViewController) controller;
-
-
-
-//    Handle(AIS_ViewCube) viewCube;
-
-    PerformanceImporter* _reader;
-    AIS_ViewController _viewController;
-    AIS_ViewController _cubeController;
-    QRunnableLambda *_lambda;
+    QRenderThread* _render;
 };
 
 #endif //VTKOCC_QOCCWIDGET_H

@@ -3,6 +3,7 @@
 
 #include "imp.h"
 #include "json.hpp"
+#include "QRenderThread.h"
 
 using nlohmann::json;
 
@@ -24,31 +25,29 @@ public:
 class QJsonView : public QMainWindow {
     Q_OBJECT
 public:
-    explicit QJsonView(QWidget* parent = nullptr): QMainWindow(parent) {}
+    explicit QJsonView(QRenderThread* r, QWidget* parent = nullptr): QMainWindow(parent), _render(r) {}
     ~QJsonView() override = default;
     void parse(JvContext context);
     void loopSetGeometry(const json& ui, QRect area);
     void traverse(const json& ui, std::function<void (const json&)> callback);
-    void setui(const json& j) {this->ui = j;}
-    QWidget *getWidget(const std::string& name) {
-        if (pool.find(QString(name.c_str())) == pool.end())
-            return nullptr;
-        return pool[QString(name.c_str())];
-    }
+    void setUi(const json& j) { this->_ui = j;}
+    QWidget *getWidget(const std::string& name);
+    void link();
 Q_SIGNALS:
+    void openLocalFile(QString filename);
 public Q_SLOTS:
-    void setstatusbar(QString text);
-    void chooseLocalFile();
+    void setStatusBarText(QString text);
+    void openLocalFileList();
     void setSidebar(QString text);
     void hideSpinner();
 protected:
     void resizeEvent(QResizeEvent *event) override;
 private:
-    void addWidget(const std::string& name, QWidget* p) {
-        p->setObjectName(QString(name.c_str()));
-        pool[QString(name.c_str())] = p; }
-    QMap<QString, QWidget*> pool;
-    json ui;
+    void addWidget(const std::string& name, QWidget* p);
+private:
+    json _ui;
+    QMap<QString, QWidget *> _widgets;
+    QRenderThread* _render;
 };
 
 

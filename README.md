@@ -35,7 +35,7 @@ Therefore, we are supposed to rebuild UI design system first!
 
 QSS is a good and useful tool, to beatify Qt application GUI.
 
-At current stage(8.22.2023), I implemented a simple rendering framework based on Qt, located on occviewer/QJsonView.  The graphic user interface is described by a json file(resoureces/ui.json).  The step makes UI design easier.
+At current stage(8.22.2023), I implemented a simple rendering framework based on Qt, located on occviewer/QJsonView.  The graphic user interface is described by a json file(resoureces/_ui.json).  The step makes UI design easier.
 
 ### Supported Plugins
 
@@ -47,7 +47,7 @@ At current stage(8.22.2023), I implemented a simple rendering framework based on
 - QHBoxLayout
 - QOccWidget
 
-More widget plugin expected!
+More getWidget plugin expected!
 
 ## Collect
 

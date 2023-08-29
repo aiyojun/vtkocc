@@ -36,3 +36,6 @@ QLineEdit { padding-left: 5px; border-radius: 4px; font-size: 14px; border: 1px 
 #clText3 { background-color: #FBAB7E; }
 #clText4 { background-color: #97D9E1; }
 #clText5 { background-color: #6284FF; }
+
+
+#occViewerSpinner { qproperty-spinnerBackgroundRadius: 14; qproperty-spinnerBackgroundColor: rgba(255,255,255,0); qproperty-spinnerRadius: 6; qproperty-spinnerDistance: 25; }
