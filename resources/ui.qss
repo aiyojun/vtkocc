@@ -38,4 +38,4 @@ QLineEdit { padding-left: 5px; border-radius: 4px; font-size: 14px; border: 1px 
 #clText5 { background-color: #6284FF; }
 
 
-#occViewerSpinner { qproperty-spinnerBackgroundRadius: 14; qproperty-spinnerBackgroundColor: rgba(255,255,255,0); qproperty-spinnerRadius: 6; qproperty-spinnerDistance: 25; }
+#occViewerSpinner { qproperty-spinnerBackgroundRadius: 14; qproperty-spinnerBackgroundColor: rgba(230,230,255,0); qproperty-spinnerRadius: 6; qproperty-spinnerDistance: 25; }

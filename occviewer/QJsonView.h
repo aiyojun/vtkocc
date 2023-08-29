@@ -17,7 +17,7 @@ public:
 class QColorfulLabel : public QLabel {
     Q_OBJECT
 public:
-    explicit QColorfulLabel(QWidget* parent = nullptr): QLabel(parent) {}
+    explicit QColorfulLabel(QWidget* parent = nullptr);
     explicit QColorfulLabel(QString text, QWidget* parent = nullptr): QLabel(std::move(text), parent) {}
     ~QColorfulLabel() override = default;
 };

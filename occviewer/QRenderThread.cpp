@@ -168,6 +168,7 @@ void QRenderThread::doRead(QString filename) {
     HighRender::ActivateSelection(_viewContext);
     HighRender::ActivateSelectionEdge(_viewContext);
     HighRender::ActivateSelectionFace(_viewContext);
+    doResize();
     doUpdate();
     emit sendStatusMessage("Finish import : " + filename);
     emit finishedReadModel();

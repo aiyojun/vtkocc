@@ -30,6 +30,7 @@ QLinearSpinner::QLinearSpinner(QWidget *parent): QWidget(parent) {
     _animation = new QRepaintAnimation(this);
     _animation->setLoopCount(-1);
     _animation->start();
+    setAttribute(Qt::WA_TranslucentBackground);
 }
 
 void QLinearSpinner::paintEvent(QPaintEvent *event) {

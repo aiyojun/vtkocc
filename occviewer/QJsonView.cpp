@@ -49,6 +49,11 @@ namespace js {
 
 }
 
+
+QColorfulLabel::QColorfulLabel(QWidget *parent): QLabel(parent) {
+    setAttribute(Qt::WA_TranslucentBackground);
+}
+
 void QJsonView::parse(JvContext context) {
     auto &ui = context.ui;
     auto &area = context.area;

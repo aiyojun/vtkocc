@@ -46,6 +46,7 @@ int main(int argc, char *argv[]) {
     qDebug() << "-- Prepare Qt signal-slot";
     window.link();
     window.show();
+    render.onResize();
 
     qDebug() << "-- Enter events loop ...";
 
