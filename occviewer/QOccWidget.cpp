@@ -34,16 +34,10 @@ Aspect_VKeyMouse QtMouseButton2Aspect_VKeyMouse(const Qt::MouseButton &button) {
 }
 
 QOccWidget::QOccWidget(QWidget *parent) : QWidget(parent), initialized(false), _ctrlKey(false), _altKey(false), _shiftKey(false) {
-//    setWindowFlags(Qt::Widget | Qt::FramelessWindowHint);
-//    setAttribute(Qt::WA_NoSystemBackground);
-    setAttribute(Qt::WA_TranslucentBackground);
     setAttribute(Qt::WA_PaintOnScreen);
-    setAttribute(Qt::WA_TransparentForMouseEvents);
-//    setAttribute(Qt::WA_PaintOnScreen);
     setAttribute(Qt::WA_NoSystemBackground);
-//    setAttribute(Qt::WA_TranslucentBackground, true);
     setMouseTracking(true);
-    setFocusPolicy(Qt::StrongFocus);
+//    setFocusPolicy(Qt::StrongFocus);
 }
 
 void QOccWidget::paintEvent(QPaintEvent *theEvent) {
@@ -101,11 +95,17 @@ void QOccWidget::wheelEvent(QWheelEvent *event) {
 
 void QOccWidget::keyPressEvent(QKeyEvent *event) {
     switch (event->key()) {
+        case Qt::Key::Key_Shift:
+            _shiftKey = true;
+            break;
         case Qt::Key::Key_Control:
             _ctrlKey = true;
             break;
         case Qt::Key::Key_Alt:
             _altKey = true;
+            break;
+        case Qt::Key::Key_B:
+            _render->onBevel();
             break;
         default:
             ;
@@ -114,6 +114,9 @@ void QOccWidget::keyPressEvent(QKeyEvent *event) {
 
 void QOccWidget::keyReleaseEvent(QKeyEvent *event) {
     switch (event->key()) {
+        case Qt::Key::Key_Shift:
+            _shiftKey = false;
+            break;
         case Qt::Key::Key_Control:
             _ctrlKey = false;
             break;

@@ -18,6 +18,10 @@ QLineEdit { padding-left: 5px; border-radius: 4px; font-size: 14px; border: 1px 
 #projFront { background-color: #fff; border: none; font-size: 14px; qproperty-text: "Front"; qproperty-icon: url(":/icons/box-front.svg"); qproperty-iconSize: 16px 16px; }
 #projTop   { background-color: #fff; border: none; font-size: 14px; qproperty-text: "Top";   qproperty-icon: url(":/icons/box-top.svg");   qproperty-iconSize: 16px 16px; }
 #projLeft  { background-color: #fff; border: none; font-size: 14px; qproperty-text: "Left";  qproperty-icon: url(":/icons/box-left.svg");  qproperty-iconSize: 16px 16px; }
+#addCube   { background-color: #fff; border: none; font-size: 14px; qproperty-text: "Cube";  qproperty-icon: url(":/icons/box-entity2.svg");  qproperty-iconSize: 16px 16px; }
+#boxFrame  { background-color: #fff; border: none; font-size: 14px; qproperty-text: "Frame";  qproperty-icon: url(":/icons/box-frame.svg");  qproperty-iconSize: 16px 16px; }
+#boxEntity { background-color: #fff; border: none; font-size: 14px; qproperty-text: "Entity";  qproperty-icon: url(":/icons/box-entity.svg");  qproperty-iconSize: 16px 16px; }
+#makeBevel { background-color: #fff; border: none; font-size: 14px; qproperty-text: "Bevel";  qproperty-icon: url(":/icons/box-bevel.svg");  qproperty-iconSize: 16px 16px; }
 #openFolder{ background-color: #fff; border: none; font-size: 14px; qproperty-text: "Open";  qproperty-icon: url(":/icons/open-folder.svg");  qproperty-iconSize: 20px 20px; }
 
 #func0     { background-color: #fff; border: none; font-size: 14px; qproperty-text: "Sky dome"; qproperty-icon: url(":/icons/x-layerdown.svg"); qproperty-iconSize: 32px 32px; qproperty-toolButtonStyle: "ToolButtonTextUnderIcon"; }
@@ -26,7 +30,7 @@ QLineEdit { padding-left: 5px; border-radius: 4px; font-size: 14px; border: 1px 
 #func3     { background-color: #fff; border: none; font-size: 14px; qproperty-text: "Setting"; qproperty-icon: url(":/icons/x-setting.svg"); qproperty-iconSize: 32px 32px; qproperty-toolButtonStyle: "ToolButtonTextUnderIcon"; }
 #func4     { background-color: #fff; border: none; font-size: 14px; qproperty-text: "Module"; qproperty-icon: url(":/icons/x-game.svg"); qproperty-iconSize: 32px 32px; qproperty-toolButtonStyle: "ToolButtonTextUnderIcon"; }
 
-#func3:hover, #func2:hover, #func0:hover, #func1:hover, #projFront:hover, #projTop:hover, #projLeft:hover, #openFolder:hover {background-color: rgba(0,0,0,0.1);}
+#func4:hover, #func3:hover, #func2:hover, #func0:hover, #func1:hover, #makeBevel:hover, #addCube:hover, #boxFrame:hover, #boxEntity:hover, #projFront:hover, #projTop:hover, #projLeft:hover, #openFolder:hover {background-color: rgba(0,0,0,0.1);}
 
 #secTitle0, #secTitle1 { margin-left: 0; padding-left: 8px; font-weight: bolder; }
 
@@ -38,4 +42,4 @@ QLineEdit { padding-left: 5px; border-radius: 4px; font-size: 14px; border: 1px 
 #clText5 { background-color: #6284FF; }
 
 
-#occViewerSpinner { qproperty-spinnerBackgroundRadius: 14; qproperty-spinnerBackgroundColor: rgba(230,230,255,0); qproperty-spinnerRadius: 6; qproperty-spinnerDistance: 25; }
+#occViewerSpinner { qproperty-spinnerBackgroundRadius: 0; qproperty-spinnerColor: #FFFFFF; qproperty-spinnerBackgroundColor: #E0C3FC; qproperty-spinnerRadius: 6; qproperty-spinnerDistance: 25; }

@@ -1,11 +1,13 @@
 #ifndef VTKOCC_PERFORMANCEIMPORTER_H
 #define VTKOCC_PERFORMANCEIMPORTER_H
 
-#include <QtCore/QThread>
+#include "imp.h"
 #include <Standard_Handle.hxx>
 #include <Standard_CString.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TDocStd_Document.hxx>
+#include <AIS_InteractiveContext.hxx>
+#include <AIS_Shape.hxx>
 
 class ModelReadException : public std::exception {
 public:
@@ -19,17 +21,19 @@ class PerformanceImporter : public QThread {
     Q_OBJECT
 
 public:
-    enum ReadTask { BUILD_SHAPE, BUILD_DOC };
+    enum ReadTask { BUILD_SHAPE, BUILD_DOC, AUTO_BUILD };
 
     explicit PerformanceImporter(QObject* parent = nullptr): QThread(parent), _taskType(BUILD_DOC) {}
     ~PerformanceImporter() override = default;
 
-    void SetTask(QString filename, PerformanceImporter::ReadTask task)
-    { _taskType = task; _filename = filename.toStdString(); }
+    void SetTask(QString filename, PerformanceImporter::ReadTask task = ReadTask::AUTO_BUILD);
     const Handle(TDocStd_Document)& GetDocument() const { return _document; }
     const TopoDS_Shape& GetShape() const { return _shape; }
     void ValidateTask();
     QString GetDocumentInformation();
+    const Handle(AIS_Shape)& GetAShape() const { return _aShape; }
+
+    void Render(const Handle(AIS_InteractiveContext)& ctx);
 
     void ReadSync();
     void ReadAsync();
@@ -43,6 +47,9 @@ public:
 protected:
     void run() override;
 
+private:
+    bool IsStepFile(const std::string& filename) { return std::regex_match(filename, std::regex("(.)+\\.(step|stp|STEP|STP)$")); }
+
 Q_SIGNALS:
     void finished();
 
@@ -51,6 +58,7 @@ private:
     std::string _filename;
     Handle(TDocStd_Document) _document;
     TopoDS_Shape _shape;
+    Handle(AIS_Shape) _aShape;
 };
 
 #endif //VTKOCC_PERFORMANCEIMPORTER_H

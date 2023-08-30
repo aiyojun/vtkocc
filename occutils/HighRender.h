@@ -40,6 +40,8 @@ public:
 
     static void RenderDocument(const Handle(AIS_InteractiveContext) &ctx, const Handle(TDocStd_Document) &doc);
 
+    static void RenderShape(const Handle(AIS_InteractiveContext) &ctx, const TopoDS_Shape& shape);
+
     static void ActivateSelection(const Handle(AIS_InteractiveContext) &ctx);
 
     static void ActivateSelectionEdge(const Handle(AIS_InteractiveContext) &ctx) { ctx->Activate(2, true); }

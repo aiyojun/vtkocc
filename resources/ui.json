@@ -9,6 +9,10 @@
         { "name": "projLeft" , "type": "QPushButton", "width": "64px", "height": "31px" },
         { "name": "projTop"  , "type": "QPushButton", "width": "64px", "height": "31px" },
         { "name": "projFront", "type": "QPushButton", "width": "64px", "height": "31px" },
+        { "name": "addCube", "type": "QPushButton", "width": "64px", "height": "31px" },
+        { "name": "boxFrame", "type": "QPushButton", "width": "70px", "height": "31px" },
+        { "name": "boxEntity", "type": "QPushButton", "width": "70px", "height": "31px" },
+        { "name": "makeBevel", "type": "QPushButton", "width": "70px", "height": "31px" },
         { "name": "openFolder","type": "QPushButton", "width": "70px", "height": "31px" }
       ] }
     ] },
@@ -44,7 +48,7 @@
       { "name": "mainSlider", "type": "QFrame", "width": "1px", "height": "100%" },
       { "name": "mainContainer", "type": "QHBoxLayout", "width": "calc(100% - 240px)", "height": "100%", "children": [
         { "name": "occViewer", "type": "QOccWidget", "width": "100%", "height": "100%" },
-        { "name": "occViewerSpinner", "type": "QLinearSpinner", "position": "absolute", "width": "60px", "height": "60px", "x": "calc(50% - 30px)", "y": "calc(50% - 30px)", "visible": false }
+        { "name": "occViewerSpinner", "type": "QLinearSpinner", "position": "absolute", "width": "120px", "height": "80px", "x": "calc(50% - 60px)", "y": "calc(50% - 50px)", "visible": false }
       ] }
     ] },
     { "name": "statusBar", "type": "QHBoxLayout", "width": "100%", "height": "24px", "children": [

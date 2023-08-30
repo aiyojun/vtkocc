@@ -6,3 +6,4 @@ moc_*.cpp
 cmake-build-debug/
 cmake-build-release/
 *~
+test

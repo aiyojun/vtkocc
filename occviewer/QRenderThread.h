@@ -5,6 +5,8 @@
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
 #include <AIS_InteractiveContext.hxx>
+#include <AIS_InteractiveObject.hxx>
+#include <AIS_Shape.hxx>
 #include <AIS_ViewController.hxx>
 #include <QtGui/QMouseEvent>
 #include <QtCore/QWaitCondition>
@@ -14,7 +16,8 @@
 class QRenderThread : public QObject {
         Q_OBJECT
 public:
-    enum TaskType { NONE, CREATE, RESIZE, UPDATE, MOUSE_PRESS, MOUSE_RELEASE, MOUSE_MOVE, WHEEL, KEY_PRESS, KEY_RELEASE, READ };
+    enum TaskType { NONE, CREATE, RESIZE, UPDATE, MOUSE_PRESS, MOUSE_RELEASE, MOUSE_MOVE, WHEEL, KEY_PRESS, KEY_RELEASE, READ,
+        MAKE_BEVEL };
 
     QRenderThread(QObject* parent= nullptr);
     ~QRenderThread();
@@ -30,6 +33,8 @@ public:
     void onMouseMoveEvent(Graphic3d_Vec2i p, Aspect_VKeyMouse b, Aspect_VKeyFlags f);
     void onWheelEvent(Aspect_ScrollDelta d);
     void onRead(QString filename);
+
+    void onBevel();
 public:
     void doCreate(void *hd);
     void doResize();
@@ -39,11 +44,14 @@ public:
     void doMouseMoveEvent(Graphic3d_Vec2i p, Aspect_VKeyMouse b, Aspect_VKeyFlags f);
     void doWheelEvent(Aspect_ScrollDelta d);
     void doRead(QString filename);
+
+    void doBevel();
 Q_SIGNALS:
     void finishedReadModel();
     void sendStatusMessage(QString m);
 public Q_SLOTS:
     void importModelFile(QString f);
+    void makeBevel();
 private:
     bool _isWorking = false;
     TaskType _taskType;

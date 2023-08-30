@@ -42,8 +42,10 @@ void PerformanceImporter::run() {
     if (std::regex_match(_filename, std::regex("(.)+\\.(step|stp|STEP|STP)$"))) {
         if (_taskType == ReadTask::BUILD_SHAPE) {
             _shape = ReadShapeSTEP(_filename.c_str());
+            _aShape = new AIS_Shape(_shape);
         } else {
             _document = BuildXCAFDocumentSTEP(_filename.c_str());
+            _aShape = new XCAFPrs_AISObject(_document->Main());
         }
         emit finished();
         return;
@@ -51,18 +53,21 @@ void PerformanceImporter::run() {
     if (_taskType == ReadTask::BUILD_SHAPE
         && std::regex_match(_filename, std::regex("(.)+\\.(stl|STL)$"))) {
         _shape = ReadShapeSTL(_filename.c_str());
+        _aShape = new AIS_Shape(_shape);
         emit finished();
         return;
     }
     if (_taskType == ReadTask::BUILD_SHAPE
         && std::regex_match(_filename, std::regex("(.)+\\.(igs|iges|IGS|IGES)$"))) {
         _shape = ReadShapeIGES(_filename.c_str());
+        _aShape = new AIS_Shape(_shape);
         emit finished();
         return;
     }
     if (_taskType == ReadTask::BUILD_SHAPE
         && std::regex_match(_filename, std::regex("(.)+\\.(brep|BREP)$"))) {
         _shape = ReadShapeBRep(_filename.c_str());
+        _aShape = new AIS_Shape(_shape);
         emit finished();
         return;
     }
@@ -205,6 +210,7 @@ void HighRender::AdjustHeadLight(const Handle(V3d_View)& view, const Quantity_Co
 }
 
 void HighRender::RenderDocument(const Handle(AIS_InteractiveContext)& ctx, const Handle(TDocStd_Document)& doc) {
+    ctx->EraseAll(false);
     TDF_Label mainLabel = doc->Main();
     Handle(XCAFDoc_ShapeTool) shapeTool = XCAFDoc_DocumentTool::ShapeTool(mainLabel);
     Handle(XCAFDoc_ColorTool) colorTool = XCAFDoc_DocumentTool::ColorTool(mainLabel);
@@ -216,6 +222,29 @@ void HighRender::RenderDocument(const Handle(AIS_InteractiveContext)& ctx, const
         Handle(XCAFPrs_AISObject) shape = new XCAFPrs_AISObject(label);
         ctx->Display(shape, true);
         ctx->SetDisplayMode(shape, AIS_Shaded, true);
+
+        ctx->Activate(shape, shape->SelectionMode(TopAbs_ShapeEnum::TopAbs_EDGE));
+        ctx->Activate(shape, shape->SelectionMode(TopAbs_ShapeEnum::TopAbs_FACE));
+        const Handle(SelectMgr_SelectionManager)& mgr = ctx->SelectionManager();
+        if (!mgr.IsNull()) {
+            mgr->Load(shape, shape->SelectionMode(TopAbs_ShapeEnum::TopAbs_EDGE));
+            mgr->Load(shape, shape->SelectionMode(TopAbs_ShapeEnum::TopAbs_FACE));
+        }
+    }
+}
+
+void HighRender::RenderShape(const Handle(AIS_InteractiveContext) &ctx, const TopoDS_Shape& sh) {
+    ctx->EraseAll(false);
+    Handle(AIS_Shape) shape = new AIS_Shape(sh);
+    ctx->Display(shape, true);
+    ctx->SetDisplayMode(shape, AIS_Shaded, true);
+
+    ctx->Activate(shape, shape->SelectionMode(TopAbs_ShapeEnum::TopAbs_EDGE));
+    ctx->Activate(shape, shape->SelectionMode(TopAbs_ShapeEnum::TopAbs_FACE));
+    const Handle(SelectMgr_SelectionManager)& mgr = ctx->SelectionManager();
+    if (!mgr.IsNull()) {
+        mgr->Load(shape, shape->SelectionMode(TopAbs_ShapeEnum::TopAbs_EDGE));
+        mgr->Load(shape, shape->SelectionMode(TopAbs_ShapeEnum::TopAbs_FACE));
     }
 }
 
@@ -330,4 +359,19 @@ QString PerformanceImporter::GetDocumentInformation() {
     j["document_format"] = std::string(p);
     j["is_assembly"] = j["node_number"].get<int>() > 1;
     return {to_string(j).c_str()};
+}
+
+void PerformanceImporter::SetTask(QString filename, PerformanceImporter::ReadTask task) {
+    _filename = filename.toStdString();
+    if (task == AUTO_BUILD)
+        _taskType = IsStepFile(_filename) ? BUILD_DOC : BUILD_SHAPE;
+    else
+        _taskType = task;
+}
+
+void PerformanceImporter::Render(const Handle(AIS_InteractiveContext)& ctx) {
+    if (_taskType == BUILD_DOC)
+        HighRender::RenderDocument(ctx, _document);
+    else
+        HighRender::RenderShape(ctx, _shape);
 }
