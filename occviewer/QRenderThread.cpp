@@ -9,6 +9,10 @@
 #include <PrsMgr_Presentation.hxx>
 #include <StdPrs_ShapeTool.hxx>
 #include <Select3D_SensitiveSegment.hxx>
+#include <StdFail_NotDone.hxx>
+#include <StdSelect_Shape.hxx>
+#include <StdSelect_EdgeFilter.hxx>
+#include <StdSelect_BRepOwner.hxx>
 #include "QRenderThread.h"
 #include "HighRender.h"
 #include "Modeling.h"
@@ -66,6 +70,9 @@ void QRenderThread::startLoopRender() {
                         break;
                     case TaskType::MAKE_BEVEL:
                         qrt->doBevel();
+                        break;
+                    case TaskType::MAKE_CUBE:
+                        qrt->doMakeCube();
                         break;
                     default:;
                 }
@@ -155,9 +162,9 @@ void QRenderThread::doCreate(void *hd) {
     _viewer->AddLight(lightAmb);
     // _viewer->SetLightOn(lightDir);
     _viewer->SetLightOn(lightAmb);
-
     _viewController = new AIS_ViewController;
     _cubeController = new AIS_ViewController;
+    HighRender::ActivateSelection(_viewContext);
 }
 
 void QRenderThread::doResize() {
@@ -181,12 +188,8 @@ void QRenderThread::doRead(QString filename) {
     _reader->ValidateTask();
     _reader->ReadSync();
     emit sendStatusMessage("Finish read : " + filename);
-    _reader->Render(_viewContext);
-    HighRender::ActivateSelection(_viewContext);
-//    HighRender::ActivateSelectionEdge(_viewContext);
-//    HighRender::ActivateSelectionFace(_viewContext);
-    doResize();
-    doUpdate();
+    _aShape = _reader->GetAShape();
+    render();
     emit sendStatusMessage("Finish import : " + filename);
     emit finishedReadModel();
     Message::SendInfo() << "-- Complete read and render model " << filename.toStdString();
@@ -220,114 +223,60 @@ void QRenderThread::importModelFile(QString f)  {
 
 // ------
 
-namespace slc {
-    void createSensitivePrimitive(const Handle(AIS_Shape)& iObj, const Handle(SelectMgr_Selection)& sel) {
-        StdSelect_BRepSelectionTool::Load(sel, iObj, iObj->Shape(), TopAbs_EDGE, 0.05, 0.05); // edges
-        StdSelect_BRepSelectionTool::Load(sel, iObj, iObj->Shape(), TopAbs_FACE, 0.05, 0.05); // faces
-    }
-}
-
 void QRenderThread::onBevel() {
     _taskType = MAKE_BEVEL;
+    _guard->wakeOne();
+}
+
+void QRenderThread::onMakeCube() {
+    _taskType = MAKE_CUBE;
     _guard->wakeOne();
 }
 
 void QRenderThread::doBevel() {
     const Handle(SelectMgr_EntityOwner) owner = _viewContext->Selection()->Objects().First();
     Handle(AIS_Shape) ownerShape = Handle(AIS_Shape)::DownCast(owner->Selectable());
+    if (!ownerShape->HasSelection(ownerShape->SelectionMode(TopAbs_ShapeEnum::TopAbs_EDGE))) return;
     Handle(SelectMgr_Selection) sel = ownerShape->Selection(ownerShape->SelectionMode(TopAbs_ShapeEnum::TopAbs_EDGE));
-    if (std::string(sel->Entities()[sel->Sensitivity()]->BaseSensitive()->DynamicType()->Name()) == std::string(TO_STR(Select3D_SensitiveSegment))) {
-        Handle(Select3D_SensitiveSegment) seg = Handle(Select3D_SensitiveSegment)::DownCast(sel->Entities()[sel->Sensitivity()]->BaseSensitive());
-        auto *makeEdge = new BRepLib_MakeEdge(seg->StartPoint(), seg->EndPoint());
-        makeEdge->Edge();
-    }
-//    Handle(Select3D_SensitiveSegment) seg = Handle(Select3D_SensitiveSegment)::DownCast(sel->Entities()[sel->Sensitivity()]->BaseSensitive());
-//    gp_Pnt start = seg->StartPoint(); gp_Pnt end = seg->EndPoint();
-//    Message::SendInfo() << "-- owner shape has presentation : " << (ownerShape->HasPresentation() ? "yes" : "no")
-//        << ", has edge selection : " << (ownerShape->HasSelection(ownerShape->SelectionMode(TopAbs_ShapeEnum::TopAbs_EDGE)) ? "yes": "no")
-//        << ", sensitive entity name : " << sel->Entities()[sel->Sensitivity()]->BaseSensitive()->DynamicType()->Name()
-//        << ", edge start : (" << start.X() << "," << start.Y() << "," << start.Z() << ")"
-//        << ", edge end   : (" << end  .X() << "," << end  .Y() << "," << end  .Z() << ")"
-//        ;
-//    if (ownerShape->HasPresentation()) {
-//        Bnd_Box box = ownerShape->Presentation()->MinMaxValues();
-//        Standard_Real x0, x1, y0, y1, z0, z1;
-//        box.Get(x0, x1, y0, y1, z0, z1);
-//        Message::SendInfo() << "-- Bounding box"
-//            << " x " << x0 << "~" << x1 << " length : " << abs(x0 - x1)
-//            << " y " << y0 << "~" << y1 << " length : " << abs(y0 - y1)
-//            << " z " << z0 << "~" << z1 << " length : " << abs(z0 - z1)
-//            ;
-//    }
 
-//    _viewContext->SetSelection();
-//    const Handle(SelectMgr_EntityOwner) owner = _viewContext->SelectedOwner();
-//    StdSelect_BRepSelectionTool::ComputeSensitive();
-//    StdSelect_BRepSelectionTool::GetEdgeSensitive();
-//    StdSelect_BRepSelectionTool::Load(_viewContext->SelectedOwner(), );
-//    SelectMgr_Selection sel;
-//    sel.Add();
-//    Handle(StdSelect_BRepSelectionTool) selectionTool = new StdSelect_BRepSelectionTool();
-//    Message::SendInfo() << "-- Do bevel"
-//        << ", selection manager exists : " << (_viewContext->SelectionManager().IsNull() ? "no" : "yes")
-//        << ", selection exists : " << (_viewContext->Selection().IsNull() ? "no" : "yes")
-//        << ", context has selected shape : " << (_viewContext->HasSelectedShape() ? "yes" : "no")
-//        << ", selection owner exists : " << (!owner.IsNull() ? "yes" : "no")
-//        << ", the selected is edge : " << (!owner.IsNull() && owner->Shape().ShapeType() == TopAbs_EDGE ? "yes" : "no")
-//        << ", selected shape number : " << _viewContext->NbSelected()
-//        << ", shape exists : " << (_viewContext->SelectedShape().IsNull() ? "no" : "yes")
-//        ;
-//    auto selections = _viewContext->Selection()->Objects();
-//    Handle(AIS_Shape) obj = Handle(AIS_Shape)::DownCast(selections.First()->Selectable());
-//    Message::SendInfo() << "-- "
-//        << "selection object type : " << selections.First()->Selectable()->DynamicType()->Name()
-//        << ", selection is edge : " << (obj->Shape().ShapeType()) << " " << TopAbs_EDGE
-//    ;
-//    obj->BndBoxOfSelected();
-//    obj->GetSelectPresentation();
-//    StdPrs_ShapeTool
-//    if (selections.Size() == 1
-//        && std::string(selections.First()->Selectable()->DynamicType()->Name()) == std::string(TO_STR(XCAFPrs_AISObject))) {
-//        if (obj->Shape().ShapeType() == TopAbs_EDGE) {
-//            Message::SendInfo() << "-- BEVEL EDGE";
-//            Modeling::ModelingBevel(_reader->GetAShape()->Shape(), TopoDS::Edge(obj->Shape()), 5);
-//        }
-//    }
-//    for (auto &one : li) {
-//        Handle(AIS_Shape) obj = Handle(AIS_Shape)::DownCast(one->Selectable());
-//        Message::SendInfo() << "-- selection ..." << one->Selectable()->DynamicType()->Name();
-//    }
-//    Modeling::ModelingBevel();
-//    if (!owner.IsNull() && owner->Shape().ShapeType() == TopAbs_EDGE) {
-//        TopoDS_Edge edge = TopoDS::Edge(owner->Shape());
-//
-//    }
-//    TopoDS_Shape aSelShape     = aBRepOwner->Shape();
-//    Handle(StdSelect_BRepOwner) selected_brep_owner = Handle(StdSelect_BRepOwner)::DownCast(detected_entity_owner);
-//    if (_viewContext->HasSelectedShape()) {
-//        auto shape = _viewContext->SelectedShape();
-//        int n = _viewContext->NbSelected();
-//        Message::SendInfo() << "-- Has selected shape, number : " << n;
-//        if (n == 1) {
-//            Message::SendInfo() << "-- The selected shape is : ";
-//            shape.DumpJson(std::cout);
-//            std::cout << std::endl;
-//        }
-    //    if (shape) {
-    //
-    //    }
-    //
-    //    Modeling::ModelingBevel(_reader->GetShape(), edge, 10);
-    //    _viewContext->SelectedOwner();
-    //    _viewContext->SelectedShape();
-//    }
+    Handle(StdSelect_BRepOwner) seOwner;
+    int activeNumber = 0;
+    for (auto &each : sel->Entities()) {
+        Handle(StdSelect_BRepOwner) iOwner = Handle(StdSelect_BRepOwner)::DownCast(each->BaseSensitive()->OwnerId());
+        if (iOwner->IsSelected()) {
+            activeNumber++;
+            seOwner = iOwner;
+        }
+    }
+    if (activeNumber == 1) {
+        const TopoDS_Edge& edge = TopoDS::Edge(seOwner->Shape());
+        BRepFilletAPI_MakeChamfer chamfer(ownerShape->Shape());
+        chamfer.Add(10, edge);
+        HighRender::RenderShape(_viewContext, chamfer.Shape());
+    }
 }
 
 
 void QRenderThread::makeBevel() {
-    Message::SendInfo("-- On make bevel event");
     onBevel();
 }
+
+void QRenderThread::makeCube() {
+    onMakeCube();
+}
+
+void QRenderThread::doMakeCube() {
+    _aShape = HighRender::MakeBox(50, 50, 50);
+    render();
+}
+
+void QRenderThread::render() {
+    if (_aShape.IsNull()) return;
+    HighRender::RenderAISShape(_viewContext, _aShape);
+    doResize();
+    doUpdate();
+}
+
 
 
 

@@ -17,9 +17,9 @@ class QRenderThread : public QObject {
         Q_OBJECT
 public:
     enum TaskType { NONE, CREATE, RESIZE, UPDATE, MOUSE_PRESS, MOUSE_RELEASE, MOUSE_MOVE, WHEEL, KEY_PRESS, KEY_RELEASE, READ,
-        MAKE_BEVEL };
+        MAKE_BEVEL, MAKE_CUBE };
 
-    QRenderThread(QObject* parent= nullptr);
+    explicit QRenderThread(QObject* parent= nullptr);
     ~QRenderThread();
 
     void startLoopRender();
@@ -33,6 +33,7 @@ public:
     void onMouseMoveEvent(Graphic3d_Vec2i p, Aspect_VKeyMouse b, Aspect_VKeyFlags f);
     void onWheelEvent(Aspect_ScrollDelta d);
     void onRead(QString filename);
+    void onMakeCube();
 
     void onBevel();
 public:
@@ -44,6 +45,7 @@ public:
     void doMouseMoveEvent(Graphic3d_Vec2i p, Aspect_VKeyMouse b, Aspect_VKeyFlags f);
     void doWheelEvent(Aspect_ScrollDelta d);
     void doRead(QString filename);
+    void doMakeCube();
 
     void doBevel();
 Q_SIGNALS:
@@ -52,6 +54,9 @@ Q_SIGNALS:
 public Q_SLOTS:
     void importModelFile(QString f);
     void makeBevel();
+    void makeCube();
+private:
+    void render();
 private:
     bool _isWorking = false;
     TaskType _taskType;
@@ -67,6 +72,7 @@ private:
     Handle(AIS_InteractiveContext) _context;
     Handle(AIS_InteractiveContext) _viewContext;
     Handle(AIS_InteractiveContext) _cubeContext;
+    Handle(AIS_Shape) _aShape;
 
     PerformanceImporter* _reader;
     AIS_ViewController* _viewController;

@@ -42,6 +42,8 @@ public:
 
     static void RenderShape(const Handle(AIS_InteractiveContext) &ctx, const TopoDS_Shape& shape);
 
+    static void RenderAISShape(const Handle(AIS_InteractiveContext) &ctx, const Handle(AIS_Shape)& shape);
+
     static void ActivateSelection(const Handle(AIS_InteractiveContext) &ctx);
 
     static void ActivateSelectionEdge(const Handle(AIS_InteractiveContext) &ctx) { ctx->Activate(2, true); }

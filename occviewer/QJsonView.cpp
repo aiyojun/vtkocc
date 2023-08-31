@@ -229,6 +229,7 @@ void QJsonView::addWidget(const std::string &name, QWidget *p) {
 void QJsonView::link() {
     QObject::connect((QPushButton *) getWidget("openFolder"), SIGNAL(clicked()), this, SLOT(openLocalFileList()));
     QObject::connect((QPushButton *) getWidget("makeBevel"), SIGNAL(clicked()), _render, SLOT(makeBevel()));
+    QObject::connect((QPushButton *) getWidget("addCube"), SIGNAL(clicked()), _render, SLOT(makeCube()));
     QObject::connect(this, SIGNAL(openLocalFile(QString)), _render, SLOT(importModelFile(QString)));
     QObject::connect(_render, SIGNAL(finishedReadModel()), this, SLOT(hideSpinner()));
     QObject::connect(_render, SIGNAL(sendStatusMessage(QString)), this, SLOT(setStatusBarText(QString)));
