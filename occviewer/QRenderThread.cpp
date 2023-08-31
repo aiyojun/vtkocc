@@ -202,10 +202,6 @@ void QRenderThread::doRead(QString filename) {
     emit sendStatusMessage("Finish import : " + filename);
     emit finishedReadModel();
     Message::SendInfo() << "-- Complete read and render model " << filename.toStdString();
-
-
-    BRepBuilderAPI_MakeEdge;
-            BRepLib_MakeEdge;
 }
 
 void QRenderThread::doMousePressEvent(Graphic3d_Vec2i p, Aspect_VKeyMouse b, Aspect_VKeyFlags f) {

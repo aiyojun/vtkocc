@@ -10,6 +10,7 @@ set(QT5_MOC_DIR ${CMAKE_BINARY_DIR}/gen)
 file(MAKE_DIRECTORY ${QT5_MOC_DIR})
 add_moc(../occutils/PerformanceImporter.h ${QT5_MOC_DIR}/moc_PerformanceImporter.cpp)
 add_moc(../libshare/QLinearSpinner.h ${QT5_MOC_DIR}/moc_QLinearSpinner.cpp)
+add_moc(../libshare/QNavigator.h ${QT5_MOC_DIR}/moc_QNavigator.cpp)
 add_moc(QOccWidget.h ${QT5_MOC_DIR}/moc_QOccWidget.cpp)
 add_moc(QJsonView.h ${QT5_MOC_DIR}/moc_QJsonView.cpp)
 add_moc(QRenderThread.h ${QT5_MOC_DIR}/moc_QRenderThread.cpp)
@@ -32,6 +33,10 @@ add_executable(${APP}
         QJsonView.h
         QRenderThread.cpp
         QRenderThread.h
+        ../occutils/ds.h
+        ../libshare/QNavigator.cpp
+        ../libshare/QNavigator.h
+        ../libshare/ds_tree.h
 )
 
 foreach (LIB ${OpenCASCADE_LIBRARIES})

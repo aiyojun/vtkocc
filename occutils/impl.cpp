@@ -13,6 +13,7 @@
 #include <XCAFDoc_DocumentTool.hxx>
 #include <XCAFDoc_ShapeTool.hxx>
 #include <XCAFDoc_ColorTool.hxx>
+#include <XCAFDoc_LayerTool.hxx>
 #include <XCAFPrs_AISObject.hxx>
 #include <BinXCAFDrivers.hxx>
 #include <XmlXCAFDrivers.hxx>
@@ -22,6 +23,7 @@
 #include <AIS_ViewCube.hxx>
 #include <Aspect_DisplayConnection.hxx>
 #include <OpenGl_GraphicDriver.hxx>
+#include <TDF_IDList.hxx>
 
 #include <string>
 #include <regex>
@@ -29,10 +31,24 @@
 #include <Message.hxx>
 #include <WNT_Window.hxx>
 #include <BRepPrimAPI_MakeBox.hxx>
+#include <TDataStd_Name.hxx>
+#include <TDataStd_TreeNode.hxx>
+#include <TDataStd_Integer.hxx>
+#include <TDocStd_Owner.hxx>
+#include <TNaming_NamedShape.hxx>
+#include <TNaming_UsedShapes.hxx>
+#include <XCAFDoc_Color.hxx>
+#include <XCAFDoc_ShapeMapTool.hxx>
+#include <XCAFDoc_Location.hxx>
 #include "imp.h"
 
 #include "json.hpp"
+#include "ds.h"
+
 using nlohmann::json;
+
+
+void ShowLabel(const TDF_Label& label, int depth=1);
 
 void PerformanceImporter::run() {
     if (_filename.empty()) {
@@ -216,9 +232,36 @@ void HighRender::RenderDocument(const Handle(AIS_InteractiveContext)& ctx, const
     Handle(XCAFDoc_ColorTool) colorTool = XCAFDoc_DocumentTool::ColorTool(mainLabel);
     TDF_LabelSequence FreeShape;
     shapeTool->GetFreeShapes(FreeShape);
+
+    ShowLabel(mainLabel);
+
+//    for (Standard_Integer i = 1; i <= FreeShape.Length(); i++) {
+//        TDF_Label each = FreeShape.Value(i);
+//    {
+//        Handle(TDataStd_Name) name;
+//        mainLabel.FindAttribute(TDataStd_Name::GetID(), name);
+//        char p[512];
+//        char *pBuf = p;
+//        name->Get().ToUTF8CString(pBuf);
+//        Message::SendInfo() << "-- Main() TDataStd_Name : " << pBuf;
+//    }
+//    }
+
     int Roots = FreeShape.Length();
+    Message::SendInfo() << "-- Document number : " << Roots;
+
+//    doc->Main().HasChild();
+//    doc->Main().FindChild();
+
     for (int index = 1; index <= Roots; index++) {
         TDF_Label label = FreeShape.Value(index);
+
+        Handle(TDataStd_Name) name;
+        label.FindAttribute(TDataStd_Name::GetID(), name);
+        char p[512]; char *pBuf = p;
+        name->Get().ToUTF8CString(pBuf);
+        Message::SendInfo() << "-- TDataStd_Name : " << pBuf;
+
         Handle(XCAFPrs_AISObject) shape = new XCAFPrs_AISObject(label);
         ctx->Display(shape, true);
         ctx->SetDisplayMode(shape, AIS_Shaded, true);
@@ -331,6 +374,41 @@ Handle(AIS_Shape) HighRender::MakeBox(int x, int y, int z) {
     return new AIS_Shape(shape);
 }
 
+void ShowLabel(const TDF_Label& label, int depth) {
+    if (label.HasAttribute()) {
+        std::string text;
+//        TDF_IDList idList;
+//        idList.Append(TDF_TagSource::GetID());
+//        idList.Append(TDataStd_TreeNode::GetDefaultTreeID());
+//        idList.Append(TDataStd_Name::GetID());
+//        idList.Append(TDataStd_Integer::GetID());
+//        idList.Append(TDocStd_Owner::GetID());
+//        idList.Append(TNaming_NamedShape::GetID());
+//        idList.Append(TNaming_UsedShapes::GetID());
+//        idList.Append(XCAFDoc_Color::GetID());
+//        idList.Append(XCAFDoc_ColorTool::GetID());
+//        idList.Append(XCAFDoc_LayerTool::GetID());
+//        idList.Append(XCAFDoc_ShapeTool::GetID());
+//        idList.Append(XCAFDoc_ShapeMapTool::GetID());
+//        idList.Append(XCAFDoc_Location::GetID());
+//        for (TDF_ListIteratorOfIDList iter(idList); iter.More(); iter.Next()) {
+//            Handle(TDF_Attribute) attr;
+//            if (!label.FindAttribute(iter.Value(), attr)) continue;
+//        }
+//        label.FindAttribute(TDF_TagSource::GetID(), );
+        Handle(TDataStd_Name) name;
+        label.FindAttribute(TDataStd_Name::GetID(), name);
+        if (!name.IsNull())
+            Message::SendInfo() << "-- ShowLabel TDataStd_Name : " << to_string(name->Get()).c_str();
+    }
+
+    if (label.HasChild()) {
+        for (int i = 1; i <= label.NbChildren(); i++) {
+            ShowLabel(label.FindChild(i), depth+1);
+        }
+    }
+}
+
 void RecordModelInfo(json& j, const TDF_Label& label, int depth=1) {
     if (depth > j["depth"].get<int>()) j["depth"] = depth;
     j["node_number"] = j["node_number"].get<int>() + 1;
@@ -347,6 +425,14 @@ QString PerformanceImporter::GetDocumentInformation() {
     Handle(XCAFDoc_ColorTool) colorTool = XCAFDoc_DocumentTool::ColorTool(mainLabel);
     TDF_LabelSequence FreeShape;
     shapeTool->GetFreeShapes(FreeShape);
+//    for (Standard_Integer i = 1; i < FreeShape.Length(); i++) {
+//        TDF_Label each = FreeShape.Value(i);
+//        Handle(TDataStd_Name) name;
+//        each.FindAttribute(TDataStd_Name::GetID(), name);
+//        char p[name->Get().LengthOfCString()]; char *pBuf = p;
+//        name->Get().ToUTF8CString(pBuf);
+//        Message::SendInfo() << "-- TDataStd_Name : " << pBuf;
+//    }
     json j; j["node_number"] = 0; j["depth"] = 0;
     RecordModelInfo(j, mainLabel);
     j["depth"] = mainLabel.Depth();
