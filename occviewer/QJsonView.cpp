@@ -211,8 +211,6 @@ void QJsonView::setSidebar(QString text) {
 
 void QJsonView::hideSpinner() {
     getWidget("occViewerSpinner")->hide();
-//    getWidget("occViewer")->show();
-//    getWidget("occViewer")->repaint();
 }
 
 QWidget *QJsonView::getWidget(const std::string &name)  {
@@ -228,25 +226,14 @@ void QJsonView::addWidget(const std::string &name, QWidget *p) {
 
 void QJsonView::link() {
     QObject::connect((QPushButton *) getWidget("openFolder"), SIGNAL(clicked()), this, SLOT(openLocalFileList()));
-    QObject::connect((QPushButton *) getWidget("makeBevel"), SIGNAL(clicked()), _render, SLOT(makeBevel()));
-    QObject::connect((QPushButton *) getWidget("addCube"), SIGNAL(clicked()), _render, SLOT(makeCube()));
-    QObject::connect(this, SIGNAL(openLocalFile(QString)), _render, SLOT(importModelFile(QString)));
-    QObject::connect(_render, SIGNAL(finishedReadModel()), this, SLOT(hideSpinner()));
+    QObject::connect((QPushButton *) getWidget("makeBevel" ), SIGNAL(clicked()), _render, SLOT(makeBevel()));
+    QObject::connect((QPushButton *) getWidget("addCube"   ), SIGNAL(clicked()), _render, SLOT(makeCube()));
+    QObject::connect((QPushButton *) getWidget("projFront" ), SIGNAL(clicked()), _render, SLOT(switchFrontView()));
+    QObject::connect((QPushButton *) getWidget("projLeft"  ), SIGNAL(clicked()), _render, SLOT(switchLeftView()));
+    QObject::connect((QPushButton *) getWidget("projTop"   ), SIGNAL(clicked()), _render, SLOT(switchTopView()));
+    QObject::connect(this   , SIGNAL(openLocalFile(QString)),  _render, SLOT(importModelFile(QString)));
+    QObject::connect(_render, SIGNAL(finishedReadModel())   ,     this, SLOT(hideSpinner()));
     QObject::connect(_render, SIGNAL(sendStatusMessage(QString)), this, SLOT(setStatusBarText(QString)));
-//    QObject::connect((QPushButton *) window.getWidget("projFront"), SIGNAL(clicked()),
-//                     (QOccWidget *) window.getWidget("occViewer"), SLOT(projfront()));
-//    QObject::connect((QPushButton *) window.getWidget("projLeft"), SIGNAL(clicked()),
-//                     (QOccWidget *) window.getWidget("occViewer"), SLOT(projleft()));
-//    QObject::connect((QPushButton *) window.getWidget("projTop"), SIGNAL(clicked()),
-//                     (QOccWidget *) window.getWidget("occViewer"), SLOT(projtop()));
-//    QObject::connect((QPushButton *) window.getWidget("openFolder"), SIGNAL(clicked()), &window,
-//                     SLOT(chooseLocalFile()));
-//    QObject::connect((QOccWidget *) window.getWidget("occViewer"), SIGNAL(sendStatusMessage(QString)), &window,
-//                     SLOT(setStatusBarText(QString)));
-//    QObject::connect((QOccWidget *) window.getWidget("occViewer"), SIGNAL(recordModelInformation(QString)), &window,
-//                     SLOT(setSidebar(QString)));
-//    QObject::connect((QOccWidget *) window.getWidget("occViewer"), SIGNAL(finishedLoadModel()), &window,
-//                     SLOT(hideSpinner()));
 }
 
 

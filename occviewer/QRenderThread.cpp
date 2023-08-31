@@ -6,6 +6,7 @@
 #include <TopoDS.hxx>
 #include <Prs3d_ShapeTool.hxx>
 #include <BRepLib_MakeEdge.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
 #include <PrsMgr_Presentation.hxx>
 #include <StdPrs_ShapeTool.hxx>
 #include <Select3D_SensitiveSegment.hxx>
@@ -73,6 +74,15 @@ void QRenderThread::startLoopRender() {
                         break;
                     case TaskType::MAKE_CUBE:
                         qrt->doMakeCube();
+                        break;
+                    case TaskType::PROJ_TOP:
+                        qrt->doProjTop();
+                        break;
+                    case TaskType::PROJ_LEFT:
+                        qrt->doProjLeft();
+                        break;
+                    case TaskType::PROJ_FRONT:
+                        qrt->doProjFront();
                         break;
                     default:;
                 }
@@ -188,11 +198,14 @@ void QRenderThread::doRead(QString filename) {
     _reader->ValidateTask();
     _reader->ReadSync();
     emit sendStatusMessage("Finish read : " + filename);
-    _aShape = _reader->GetAShape();
-    render();
+    _reader->Render(_viewContext);
     emit sendStatusMessage("Finish import : " + filename);
     emit finishedReadModel();
     Message::SendInfo() << "-- Complete read and render model " << filename.toStdString();
+
+
+    BRepBuilderAPI_MakeEdge;
+            BRepLib_MakeEdge;
 }
 
 void QRenderThread::doMousePressEvent(Graphic3d_Vec2i p, Aspect_VKeyMouse b, Aspect_VKeyFlags f) {
@@ -275,6 +288,54 @@ void QRenderThread::render() {
     HighRender::RenderAISShape(_viewContext, _aShape);
     doResize();
     doUpdate();
+}
+
+void QRenderThread::doProjFront() {
+    _viewController->UpdateViewOrientation(V3d_Yneg, true);
+    _cubeController->UpdateViewOrientation(V3d_Yneg, true);
+    _viewController->FlushViewEvents(_viewContext, _view, true);
+    _cubeController->FlushViewEvents(_cubeContext, _view, true);
+}
+
+void QRenderThread::doProjTop() {
+    _viewController->UpdateViewOrientation(V3d_Zpos, true);
+    _cubeController->UpdateViewOrientation(V3d_Zpos, true);
+    _viewController->FlushViewEvents(_viewContext, _view, true);
+    _cubeController->FlushViewEvents(_cubeContext, _view, true);
+}
+
+void QRenderThread::doProjLeft() {
+    _viewController->UpdateViewOrientation(V3d_Xpos, true);
+    _cubeController->UpdateViewOrientation(V3d_Xpos, true);
+    _viewController->FlushViewEvents(_viewContext, _view, true);
+    _cubeController->FlushViewEvents(_cubeContext, _view, true);
+}
+
+void QRenderThread::onProjFront() {
+    _taskType = PROJ_FRONT;
+    _guard->wakeOne();
+}
+
+void QRenderThread::onProjTop() {
+    _taskType = PROJ_TOP;
+    _guard->wakeOne();
+}
+
+void QRenderThread::onProjLeft() {
+    _taskType = PROJ_LEFT;
+    _guard->wakeOne();
+}
+
+void QRenderThread::switchFrontView() {
+    onProjFront();
+}
+
+void QRenderThread::switchTopView() {
+    onProjTop();
+}
+
+void QRenderThread::switchLeftView() {
+    onProjLeft();
 }
 
 

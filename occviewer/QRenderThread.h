@@ -17,7 +17,7 @@ class QRenderThread : public QObject {
         Q_OBJECT
 public:
     enum TaskType { NONE, CREATE, RESIZE, UPDATE, MOUSE_PRESS, MOUSE_RELEASE, MOUSE_MOVE, WHEEL, KEY_PRESS, KEY_RELEASE, READ,
-        MAKE_BEVEL, MAKE_CUBE };
+        MAKE_BEVEL, MAKE_CUBE, PROJ_FRONT, PROJ_LEFT, PROJ_TOP };
 
     explicit QRenderThread(QObject* parent= nullptr);
     ~QRenderThread();
@@ -34,6 +34,9 @@ public:
     void onWheelEvent(Aspect_ScrollDelta d);
     void onRead(QString filename);
     void onMakeCube();
+    void onProjFront();
+    void onProjLeft();
+    void onProjTop();
 
     void onBevel();
 public:
@@ -46,6 +49,9 @@ public:
     void doWheelEvent(Aspect_ScrollDelta d);
     void doRead(QString filename);
     void doMakeCube();
+    void doProjFront();
+    void doProjLeft();
+    void doProjTop();
 
     void doBevel();
 Q_SIGNALS:
@@ -55,6 +61,9 @@ public Q_SLOTS:
     void importModelFile(QString f);
     void makeBevel();
     void makeCube();
+    void switchFrontView();
+    void switchTopView();
+    void switchLeftView();
 private:
     void render();
 private:

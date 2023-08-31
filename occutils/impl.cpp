@@ -225,11 +225,6 @@ void HighRender::RenderDocument(const Handle(AIS_InteractiveContext)& ctx, const
 
         ctx->Activate(shape, shape->SelectionMode(TopAbs_ShapeEnum::TopAbs_EDGE));
         ctx->Activate(shape, shape->SelectionMode(TopAbs_ShapeEnum::TopAbs_FACE));
-//        const Handle(SelectMgr_SelectionManager)& mgr = ctx->SelectionManager();
-//        if (!mgr.IsNull()) {
-//            mgr->Load(shape, shape->SelectionMode(TopAbs_ShapeEnum::TopAbs_EDGE));
-//            mgr->Load(shape, shape->SelectionMode(TopAbs_ShapeEnum::TopAbs_FACE));
-//        }
     }
 }
 
@@ -241,17 +236,12 @@ void HighRender::RenderShape(const Handle(AIS_InteractiveContext) &ctx, const To
 
     ctx->Activate(shape, shape->SelectionMode(TopAbs_ShapeEnum::TopAbs_EDGE));
     ctx->Activate(shape, shape->SelectionMode(TopAbs_ShapeEnum::TopAbs_FACE));
-//    const Handle(SelectMgr_SelectionManager)& mgr = ctx->SelectionManager();
-//    if (!mgr.IsNull()) {
-//        mgr->Load(shape, shape->SelectionMode(TopAbs_ShapeEnum::TopAbs_EDGE));
-//        mgr->Load(shape, shape->SelectionMode(TopAbs_ShapeEnum::TopAbs_FACE));
-//    }
 }
 
 void HighRender::RenderAISShape(const Handle(AIS_InteractiveContext) &ctx, const Handle(AIS_Shape)& shape) {
     ctx->EraseAll(false);
-    ctx->Display(shape, true);
     ctx->SetDisplayMode(shape, AIS_Shaded, true);
+    ctx->Display(shape, true);
     ctx->Activate(shape, shape->SelectionMode(TopAbs_ShapeEnum::TopAbs_EDGE));
     ctx->Activate(shape, shape->SelectionMode(TopAbs_ShapeEnum::TopAbs_FACE));
     ctx->Activate(shape, shape->SelectionMode(TopAbs_ShapeEnum::TopAbs_VERTEX));
@@ -336,7 +326,7 @@ Handle(AIS_InteractiveContext) HighRender::BuildContext(const Handle(V3d_Viewer)
 }
 
 Handle(AIS_Shape) HighRender::MakeBox(int x, int y, int z) {
-    auto box = BRepPrimAPI_MakeBox(50, 50, 80);
+    auto box = BRepPrimAPI_MakeBox(x, y, z);
     auto &shape = box.Shape();
     return new AIS_Shape(shape);
 }
