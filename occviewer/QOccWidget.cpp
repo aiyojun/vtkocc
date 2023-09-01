@@ -34,8 +34,8 @@ Aspect_VKeyMouse QtMouseButton2Aspect_VKeyMouse(const Qt::MouseButton &button) {
 }
 
 QOccWidget::QOccWidget(QWidget *parent) : QWidget(parent), initialized(false), _ctrlKey(false), _altKey(false), _shiftKey(false) {
-    setAttribute(Qt::WA_PaintOnScreen);
-    setAttribute(Qt::WA_NoSystemBackground);
+//    setAttribute(Qt::WA_PaintOnScreen);
+//    setAttribute(Qt::WA_NoSystemBackground);
     setMouseTracking(true);
 //    setFocusPolicy(Qt::StrongFocus);
 }

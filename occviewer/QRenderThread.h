@@ -57,6 +57,7 @@ public:
 Q_SIGNALS:
     void finishedReadModel();
     void sendStatusMessage(QString m);
+    void sendAssemblyTree(QString text);
 public Q_SLOTS:
     void importModelFile(QString f);
     void makeBevel();

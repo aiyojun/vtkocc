@@ -1,6 +1,7 @@
 #include "QJsonView.h"
 #include "QOccWidget.h"
 #include "QLinearSpinner.h"
+#include "QNavigator.h"
 
 namespace js {
 
@@ -39,8 +40,36 @@ namespace js {
             throw std::runtime_error("property " + p + ", expect object, but data is " + to_string(j));
     }
 
+    std::string getString(const json& j, const std::string& p) {
+        return j[p].get<std::string>();
+    }
+
+    int getInteger(const json& j, const std::string& p) {
+        return j[p].get<int>();
+    }
+
+    double getDouble(const json& j, const std::string& p) {
+        return j[p].get<double>();
+    }
+
+    bool getBool(const json& j, const std::string& p) {
+        return j[p].get<bool>();
+    }
+
+    bool hasNumber(const json& j, const std::string& p) {
+        return j.contains(p) && j[p].is_number();
+    }
+
     bool hasString(const json& j, const std::string& p) {
         return j.contains(p) && j[p].is_string();
+    }
+
+    bool hasArray(const json& j, const std::string& p) {
+        return j.contains(p) && j[p].is_array();
+    }
+
+    bool hasObject(const json& j, const std::string& p) {
+        return j.contains(p) && j[p].is_object();
     }
 
     bool hasBool(const json& j, const std::string& p) {
@@ -51,7 +80,29 @@ namespace js {
 
 
 QColorfulLabel::QColorfulLabel(QWidget *parent): QLabel(parent) {
-    setAttribute(Qt::WA_TranslucentBackground);
+//    setAttribute(Qt::WA_TranslucentBackground);
+}
+
+QJsonView::QJsonView(const json &ui, QRenderThread *r, QWidget *parent): QMainWindow(parent), _render(r), _ui(ui) {
+    QRect beginPos(0, 0,
+                   QtTools::calcSize(0, _ui["width"].get<std::string>()),
+                   QtTools::calcSize(0, _ui["height"].get<std::string>()));
+    qDebug() << "-- Parsing ui.json";
+    parse(JvContext(ui, beginPos));
+    QOccWidget *viewer = (QOccWidget *) getWidget("occViewer");
+    viewer->setRender(_render);
+    qDebug() << "-- Prepare opengl context";
+    _render->onCreate((void *) (viewer->winId()));
+    loopSetGeometry(_ui, beginPos);
+    resize(beginPos.width(), beginPos.height());
+
+    auto *scrollArea = (QScrollArea *) getWidget("scrollArea");
+    auto *navigator  = (QNavigator  *) getWidget("navigator");
+    scrollArea->setWidget(navigator);
+    scrollArea->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+
+    qDebug() << "-- Prepare Qt signal-slot";
+    link();
 }
 
 void QJsonView::parse(JvContext context) {
@@ -112,6 +163,12 @@ void QJsonView::parse(JvContext context) {
         if (js::hasString(ui, "placeholder"))
             input->setPlaceholderText(ui["placeholder"].get<std::string>().c_str());
         addWidget(name, (QWidget *) input);
+    } else if (type == "QNavigator") {
+        auto *nav = new QNavigator(this);
+        addWidget(name, (QWidget *) nav);
+    } else if (type == "QScrollArea") {
+        auto *nav = new QScrollArea(this);
+        addWidget(name, (QWidget *) nav);
     } else if (type == "QFrame") {
         auto *frame = new QFrame(this);
         addWidget(name, (QWidget *) frame);
@@ -234,6 +291,29 @@ void QJsonView::link() {
     QObject::connect(this   , SIGNAL(openLocalFile(QString)),  _render, SLOT(importModelFile(QString)));
     QObject::connect(_render, SIGNAL(finishedReadModel())   ,     this, SLOT(hideSpinner()));
     QObject::connect(_render, SIGNAL(sendStatusMessage(QString)), this, SLOT(setStatusBarText(QString)));
+    QObject::connect(_render, SIGNAL(sendAssemblyTree(QString)),  this, SLOT(setAssemblyTree(QString)));
 }
+
+Navigation* QJsonView::loopParseTree(const json& node, int depth) {
+    auto *nav = Navigation::build(js::getString(node, "text").c_str(), js::getString(node, "icon").c_str());
+    if (js::hasArray(node, "children") && !node["children"].empty()) {
+        for (const auto &j : node["children"]) {
+            auto *c = loopParseTree(j, depth + 1);
+            nav->addSubNav(c);
+        }
+    }
+    nav->setDepth(depth);
+    return nav;
+}
+
+void QJsonView::setAssemblyTree(QString text) {
+//    qDebug() << "-- assembly tree : \n" << text;
+    auto *navigator = (QNavigator *) getWidget("navigator");//((QScrollNavigator *) getWidget("sidebar"))->getNavigator();
+    auto j = json::parse(text.toStdString());
+    auto *topNav = loopParseTree(j);
+    navigator->setTopNavigation(topNav);
+}
+
+
 
 

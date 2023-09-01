@@ -22,6 +22,7 @@ add_executable(${APP}
         ${QT5_MOC_DIR}/moc_QOccWidget.cpp
         ${QT5_MOC_DIR}/moc_QJsonView.cpp
         ${QT5_MOC_DIR}/moc_QRenderThread.cpp
+        ${QT5_MOC_DIR}/moc_QNavigator.cpp
         ../occutils/impl.cpp
         ../libshare/imp.cpp
         ../libshare/QtTools.cpp
@@ -37,6 +38,7 @@ add_executable(${APP}
         ../libshare/QNavigator.cpp
         ../libshare/QNavigator.h
         ../libshare/ds_tree.h
+        ../test/x.h
 )
 
 foreach (LIB ${OpenCASCADE_LIBRARIES})

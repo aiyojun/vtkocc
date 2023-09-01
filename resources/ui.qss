@@ -43,3 +43,9 @@ QLineEdit { padding-left: 5px; border-radius: 4px; font-size: 14px; border: 1px 
 
 
 #occViewerSpinner { qproperty-spinnerBackgroundRadius: 0; qproperty-spinnerColor: #FFFFFF; qproperty-spinnerBackgroundColor: #E0C3FC; qproperty-spinnerRadius: 6; qproperty-spinnerDistance: 25; }
+
+QScrollArea, #scrollArea {
+    background-color: #FFFFFF; border: none;
+    qproperty-horizontalScrollBarPolicy: ScrollBarAlwaysOff;
+}
+QNavigator { font-size: 14px; background-color: #FFFFFF; }

@@ -197,6 +197,7 @@ void QRenderThread::doRead(QString filename) {
     _reader->SetTask(filename);
     _reader->ValidateTask();
     _reader->ReadSync();
+    emit sendAssemblyTree(_reader->GetDocumentInformation());
     emit sendStatusMessage("Finish read : " + filename);
     _reader->Render(_viewContext);
     emit sendStatusMessage("Finish import : " + filename);
@@ -226,7 +227,6 @@ void QRenderThread::doMouseMoveEvent(Graphic3d_Vec2i p, Aspect_VKeyMouse b, Aspe
 }
 
 void QRenderThread::importModelFile(QString f)  {
-    Message::SendInfo() << "-- Import model : " << f.toStdString();
     onRead(f);
 }
 

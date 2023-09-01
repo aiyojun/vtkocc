@@ -233,7 +233,7 @@ void HighRender::RenderDocument(const Handle(AIS_InteractiveContext)& ctx, const
     TDF_LabelSequence FreeShape;
     shapeTool->GetFreeShapes(FreeShape);
 
-    ShowLabel(mainLabel);
+//    ShowLabel(mainLabel);
 
 //    for (Standard_Integer i = 1; i <= FreeShape.Length(); i++) {
 //        TDF_Label each = FreeShape.Value(i);
@@ -419,12 +419,34 @@ void RecordModelInfo(json& j, const TDF_Label& label, int depth=1) {
     }
 }
 
+json dumpAssembly(const TDF_Label& label, int depth) {
+    json j;
+    json arr = json::array();
+    if (label.HasAttribute()) {
+        std::string text;
+        Handle(TDataStd_Name) name;
+        label.FindAttribute(TDataStd_Name::GetID(), name);
+        j["text"] = name.IsNull() ? "---" : to_string(name->Get());
+    } else {
+        j["text"] = "???";
+    }
+    j["icon"] = ":/icons/box-frame.svg";
+    if (label.HasChild()) {
+        for (int i = 1; i <= label.NbChildren(); i++) {
+            arr.push_back(dumpAssembly(label.FindChild(i), depth+1));
+        }
+    }
+    j["children"] = arr;
+    return j;
+}
+
 QString PerformanceImporter::GetDocumentInformation() {
     TDF_Label mainLabel = _document->Main();
     Handle(XCAFDoc_ShapeTool) shapeTool = XCAFDoc_DocumentTool::ShapeTool(mainLabel);
     Handle(XCAFDoc_ColorTool) colorTool = XCAFDoc_DocumentTool::ColorTool(mainLabel);
     TDF_LabelSequence FreeShape;
     shapeTool->GetFreeShapes(FreeShape);
+    return to_string(dumpAssembly(mainLabel, 0)).c_str();
 //    for (Standard_Integer i = 1; i < FreeShape.Length(); i++) {
 //        TDF_Label each = FreeShape.Value(i);
 //        Handle(TDataStd_Name) name;
@@ -433,17 +455,17 @@ QString PerformanceImporter::GetDocumentInformation() {
 //        name->Get().ToUTF8CString(pBuf);
 //        Message::SendInfo() << "-- TDataStd_Name : " << pBuf;
 //    }
-    json j; j["node_number"] = 0; j["depth"] = 0;
-    RecordModelInfo(j, mainLabel);
-    j["depth"] = mainLabel.Depth();
-    std::string filename(_filename.substr(_filename.find_last_of('/') + 1));
-    j["filename"] = filename.substr(0, filename.find_last_of('.'));
-    j["filetype"] = filename.substr(filename.find_last_of('.') + 1);
-    char buf[512] = {0}; char *p = (char *) buf;
-    _document->StorageFormat().ToUTF8CString(p);
-    j["document_format"] = std::string(p);
-    j["is_assembly"] = j["node_number"].get<int>() > 1;
-    return {to_string(j).c_str()};
+//    json j; j["node_number"] = 0; j["depth"] = 0;
+//    RecordModelInfo(j, mainLabel);
+//    j["depth"] = mainLabel.Depth();
+//    std::string filename(_filename.substr(_filename.find_last_of('/') + 1));
+//    j["filename"] = filename.substr(0, filename.find_last_of('.'));
+//    j["filetype"] = filename.substr(filename.find_last_of('.') + 1);
+//    char buf[512] = {0}; char *p = (char *) buf;
+//    _document->StorageFormat().ToUTF8CString(p);
+//    j["document_format"] = std::string(p);
+//    j["is_assembly"] = j["node_number"].get<int>() > 1;
+//    return {to_string(j).c_str()};
 }
 
 void PerformanceImporter::SetTask(QString filename, PerformanceImporter::ReadTask task) {

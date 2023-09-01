@@ -18,32 +18,9 @@
     ] },
     { "name": "headerBack", "type": "QFrame", "width": "100%", "height": "1px" },
     { "name": "main", "type": "QHBoxLayout", "width": "100%", "height": "calc(100% - 32px - 24px)", "children": [
-      { "name": "sidebar", "type": "QVBoxLayout", "width": "239px", "height": "100%", "children": [
-        { "name": "secTitle0", "type": "QLabel", "width": "100%", "height": "31px", "text": "Basic Functions" },
-        { "name": "basicFunctions0", "type": "QHBoxLayout", "width": "100%", "height": "64px", "children": [
-          { "name": "funcSplitterX0", "type": "QFrame", "width": "1px", "height": "100%" },
-          { "name": "func0" , "type": "QToolButton", "width": "calc(50%-1px)", "height": "100%" },
-          { "name": "funcSplitterX1", "type": "QFrame", "width": "1px", "height": "100%" },
-          { "name": "func1" , "type": "QToolButton", "width": "50%", "height": "100%" }
-        ] },
-        { "name": "funcSplitterY0", "type": "QFrame", "width": "100%", "height": "1px" },
-        { "name": "basicFunctions1", "type": "QHBoxLayout", "width": "100%", "height": "64px", "children": [
-          { "name": "funcSplitterY0", "type": "QFrame", "width": "1px", "height": "100%" },
-          { "name": "func2" , "type": "QToolButton", "width": "calc(50%-1px)", "height": "100%" },
-          { "name": "funcSplitterY1", "type": "QFrame", "width": "1px", "height": "100%" },
-          { "name": "func3" , "type": "QToolButton", "width": "50%", "height": "100%" }
-        ] },
-        { "name": "basicFunctions2", "type": "QHBoxLayout", "width": "100%", "height": "64px", "children": [
-          { "name": "funcSplitterZ0", "type": "QFrame", "width": "1px", "height": "100%" },
-          { "name": "func4" , "type": "QToolButton", "width": "calc(50%-1px)", "height": "100%" }
-        ] },
-        { "name": "secTitle1", "type": "QLabel", "width": "100%", "height": "31px", "text": "Model Properties" },
-        { "name": "clText0", "type": "QColorfulLabel", "padding": "12px", "width": "100%", "height": "31px", "text": "Filename: " },
-        { "name": "clText1", "type": "QColorfulLabel", "padding": "12px", "width": "100%", "height": "31px", "text": "Format: " },
-        { "name": "clText2", "type": "QColorfulLabel", "padding": "12px", "width": "100%", "height": "31px", "text": "Document: " },
-        { "name": "clText3", "type": "QColorfulLabel", "padding": "12px", "width": "100%", "height": "31px", "text": "Parts: " },
-        { "name": "clText5", "type": "QColorfulLabel", "padding": "12px", "width": "100%", "height": "31px", "text": "Depth: " },
-        { "name": "clText4", "type": "QColorfulLabel", "padding": "12px", "width": "100%", "height": "31px", "text": "Assembly: " }
+      { "name": "sidebarContainer", "type": "QHBoxLayout", "width": "239px", "height": "100%", "children": [
+        { "name": "scrollArea", "type": "QScrollArea", "width": "100%", "height": "100%" },
+        { "name": "navigator", "type": "QNavigator", "width": "100%", "height": "100%", "position": "absolute" }
       ] },
       { "name": "mainSlider", "type": "QFrame", "width": "1px", "height": "100%" },
       { "name": "mainContainer", "type": "QHBoxLayout", "width": "calc(100% - 240px)", "height": "100%", "children": [

@@ -6,6 +6,8 @@
         <file>index.css</file>
         <file>titillium-web-font/TitilliumWeb-1eq2.ttf</file>
         <file>icons/3d.svg</file>
+        <file>icons/arrow-down.svg</file>
+        <file>icons/arrow-right.svg</file>
         <file>icons/CAD.svg</file>
         <file>icons/laptop.svg</file>
         <file>icons/open-folder.svg</file>

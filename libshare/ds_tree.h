@@ -16,7 +16,7 @@ public:
     bool hasChild() { return !_children.empty(); }
     Node<T> *getChild(int i) { return _children[i]; }
     void removeChildren() { _children.clear(); }
-    int childNumber() { return _children.size(); }
+    int childNumber() { return (int) _children.size(); }
     void setParent(Node<T> *p) { _parent = p; }
     Node<T> *getParent() { return _parent; }
 protected:
@@ -31,7 +31,6 @@ private:
 template<typename T>
 void Node<T>::addChild(Node<T> *c)  {
     c->setParent(this);
-    c->setDepth(this->getDepth() + 1);
     _children.emplace_back(c);
 }
 

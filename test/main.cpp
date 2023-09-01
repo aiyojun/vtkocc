@@ -1,22 +1,13 @@
-#include "QTaskLoop.h"
-#include <QtCore/QDebug>
+#include "x.h"
 
 int main(int argc, char* argv[]) {
+    QApplication app(argc, argv);
 
-    QTaskLoop td;
-    td.start(QThread::HighPriority);
-    int count = 0;
-    while (count < 5) {
-        QThread::sleep(1);
-        qDebug() << "[Main] count : " << count << " ";
-        td.post([count]() {
-            qDebug() << "[task] " << count;
-        });
-        count++;
-    }
-    qDebug() << "[Main] waiting ui thread ...";
-    td.close();
-    td.wait();
+    QMainWindow *main = new MainWindow();
+    main->setWindowTitle("Test widget");
 
-    return 0;
+    main->resize(900, 600);
+    main->show();
+
+    return QApplication::exec();
 }
