@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
+        <file>ui.qml</file>
         <file>ui.json</file>
         <file>ui.qss</file>
 <!--        <file>index.html</file>-->
