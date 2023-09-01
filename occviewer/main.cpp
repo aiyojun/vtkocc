@@ -1,8 +1,8 @@
 #include "imp.h"
 #include "QJsonView.h"
+#include "QOccWidget.h"
 #include "json.hpp"
 using nlohmann::json;
-#include "QOccWidget.h"
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);

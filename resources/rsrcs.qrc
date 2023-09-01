@@ -2,8 +2,9 @@
     <qresource prefix="/">
         <file>ui.json</file>
         <file>ui.qss</file>
-        <file>index.html</file>
-        <file>index.css</file>
+<!--        <file>index.html</file>-->
+<!--        <file>index.css</file>-->
+<!--        <file>qwebchannel.js</file>-->
         <file>titillium-web-font/TitilliumWeb-1eq2.ttf</file>
         <file>icons/3d.svg</file>
         <file>icons/arrow-down.svg</file>
@@ -30,6 +31,5 @@
         <file>icons/x-module.svg</file>
         <file>icons/x-order.svg</file>
         <file>icons/x-setting.svg</file>
-        <file>qwebchannel.js</file>
     </qresource>
 </RCC>

@@ -50,6 +50,14 @@ using nlohmann::json;
 
 void ShowLabel(const TDF_Label& label, int depth=1);
 
+std::string to_string(const TCollection_ExtendedString& text) {
+    std::string s;
+    s.resize(text.LengthOfCString());
+    char *p = const_cast<char *>(s.c_str());
+    text.ToUTF8CString(p);
+    return s;
+}
+
 void PerformanceImporter::run() {
     if (_filename.empty()) {
         emit finished();

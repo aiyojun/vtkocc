@@ -4,12 +4,6 @@
 #include <string>
 #include <TCollection_ExtendedString.hxx>
 
-std::string to_string(const TCollection_ExtendedString& text) {
-    std::string s;
-    s.resize(text.LengthOfCString());
-    char *p = const_cast<char *>(s.c_str());
-    text.ToUTF8CString(p);
-    return s;
-}
+std::string to_string(const TCollection_ExtendedString& text);
 
 #endif //VTKOCC_DS_H
