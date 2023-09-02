@@ -32,19 +32,19 @@
         </div>
     </div>
     <script>
-        // document.getElementById('window-min').addEventListener('click', () => {qbridge.webdriveibus("#MIN_APP");})
-        // document.getElementById('window-max').addEventListener('click', () => {qbridge.webdriveibus("#MAX_APP");})
-        // document.getElementById('window-cls').addEventListener('click', () => {qbridge.webdriveibus("#CLS_APP");})
-        document.getElementById('occ-proj-main').addEventListener('click', () => {qbridge.webdriveibus("#OCC_MAIN");})
-        document.getElementById('occ-proj-top') .addEventListener('click', () => {qbridge.webdriveibus("#OCC_TOP");})
-        document.getElementById('occ-proj-left').addEventListener('click', () => {qbridge.webdriveibus("#OCC_LEFT");})
+        // document.getWidgetOf('window-min').addEventListener('click', () => {qbridge.webdriveibus("#MIN_APP");})
+        // document.getWidgetOf('window-max').addEventListener('click', () => {qbridge.webdriveibus("#MAX_APP");})
+        // document.getWidgetOf('window-cls').addEventListener('click', () => {qbridge.webdriveibus("#CLS_APP");})
+        document.getWidgetOf('occ-proj-main').addEventListener('click', () => {qbridge.webdriveibus("#OCC_MAIN");})
+        document.getWidgetOf('occ-proj-top') .addEventListener('click', () => {qbridge.webdriveibus("#OCC_TOP");})
+        document.getWidgetOf('occ-proj-left').addEventListener('click', () => {qbridge.webdriveibus("#OCC_LEFT");})
         function resizeWidgets() {
-            const occView = document.getElementById("occ-view")
-            console.info("occ-view :", document.getElementById("occ-view"))
+            const occView = document.getWidgetOf("occ-view")
+            console.info("occ-view :", document.getWidgetOf("occ-view"))
             qbridge.setWidgetGeometry('occ', 15*16, 2*16, occView.clientWidth, occView.clientHeight);
         }
         function setStatusBar(text) {
-            const statusBar = document.getElementById("status-bar")
+            const statusBar = document.getWidgetOf("status-bar")
             statusBar.innerText = text;
         }
         window.addEventListener('resize', () => {

@@ -12,3 +12,4 @@ include_directories(occutils)
 
 add_subdirectory(vtk)
 add_subdirectory(occviewer)
+add_subdirectory(jspace)

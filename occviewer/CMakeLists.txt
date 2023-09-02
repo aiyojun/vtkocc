@@ -38,7 +38,6 @@ add_executable(${APP}
         ../libshare/QNavigator.cpp
         ../libshare/QNavigator.h
         ../libshare/ds_tree.h
-        ../test/x.h
 )
 
 foreach (LIB ${OpenCASCADE_LIBRARIES})
