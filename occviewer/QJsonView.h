@@ -3,7 +3,7 @@
 
 #include "imp.h"
 #include "QRenderThread.h"
-#include "QNavigator.h"
+#include "../libui/QNavigator.h"
 #include "json.hpp"
 
 using nlohmann::json;
@@ -17,7 +17,7 @@ public:
 };
 
 class QColorfulLabel : public QLabel {
-Q_OBJECT
+    Q_OBJECT
 public:
     explicit QColorfulLabel(QWidget *parent = nullptr);
 

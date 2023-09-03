@@ -140,7 +140,7 @@ void RunQScript(const QString& script) {
     engine.globalObject().setProperty("console", console);
     engine.globalObject().setProperty("typecast", engine.newFunction(typecast));
     engine.globalObject().setProperty("qApplicationWindow", engine.newQObject(window));
-    qDebug() << "-- qscriptpreload.js : " << preload;
+//    qDebug() << "-- qscriptpreload.js : " << preload;
     engine.evaluate(preload);
     QScriptValue result = engine.evaluate(script);
     if (engine.hasUncaughtException())  {
@@ -157,21 +157,91 @@ QApplicationWindow::~QApplicationWindow() {
 
 }
 
-QWidget *QApplicationWindow::createWidget(const QString& type, const QString& id) {
-    QWidget *p;
-    QWidget *parent = this;
-    QMap<QString, QWidgetBuilder> handles = {
-            {"QLabel"       , [parent]() { return new QLabel(parent); }},
-            {"QFrame"       , [parent]() { return new QFrame(parent); }},
-            {"QPushButton"  , [parent]() { return new QPushButton(parent); }},
-    };
-    if (handles.find(type) == handles.end())
-        p = new QWidget(parent);
-    else
-        p = handles[type]();
-    if (!id.isEmpty())
-        p->setObjectName(id);
-    _widgets.push_back(p);
+#define IMPLEMENTATION_BUILD_WIDGET(CLS) \
+    auto *p = new CLS(this);\
+    p->setObjectName(id); \
+    _widgets.push_back(p);\
     return p;
+
+QWidget *QApplicationWindow::qLabel(QString id) {
+    IMPLEMENTATION_BUILD_WIDGET(QLabel)
 }
+
+QWidget *QApplicationWindow::qColorLabel(QString id) {
+    IMPLEMENTATION_BUILD_WIDGET(QColorLabel)
+}
+
+QWidget *QApplicationWindow::qPushButton(QString id) {
+    IMPLEMENTATION_BUILD_WIDGET(QPushButton)
+}
+
+QWidget *QApplicationWindow::qToolButton(QString id) {
+    IMPLEMENTATION_BUILD_WIDGET(QToolButton)
+}
+
+QWidget *QApplicationWindow::qNavigator(QString id) {
+    IMPLEMENTATION_BUILD_WIDGET(QNavigator)
+}
+
+QWidget *QApplicationWindow::qLineEdit(QString id) {
+    IMPLEMENTATION_BUILD_WIDGET(QLineEdit)
+}
+
+void QApplicationWindow::setWidgetGeometry(QWidget *widget, QRect geo) {
+    widget->setGeometry(geo);
+}
+
+void QApplicationWindow::setWidgetVisible(QWidget *widget, bool visible) {
+    if (visible)
+        widget->show();
+    else
+        widget->hide();
+}
+
+void QApplicationWindow::setButtonText(QAbstractButton *button, QString text) {
+    button->setText(text);
+}
+
+void QApplicationWindow::setButtonIcon(QAbstractButton *button, QString icon) {
+    button->setIcon(QIcon(icon));
+}
+
+void QApplicationWindow::setButtonIconSize(QAbstractButton *button, QSize size) {
+    button->setIconSize(size);
+}
+
+void QApplicationWindow::setLineEditText(QLineEdit *edit, QString text) {
+    edit->setText(text);
+}
+
+void QApplicationWindow::setLineEditPlaceholder(QLineEdit *edit, QString text) {
+    edit->setPlaceholderText(text);
+}
+
+void QApplicationWindow::setLabelText(QLabel *label, QString text) {
+    label->setText(text);
+}
+
+//QWidget *QApplicationWindow::createWidget(const QString& type, const QString& id) {
+//    QWidget *p;
+//    QWidget *parent = this;
+//    QMap<QString, QWidgetBuilder> handles = {
+//            {"QLabel", [parent]() { return new QLabel(parent); }},
+//            {"QColorLabel", [parent]() { return new QColorLabel(parent); }},
+//            {"QFrame", [parent]() { return new QFrame(parent); }},
+//            {"QPushButton", [parent]() { return new QPushButton(parent); }},
+//            {"QToolButton", [parent]() { return new QToolButton(parent); }},
+//            {"QLinearSpinner", [parent]() { return new QLinearSpinner(parent); }},
+//            {"QLineEdit", [parent]() { return new QLineEdit(parent); }},
+//            {"QNavigator", [parent]() { return new QNavigator(parent); }},
+//    };
+//    if (handles.find(type) == handles.end())
+//        p = new QWidget(parent);
+//    else
+//        p = handles[type]();
+//    if (!id.isEmpty())
+//        p->setObjectName(id);
+//    _widgets.push_back(p);
+//    return p;
+//}
 

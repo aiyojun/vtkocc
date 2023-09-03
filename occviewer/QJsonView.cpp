@@ -1,7 +1,7 @@
 #include "QJsonView.h"
 #include "QOccWidget.h"
-#include "QLinearSpinner.h"
-#include "QNavigator.h"
+#include "../libui/QLinearSpinner.h"
+#include "../libui/QNavigator.h"
 
 namespace js {
 
@@ -80,7 +80,6 @@ namespace js {
 
 
 QColorfulLabel::QColorfulLabel(QWidget *parent): QLabel(parent) {
-//    setAttribute(Qt::WA_TranslucentBackground);
 }
 
 QJsonView::QJsonView(const json &ui, QRenderThread *r, QWidget *parent): QMainWindow(parent), _render(r), _ui(ui) {

@@ -51,202 +51,81 @@ declare var QRect: QRectConstructor;
 
 type QBasicObject = QPoint | QSize | QRect;
 
-type QVariant = null;
-
-type QWidgets = QWidget | QLabel;
-
-interface QWidget extends QObject {
-    readonly modal: boolean;
-    readonly windowModality: number;
-    readonly enabled: boolean;
-    readonly geometry: QVariant;
-    readonly frameGeometry: QVariant;
-    readonly normalGeometry: QVariant;
-    readonly x: number;
-    readonly y: number;
-    readonly pos: QVariant;
-    readonly frameSize: QVariant;
-    readonly size: QVariant;
-    readonly width: number;
-    readonly height: number;
-    readonly rect: QVariant;
-    readonly childrenRect: QVariant;
-    readonly childrenRegion: QVariant;
-    readonly sizePolicy: QVariant;
-    readonly minimumSize: QVariant;
-    readonly maximumSize: QVariant;
-    readonly minimumWidth: number;
-    readonly minimumHeight: number;
-    readonly maximumWidth: number;
-    readonly maximumHeight: number;
-    readonly sizeIncrement: QVariant;
-    readonly baseSize: QVariant;
-    readonly palette: QVariant;
-    readonly font: QVariant;
-    readonly cursor: QVariant;
-    readonly mouseTracking: boolean;
-    readonly tabletTracking: boolean;
-    readonly isActiveWindow: boolean;
-    readonly focusPolicy: number;
-    readonly focus: boolean;
-    readonly contextMenuPolicy: number;
-    readonly updatesEnabled: boolean;
-    readonly visible: boolean;
-    readonly minimized: boolean;
-    readonly maximized: boolean;
-    readonly fullScreen: boolean;
-    readonly sizeHint: QVariant;
-    readonly minimumSizeHint: QVariant;
-    readonly acceptDrops: boolean;
-    readonly windowTitle: string;
-    readonly windowIcon: QVariant;
-    readonly windowIconText: string;
-    readonly windowOpacity: number;
-    readonly windowModified: boolean;
-    readonly toolTip: string;
-    readonly toolTipDuration: number;
-    readonly statusTip: string;
-    readonly whatsThis: string;
-    readonly accessibleName: string;
-    readonly accessibleDescription: string;
-    readonly layoutDirection: string;
-    readonly autoFillBackground: boolean;
-    readonly styleSheet: string;
-    readonly locale: QVariant;
-    readonly windowFilePath: string;
-    readonly inputMethodHints: number;
-
-    destroyed(o: QObject): void;
-
-    destroyed(): boolean;
-
-    objectNameChanged(s: string): void;
-
-    deleteLater(): void;
-
-    windowTitleChanged(s: string): void;
-
-    windowIconChanged(icon: QVariant): void;
-
-    windowIconTextChanged(s: string): void;
-
-    customContextMenuRequested(p: QVariant): void;
-
-    setEnabled(b: boolean): void;
-
-    setDisabled(b: boolean): void;
-
-    setWindowModified(b: boolean): void;
-
-    setWindowTitle(s: string): void;
-
-    setStyleSheet(s: string): void;
-
-    setFocus(): void;
-
-    update(): void;
-
-    repaint(): void;
-
-    setVisible(b: boolean): void;
-
-    setHidden(b: boolean): void;
-
-    show(): void;
-
-    hide(): void;
-
-    showMinimized(): void;
-
-    showMaximized(): void;
-
-    showFullScreen(): void;
-
-    showNormal(): void;
-
-    close(): void;
-
-    raise(): void;
-
-    lower(): void;
-
-    updateMicroFocus(): void;
-
-    grab(r: QVariant): void;
-
-    grab(): void;
+interface QVariant {
 }
-
-interface QMainWindow extends QWidget {
-    readonly iconSize: QVariant;
-    readonly toolButtonStyle: number;
-    readonly animated: boolean;
-    readonly documentMode: boolean;
-    readonly tabShape: number;
-    readonly dockNestingEnabled: boolean;
-    readonly dockOptions: number;
-    readonly unifiedTitleAndToolBarOnMac: boolean;
-
-    iconSizeChanged(s: QVariant): void;
-
-    toolButtonStyleChanged(n: number): void;
-
-    tabifiedDockWidgetActivated(w: QWidget): void;
-
-    setAnimated(b: boolean): void;
-
-    setDockNestingEnabled(b: boolean): void;
-
-    setUnifiedTitleAndToolBarOnMac(b: boolean): void;
-}
-
-interface QLabel extends QWidget {
-    readonly text: string;
-    textFormat: number;
-    pixmap: QVariant;
-    scaledContents: boolean;
-    alignment: number;
-    wordWrap: boolean;
-    margin: number;
-    indent: number;
-    openExternalLinks: boolean;
-    textInteractionFlags: number;
-    hasSelectedText: boolean;
-    selectedText: string;
-
-    setText(text: string): void;
-
-    setTextFormat(n: number): void;
-
-    setPixmap(p: QVariant): void;
-
-    setScaledContents(b: boolean): void;
-
-    setAlignment(n: number): void;
-
-    setWordWrap(b: boolean): void;
-
-    setMargin(m: number): void;
-
-    setIndent(i: number): void;
-
-    setOpenExternalLinks(b: boolean): void;
-
-    setTextInteractionFlags(n: number): void;
-}
-
-interface QApplicationWindow extends QWidget {
-    createWidget(type: string): QWidgets;
-
-    createWidget(type: string, id: string): QWidgets;
-
-    place(w: QWidgets, x: QBasicObject): void;
-
-    findChild(s: string): QWidgets;
-}
-
-declare var qApplicationWindow: QApplicationWindow;
 
 declare function typecast(obj: QVariant): QSize | QRect;
 
 declare function typecast(type: string, obj: QBasicObject): QVariant;
+
+interface QWidget {
+    show(): void;
+
+    hide(): void;
+
+    setGeometry(rect: QRect): void;
+}
+
+interface QLabel extends QWidget {
+    setText(text: string): void;
+}
+
+interface QColorLabel extends QLabel {
+}
+
+interface QAbstractButton extends QWidget {
+}
+
+interface QPushButton extends QAbstractButton {
+}
+
+interface QToolButton extends QAbstractButton {
+}
+
+interface QNavigator extends QWidget {
+}
+
+interface QLineEdit extends QWidget {
+}
+
+interface QApplicationWindow extends QWidget {
+    findChild(s: string): QWidget;
+
+    place(w: QWidget, x: QVariant): void;
+
+    loadStylesheet(filename: string): void;
+
+    loadFont(filename: string): number;
+
+    setDefaultFont(fontFamily: string): void;
+
+    qLabel(id: string): QLabel;
+
+    qColorLabel(id: string): QColorLabel;
+
+    qPushButton(id: string): QPushButton;
+
+    qToolButton(id: string): QToolButton;
+
+    qNavigator(id: string): QNavigator;
+
+    qLineEdit(id: string): QLineEdit;
+
+    setLabelText(label: QLabel, text: string): void;
+
+    setWidgetGeometry(widget: QWidget, geo: QRect): void;
+
+    setWidgetVisible(widget: QWidget, visible: boolean): void;
+
+    setButtonText(button: QAbstractButton, text: string): void;
+
+    setButtonIcon(button: QAbstractButton, icon: string): void;
+
+    setButtonIconSize(button: QAbstractButton, size: QSize): void;
+
+    setLineEditText(edit: QLineEdit, text: string): void;
+
+    setLineEditPlaceholder(edit: QLineEdit, text: string): void;
+}
+
+declare var qApplicationWindow: QApplicationWindow;
