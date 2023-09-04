@@ -1,4 +1,4 @@
-#include "QLinearSpinner.h"
+#include "../include/QLinearSpinner.h"
 
 #include <QtGui/QPen>
 #include <QtGui/QPainter>

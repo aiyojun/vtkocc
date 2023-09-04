@@ -2,7 +2,10 @@ interface QObject {
     readonly objectName: string;
 }
 
-interface QPoint {
+interface QVariantObject {
+}
+
+interface QPoint extends QVariantObject {
     x: number;
     y: number;
 }
@@ -17,7 +20,7 @@ interface QPointConstructor {
 
 declare var QPoint: QSizeConstructor;
 
-interface QSize {
+interface QSize extends QVariantObject {
     width: number;
     height: number;
 }
@@ -32,7 +35,7 @@ interface QSizeConstructor {
 
 declare var QSize: QSizeConstructor;
 
-interface QRect {
+interface QRect extends QVariantObject {
     x: number;
     y: number;
     width: number;
@@ -49,14 +52,13 @@ interface QRectConstructor {
 
 declare var QRect: QRectConstructor;
 
-type QBasicObject = QPoint | QSize | QRect;
 
-interface QVariant {
+interface QVariant<T extends QVariantObject> {
 }
 
-declare function typecast(obj: QVariant): QSize | QRect;
+declare function typecast(obj: QVariant<QVariantObject>): QSize | QRect | QPoint;
 
-declare function typecast(type: string, obj: QBasicObject): QVariant;
+declare function typecast(type: string, obj: QVariantObject): QVariant<QVariantObject>;
 
 interface QWidget {
     show(): void;
@@ -77,6 +79,7 @@ interface QAbstractButton extends QWidget {
 }
 
 interface QPushButton extends QAbstractButton {
+    readonly text: string;
 }
 
 interface QToolButton extends QAbstractButton {
@@ -88,10 +91,15 @@ interface QNavigator extends QWidget {
 interface QLineEdit extends QWidget {
 }
 
+interface QLinearSpinner extends QWidget {
+}
+
 interface QApplicationWindow extends QWidget {
     findChild(s: string): QWidget;
 
-    place(w: QWidget, x: QVariant): void;
+    place(w: QWidget, x: QVariant<QVariantObject>): void;
+
+    setSize(w: QWidget, size: QVariant<QVariantObject>): void;
 
     loadStylesheet(filename: string): void;
 
@@ -111,9 +119,11 @@ interface QApplicationWindow extends QWidget {
 
     qLineEdit(id: string): QLineEdit;
 
+    qLinearSpinner(id: string): QLinearSpinner;
+
     setLabelText(label: QLabel, text: string): void;
 
-    setWidgetGeometry(widget: QWidget, geo: QRect): void;
+    setWidgetGeometry(widget: QWidget, geo: QVariant<QVariantObject>): void;
 
     setWidgetVisible(widget: QWidget, visible: boolean): void;
 

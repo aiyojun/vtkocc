@@ -1,4 +1,4 @@
-QJsonView { background-color: #fff; }
+QJsonWidget { background-color: #fff; }
 
 QLabel { font-size: 14px; margin-left: 8px; }
 QColorfulLabel { border-radius: 8px; margin: 2px 8px; background-color: lightpink; color: #333; }

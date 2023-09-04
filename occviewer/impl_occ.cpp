@@ -1,54 +1,10 @@
-#include "PerformanceImporter.h"
-#include "HighRender.h"
-
-#include <STEPControl_Reader.hxx>
-#include <XSControl_WorkSession.hxx>
-#include <Transfer_TransientProcess.hxx>
-#include <StlAPI_Reader.hxx>
-#include <IGESControl_Reader.hxx>
-#include <BRep_Builder.hxx>
-#include <BRepTools.hxx>
-#include <XCAFApp_Application.hxx>
-#include <STEPCAFControl_Reader.hxx>
-#include <XCAFDoc_DocumentTool.hxx>
-#include <XCAFDoc_ShapeTool.hxx>
-#include <XCAFDoc_ColorTool.hxx>
-#include <XCAFDoc_LayerTool.hxx>
-#include <XCAFPrs_AISObject.hxx>
-#include <BinXCAFDrivers.hxx>
-#include <XmlXCAFDrivers.hxx>
-#include <TDocStd_Application.hxx>
-#include <Graphic3d_RenderingParams.hxx>
-#include <Quantity_Color.hxx>
-#include <AIS_ViewCube.hxx>
-#include <Aspect_DisplayConnection.hxx>
-#include <OpenGl_GraphicDriver.hxx>
-#include <TDF_IDList.hxx>
-
-#include <string>
-#include <regex>
-#include <algorithm>
-#include <Message.hxx>
-#include <WNT_Window.hxx>
-#include <BRepPrimAPI_MakeBox.hxx>
-#include <TDataStd_Name.hxx>
-#include <TDataStd_TreeNode.hxx>
-#include <TDataStd_Integer.hxx>
-#include <TDocStd_Owner.hxx>
-#include <TNaming_NamedShape.hxx>
-#include <TNaming_UsedShapes.hxx>
-#include <XCAFDoc_Color.hxx>
-#include <XCAFDoc_ShapeMapTool.hxx>
-#include <XCAFDoc_Location.hxx>
-#include "imp.h"
-
+#include "basic_occ.h"
+#include "import_occ.h"
+#include "import_cpp.h"
+#include "import_qt.h"
 #include "json.hpp"
-#include "ds.h"
 
 using nlohmann::json;
-
-
-void ShowLabel(const TDF_Label& label, int depth=1);
 
 std::string to_string(const TCollection_ExtendedString& text) {
     std::string s;
@@ -57,6 +13,10 @@ std::string to_string(const TCollection_ExtendedString& text) {
     text.ToUTF8CString(p);
     return s;
 }
+
+// ----
+
+void ShowLabel(const TDF_Label& label, int depth=1);
 
 void PerformanceImporter::run() {
     if (_filename.empty()) {
@@ -106,9 +66,9 @@ void PerformanceImporter::ValidateTask() {
             _filename, std::regex("(.)+\\.(step|stp|STEP|STP|stl|STL|igs|iges|IGS|IGES|brep|BREP)$")))
         throw ModelReadException(
                 std::string("unknown model format : ")
-                    .append(_filename)
-                    .append(", only suport stl/step/iges/brep")
-                    .c_str());
+                        .append(_filename)
+                        .append(", only suport stl/step/iges/brep")
+                        .c_str());
 }
 
 void PerformanceImporter::ReadSync() {

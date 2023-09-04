@@ -7,7 +7,7 @@
 #include <QtWidgets/QWidget>
 #include <QtWidgets/QScrollArea>
 #include <QtWidgets/QBoxLayout>
-#include "ds_tree.h"
+#include "basic_tree.h"
 
 struct NavItem {
     QString icon;

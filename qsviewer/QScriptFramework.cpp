@@ -24,7 +24,7 @@ QScriptValue println(QScriptContext *context, QScriptEngine *engine) {
             s.append(arg.toString());
         }
     }
-    qDebug().noquote() << s;
+    qDebug().noquote() << "[QScript] " << s;
     return engine->undefinedValue();
 }
 
@@ -57,13 +57,13 @@ json convert(const QScriptValue& sv) {
 
 QScriptValue convert(QScriptEngine *engine, json j) {
     if (j.is_string())
-        return QScriptValue(QString(j.get<std::string>().c_str()));
+        return {QString(j.get<std::string>().c_str())};
     if (j.is_number_integer())
-        return QScriptValue(j.get<int>());
+        return {j.get<int>()};
     if (j.is_number_float())
-        return QScriptValue(j.get<double>());
+        return {j.get<double>()};
     if (j.is_boolean())
-        return QScriptValue(j.get<bool>());
+        return {j.get<bool>()};
     if (j.is_null())
         return engine->nullValue();
     if (j.is_array()) {
@@ -125,36 +125,100 @@ QScriptValue typecast(QScriptContext *context, QScriptEngine *engine) {
     return engine->nullValue();
 }
 
-using QWidgetBuilder = std::function<QWidget *()>;
+//using QWidgetBuilder = std::function<QWidget *()>;
 
-void RunQScript(const QString& script) {
-    QString preload = readFile("C:\\jpro\\vtkocc\\resources\\qscriptpreload.js");
-    QScriptEngine engine;
+//void RunQScript(const QString& script) {
+//    QString preload = readFile(":/qscriptpreload.js");
+//    QScriptEngine engine;
+//    QScriptValue console = engine.newObject();
+//    console.setProperty("info" , engine.newFunction(println));
+//    console.setProperty("error", engine.newFunction(println));
+//    console.setProperty("warn" , engine.newFunction(println));
+//    console.setProperty("debug", engine.newFunction(println));
+//    console.setProperty("log"  , engine.newFunction(println));
+//    auto *window = new QApplicationWindow();
+//    engine.globalObject().setProperty("console", console);
+//    engine.globalObject().setProperty("typecast", engine.newFunction(typecast));
+//    engine.globalObject().setProperty("qApplicationWindow", engine.newQObject(window));
+//    engine.evaluate(preload);
+//    QScriptValue result = engine.evaluate(script);
+//    if (engine.hasUncaughtException())  {
+//        int line = engine.uncaughtExceptionLineNumber();
+//        qFatal(QString("uncaught exception at line ").append(std::to_string(line).c_str()).append(" : ").append(result.toString()).toStdString().c_str());
+//    }
+//}
+
+QApplicationWindow::QApplicationWindow(const QString& filename): _scriptPath(filename) {
+    load();
+}
+
+QApplicationWindow::~QApplicationWindow() {
+    clear();
+}
+
+void QApplicationWindow::load() {
+    QString preload = readFile(":/qscriptpreload.js");
+    QScriptEngine& engine = _engine;
     QScriptValue console = engine.newObject();
     console.setProperty("info" , engine.newFunction(println));
     console.setProperty("error", engine.newFunction(println));
     console.setProperty("warn" , engine.newFunction(println));
     console.setProperty("debug", engine.newFunction(println));
     console.setProperty("log"  , engine.newFunction(println));
-    auto *window = new QApplicationWindow();
+    auto *window = this;
+//    auto *window = new QApplicationWindow();
     engine.globalObject().setProperty("console", console);
     engine.globalObject().setProperty("typecast", engine.newFunction(typecast));
     engine.globalObject().setProperty("qApplicationWindow", engine.newQObject(window));
-//    qDebug() << "-- qscriptpreload.js : " << preload;
     engine.evaluate(preload);
-    QScriptValue result = engine.evaluate(script);
+    QScriptValue result = engine.evaluate(QtUtils::readFile(_scriptPath));
     if (engine.hasUncaughtException())  {
         int line = engine.uncaughtExceptionLineNumber();
         qFatal(QString("uncaught exception at line ").append(std::to_string(line).c_str()).append(" : ").append(result.toString()).toStdString().c_str());
     }
 }
 
-QApplicationWindow::QApplicationWindow() {
-
+void QApplicationWindow::clear() {
+    for (auto &p : _widgets) { p->hide(); R_PTR(p) } _widgets.clear();
 }
 
-QApplicationWindow::~QApplicationWindow() {
+void QApplicationWindow::hotReload() {
+    qDebug() << "QApplicationWindow::hotReload()";
+    clear();
+    repaint();
+    hide();
+    QScriptEngine& engine = _engine;
+    QScriptValue result = engine.evaluate(QtUtils::readFile(_scriptPath));
+    if (engine.hasUncaughtException())  {
+        int line = engine.uncaughtExceptionLineNumber();
+        qFatal(QString("uncaught exception at line ").append(std::to_string(line).c_str()).append(" : ").append(result.toString()).toStdString().c_str());
+    }
+    show();
+}
 
+void QApplicationWindow::place(QWidget *w, QPoint p) {
+    qDebug() << "QApplicationWindow::place(" << w->objectName() << ", " << p << ")";
+    w->move(p);
+}
+
+void QApplicationWindow::setSize(QWidget *w, QSize size) {
+    qDebug() << "QApplicationWindow::setSize(" << w->objectName() << ", " << size << ")";
+    w->resize(size);
+}
+
+void QApplicationWindow::loadStylesheet(QString filename) {
+    qDebug() << "QApplicationWindow::loadStylesheet(" << filename << ")";
+    setStyleSheet(QtUtils::readFile(filename));
+}
+
+int QApplicationWindow::loadFont(QString filename) {
+    qDebug() << "QApplicationWindow::loadFont(" << filename << ")";
+    return QFontDatabase::addApplicationFont(filename);
+}
+
+void QApplicationWindow::setDefaultFont(QString fontFamily) {
+    qDebug() << "QApplicationWindow::setDefaultFont(" << fontFamily << ")";
+    QApplication::setFont(QFont(fontFamily));
 }
 
 #define IMPLEMENTATION_BUILD_WIDGET(CLS) \
@@ -187,11 +251,17 @@ QWidget *QApplicationWindow::qLineEdit(QString id) {
     IMPLEMENTATION_BUILD_WIDGET(QLineEdit)
 }
 
+QWidget *QApplicationWindow::qLinearSpinner(QString id) {
+    IMPLEMENTATION_BUILD_WIDGET(QLinearSpinner)
+}
+
 void QApplicationWindow::setWidgetGeometry(QWidget *widget, QRect geo) {
+    qDebug() << "QApplicationWindow::setWidgetGeometry(" << widget->objectName() << ", " << geo << ")";
     widget->setGeometry(geo);
 }
 
 void QApplicationWindow::setWidgetVisible(QWidget *widget, bool visible) {
+    qDebug() << "QApplicationWindow::setWidgetVisible(" << widget->objectName() << ", " << (visible ? "true" : "false") << ")";
     if (visible)
         widget->show();
     else
@@ -199,14 +269,17 @@ void QApplicationWindow::setWidgetVisible(QWidget *widget, bool visible) {
 }
 
 void QApplicationWindow::setButtonText(QAbstractButton *button, QString text) {
+    qDebug() << "QApplicationWindow::setButtonText(" << button->objectName() << ", " << text << ")";
     button->setText(text);
 }
 
 void QApplicationWindow::setButtonIcon(QAbstractButton *button, QString icon) {
+    qDebug() << "QApplicationWindow::setButtonIcon(" << button->objectName() << ", " << icon << ")";
     button->setIcon(QIcon(icon));
 }
 
 void QApplicationWindow::setButtonIconSize(QAbstractButton *button, QSize size) {
+    qDebug() << "QApplicationWindow::setButtonIconSize(" << button->objectName() << ", " << size << ")";
     button->setIconSize(size);
 }
 

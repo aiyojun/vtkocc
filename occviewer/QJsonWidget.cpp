@@ -1,7 +1,9 @@
-#include "QJsonView.h"
+#include "QJsonWidget.h"
 #include "QOccWidget.h"
-#include "../libui/QLinearSpinner.h"
-#include "../libui/QNavigator.h"
+#include "QLinearSpinner.h"
+#include "QNavigator.h"
+#include "basic_qt.h"
+#include "QColorLabel.h"
 
 namespace js {
 
@@ -79,13 +81,10 @@ namespace js {
 }
 
 
-QColorfulLabel::QColorfulLabel(QWidget *parent): QLabel(parent) {
-}
-
-QJsonView::QJsonView(const json &ui, QRenderThread *r, QWidget *parent): QMainWindow(parent), _render(r), _ui(ui) {
+QJsonWidget::QJsonWidget(const json &ui, QRenderThread *r, QWidget *parent): QMainWindow(parent), _render(r), _ui(ui) {
     QRect beginPos(0, 0,
-                   QtTools::calcSize(0, _ui["width"].get<std::string>()),
-                   QtTools::calcSize(0, _ui["height"].get<std::string>()));
+                   cssstyle_compute(0, _ui["width"].get<std::string>()),
+                   cssstyle_compute(0, _ui["height"].get<std::string>()));
     qDebug() << "-- Parsing ui.json";
     parse(JvContext(ui, beginPos));
     QOccWidget *viewer = (QOccWidget *) getWidget("occViewer");
@@ -104,7 +103,7 @@ QJsonView::QJsonView(const json &ui, QRenderThread *r, QWidget *parent): QMainWi
     link();
 }
 
-void QJsonView::parse(JvContext context) {
+void QJsonWidget::parse(JvContext context) {
     auto &ui = context.ui;
     auto &area = context.area;
     js::expectString(ui, "name");
@@ -117,8 +116,8 @@ void QJsonView::parse(JvContext context) {
         for (auto& child : ui["children"]) {
             js::expectString(child, "width" );
             js::expectString(child, "height");
-            auto w = QtTools::calcSize(area.width() , child["width" ].get<std::string>());
-            auto h = QtTools::calcSize(area.height(), child["height"].get<std::string>());
+            auto w = cssstyle_compute(area.width() , child["width" ].get<std::string>());
+            auto h = cssstyle_compute(area.height(), child["height"].get<std::string>());
             parse(JvContext(child, QRect(biasX, area.y(), w, h)));
             biasX += w;
         }
@@ -128,18 +127,18 @@ void QJsonView::parse(JvContext context) {
         for (auto& child : ui["children"]) {
             js::expectString(child, "width" );
             js::expectString(child, "height");
-            auto w = QtTools::calcSize(area.width() , child["width" ].get<std::string>());
-            auto h = QtTools::calcSize(area.height(), child["height"].get<std::string>());
+            auto w = cssstyle_compute(area.width() , child["width" ].get<std::string>());
+            auto h = cssstyle_compute(area.height(), child["height"].get<std::string>());
             parse(JvContext(child, QRect(area.x(), biasY, w, h)));
             biasY += h;
         }
     } else if (type == "QOccWidget") {
         auto *widget = new QOccWidget(this);
         addWidget(name, (QWidget *) widget);
-    } else if (type == "QColorfulLabel") {
+    } else if (type == "QColorLabel") {
         js::expectString(ui, "text");
         auto text = ui["text"].get<std::string>();
-        auto *label = new QColorfulLabel(QString(text.c_str()), this);
+        auto *label = new QColorLabel(QString(text.c_str()), this);
         label->setAlignment(Qt::AlignVCenter);
         addWidget(name, (QWidget *) label);
     } else if (type == "QLabel") {
@@ -176,14 +175,14 @@ void QJsonView::parse(JvContext context) {
     }
 }
 
-void QJsonView::loopSetGeometry(const json& ui, QRect area) {
+void QJsonWidget::loopSetGeometry(const json& ui, QRect area) {
     auto name = ui["name"].get<std::string>();
     auto type = ui["type"].get<std::string>();
     auto *widget = getWidget(name);
     if (widget != nullptr) {
-        if (type == "QColorfulLabel") {
-            auto *label = (QColorfulLabel *) widget;
-            auto padding = QtTools::calcSize(0, ui["padding"].get<std::string>());
+        if (type == "QColorLabel") {
+            auto *label = (QColorLabel *) widget;
+            auto padding = cssstyle_compute(0, ui["padding"].get<std::string>());
             QFontMetrics metrics(label->font());
             label->setGeometry(area.x(), area.y(), metrics.width(label->text()) + padding * 2, area.height());
         } else {
@@ -196,11 +195,11 @@ void QJsonView::loopSetGeometry(const json& ui, QRect area) {
         bool reverse = js::hasBool(ui, "reverse") && ui["reverse"].get<bool>();
         int biasX = reverse ? (area.x() + area.width()) : area.x();
         for (auto& child : ui["children"]) {
-            auto w = QtTools::calcSize(area.width() , child["width" ].get<std::string>());
-            auto h = QtTools::calcSize(area.height(), child["height"].get<std::string>());
+            auto w = cssstyle_compute(area.width() , child["width" ].get<std::string>());
+            auto h = cssstyle_compute(area.height(), child["height"].get<std::string>());
             if (js::hasString(child, "position") && child["position"].get<std::string>() == "absolute") {
-                int x = js::hasString(child, "x") ? (area.x() + QtTools::calcSize(area.width() , child["x"].get<std::string>())) : area.x();
-                int y = js::hasString(child, "y") ? (area.y() + QtTools::calcSize(area.height(), child["y"].get<std::string>())) : area.y();
+                int x = js::hasString(child, "x") ? (area.x() + cssstyle_compute(area.width() , child["x"].get<std::string>())) : area.x();
+                int y = js::hasString(child, "y") ? (area.y() + cssstyle_compute(area.height(), child["y"].get<std::string>())) : area.y();
                 loopSetGeometry(child, QRect(x, y, w, h));
                 continue;
             }
@@ -211,8 +210,8 @@ void QJsonView::loopSetGeometry(const json& ui, QRect area) {
         bool reverse = js::hasBool(ui, "reverse") && ui["reverse"].get<bool>();
         int biasY = area.y();
         for (auto& child : ui["children"]) {
-            auto w = QtTools::calcSize(area.width() , child["width" ].get<std::string>());
-            auto h = QtTools::calcSize(area.height(), child["height"].get<std::string>());
+            auto w = cssstyle_compute(area.width() , child["width" ].get<std::string>());
+            auto h = cssstyle_compute(area.height(), child["height"].get<std::string>());
             if (js::hasString(child, "position") && child["position"].get<std::string>() == "absolute") {
                 loopSetGeometry(child, QRect(area.x(), area.y(), w, h));
                 continue;
@@ -223,7 +222,7 @@ void QJsonView::loopSetGeometry(const json& ui, QRect area) {
     }
 }
 
-void QJsonView::traverse(const json &ui, std::function<void(const json &)> callback) {
+void QJsonWidget::traverse(const json &ui, std::function<void(const json &)> callback) {
     callback(ui);
     auto type = ui["type"].get<std::string>();
     if (!std::regex_match(type, std::regex(".*Layout$")))
@@ -233,26 +232,26 @@ void QJsonView::traverse(const json &ui, std::function<void(const json &)> callb
     }
 }
 
-void QJsonView::resizeEvent(QResizeEvent *event) {
+void QJsonWidget::resizeEvent(QResizeEvent *event) {
 //    QWidget::resizeEvent(event);
     auto size = event->size();
     loopSetGeometry(_ui, QRect(0, 0, size.width(), size.height()));
 }
 
 
-void QJsonView::setStatusBarText(QString text) {
+void QJsonWidget::setStatusBarText(QString text) {
     auto *label = (QLabel *) getWidget("statusText");
     label->setText(QString("- ").append(text));
 }
 
-void QJsonView::openLocalFileList() {
+void QJsonWidget::openLocalFileList() {
     QString filepath = QFileDialog::getOpenFileName((QWidget *) this, QStringLiteral("Select a file"));
     if (filepath.isEmpty()) return;
     emit openLocalFile(filepath);
     getWidget("occViewerSpinner")->show();
 }
 
-void QJsonView::setSidebar(QString text) {
+void QJsonWidget::setSidebar(QString text) {
     json j = json::parse(text.toStdString());
     //{"depth":1,"document_format":"BinXCAF","filename":"carving-machine.stp","filetype":"stp","is_assembly":true,"node_number":632}
     ((QLabel *) getWidget("clText0"))->setText(QString("Filename: ").append(j["filename"].get<std::string>().c_str()));
@@ -265,22 +264,22 @@ void QJsonView::setSidebar(QString text) {
     loopSetGeometry(_ui, QRect(0, 0, size.width(), size.height()));
 }
 
-void QJsonView::hideSpinner() {
+void QJsonWidget::hideSpinner() {
     getWidget("occViewerSpinner")->hide();
 }
 
-QWidget *QJsonView::getWidget(const std::string &name)  {
+QWidget *QJsonWidget::getWidget(const std::string &name)  {
     if (_widgets.find(QString(name.c_str())) == _widgets.end())
         return nullptr;
     return _widgets[QString(name.c_str())];
 }
 
-void QJsonView::addWidget(const std::string &name, QWidget *p) {
+void QJsonWidget::addWidget(const std::string &name, QWidget *p) {
     p->setObjectName(QString(name.c_str()));
     _widgets[QString(name.c_str())] = p;
 }
 
-void QJsonView::link() {
+void QJsonWidget::link() {
     QObject::connect((QPushButton *) getWidget("openFolder"), SIGNAL(clicked()), this, SLOT(openLocalFileList()));
     QObject::connect((QPushButton *) getWidget("makeBevel" ), SIGNAL(clicked()), _render, SLOT(makeBevel()));
     QObject::connect((QPushButton *) getWidget("addCube"   ), SIGNAL(clicked()), _render, SLOT(makeCube()));
@@ -293,7 +292,7 @@ void QJsonView::link() {
     QObject::connect(_render, SIGNAL(sendAssemblyTree(QString)),  this, SLOT(setAssemblyTree(QString)));
 }
 
-Navigation* QJsonView::loopParseTree(const json& node, int depth) {
+Navigation* QJsonWidget::loopParseTree(const json& node, int depth) {
     auto *nav = Navigation::build(js::getString(node, "text").c_str(), js::getString(node, "icon").c_str());
     if (js::hasArray(node, "children") && !node["children"].empty()) {
         for (const auto &j : node["children"]) {
@@ -305,7 +304,7 @@ Navigation* QJsonView::loopParseTree(const json& node, int depth) {
     return nav;
 }
 
-void QJsonView::setAssemblyTree(QString text) {
+void QJsonWidget::setAssemblyTree(QString text) {
 //    qDebug() << "-- assembly tree : \n" << text;
     auto *navigator = (QNavigator *) getWidget("navigator");//((QScrollNavigator *) getWidget("sidebar"))->getNavigator();
     auto j = json::parse(text.toStdString());

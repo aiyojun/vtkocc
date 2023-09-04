@@ -1,22 +1,4 @@
-#include "imp.h"
-#include <Message.hxx>
-#include <StdSelect_BRepOwner.hxx>
-#include <SelectMgr_Selection.hxx>
-#include <StdSelect_BRepSelectionTool.hxx>
-#include <TopoDS.hxx>
-#include <Prs3d_ShapeTool.hxx>
-#include <BRepLib_MakeEdge.hxx>
-#include <BRepBuilderAPI_MakeEdge.hxx>
-#include <PrsMgr_Presentation.hxx>
-#include <StdPrs_ShapeTool.hxx>
-#include <Select3D_SensitiveSegment.hxx>
-#include <StdFail_NotDone.hxx>
-#include <StdSelect_Shape.hxx>
-#include <StdSelect_EdgeFilter.hxx>
-#include <StdSelect_BRepOwner.hxx>
 #include "QRenderThread.h"
-#include "HighRender.h"
-#include "Modeling.h"
 
 QRenderThread::QRenderThread(QObject *parent) : QObject(parent),
     _reader(new PerformanceImporter), _isWorking(false), _taskType(TaskType::NONE),

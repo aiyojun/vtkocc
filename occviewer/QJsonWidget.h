@@ -1,9 +1,8 @@
-#ifndef VTKOCC_QJSONVIEW_H
-#define VTKOCC_QJSONVIEW_H
+#ifndef VTKOCC_QJSONWIDGET_H
+#define VTKOCC_QJSONWIDGET_H
 
-#include "imp.h"
 #include "QRenderThread.h"
-#include "../libui/QNavigator.h"
+#include "QNavigator.h"
 #include "json.hpp"
 
 using nlohmann::json;
@@ -16,22 +15,12 @@ public:
     JvContext(const json &ui, QRect a) : ui(ui), area(a) {}
 };
 
-class QColorfulLabel : public QLabel {
-    Q_OBJECT
-public:
-    explicit QColorfulLabel(QWidget *parent = nullptr);
-
-    explicit QColorfulLabel(const QString& text, QWidget *parent = nullptr) : QLabel(text, parent) {}
-
-    ~QColorfulLabel() override = default;
-};
-
-class QJsonView : public QMainWindow {
+class QJsonWidget : public QMainWindow {
 Q_OBJECT
 public:
-    explicit QJsonView(const json &ui, QRenderThread *r, QWidget *parent = nullptr);
+    explicit QJsonWidget(const json &ui, QRenderThread *r, QWidget *parent = nullptr);
 
-    ~QJsonView() override = default;
+    ~QJsonWidget() override = default;
 
     QWidget *getWidget(const std::string &name);
 
@@ -74,4 +63,4 @@ private:
 };
 
 
-#endif //VTKOCC_QJSONVIEW_H
+#endif //VTKOCC_QJSONWIDGET_H

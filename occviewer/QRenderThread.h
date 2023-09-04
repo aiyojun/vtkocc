@@ -1,17 +1,9 @@
 #ifndef VTKOCC_QRENDERTHREAD_H
 #define VTKOCC_QRENDERTHREAD_H
 
-#include <Standard_Handle.hxx>
-#include <V3d_View.hxx>
-#include <V3d_Viewer.hxx>
-#include <AIS_InteractiveContext.hxx>
-#include <AIS_InteractiveObject.hxx>
-#include <AIS_Shape.hxx>
-#include <AIS_ViewController.hxx>
-#include <QtGui/QMouseEvent>
-#include <QtCore/QWaitCondition>
-#include <QtCore/QMutex>
-#include "PerformanceImporter.h"
+#include "import_occ.h"
+#include "import_qt.h"
+#include "basic_occ.h"
 
 class QRenderThread : public QObject {
 Q_OBJECT

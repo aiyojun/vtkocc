@@ -1,5 +1,5 @@
-#ifndef VTKOCC_DS_TREE_H
-#define VTKOCC_DS_TREE_H
+#ifndef VTKOCC_BASIC_TREE_H
+#define VTKOCC_BASIC_TREE_H
 
 #include <vector>
 #include <string>
@@ -34,4 +34,4 @@ void Node<T>::addChild(Node<T> *c)  {
     _children.emplace_back(c);
 }
 
-#endif //VTKOCC_DS_TREE_H
+#endif //VTKOCC_BASIC_TREE_H

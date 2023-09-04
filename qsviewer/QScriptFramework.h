@@ -1,39 +1,11 @@
 #ifndef VTKOCC_QSCRIPTFRAMEWORK_H
 #define VTKOCC_QSCRIPTFRAMEWORK_H
 
-#include <string>
-#include <functional>
-
-#include <QtCore/QString>
-#include <QtCore/QVector>
-#include <QtCore/QDebug>
-#include <QtCore/QMap>
-#include <QtCore/QFile>
-#include <QtCore/QVariant>
-#include <QtCore/QResource>
-
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QFrame>
-#include <QtWidgets/QWidget>
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QToolButton>
-#include <QtWidgets/QLineEdit>
-#include <QtWidgets/QApplication>
-
-#include <QtScript/QScriptEngine>
-#include <QtScript/QScriptClass>
-#include <QtScript/QScriptContext>
-#include <QtScript/QScriptValue>
-#include <QtScript/QScriptClass>
-#include <QtScript/QScriptValueIterator>
-#include <QtGui/QFontDatabase>
-
-#include "../libs3rd/json.hpp"
-#include "../libui/QColorLabel.h"
-#include "../libui/QLinearSpinner.h"
-#include "../libui/QNavigator.h"
-
+#include "basic_qt.h"
+#include "QColorLabel.h"
+#include "QLinearSpinner.h"
+#include "QNavigator.h"
+#include "json.hpp"
 
 using nlohmann::json;
 
@@ -51,22 +23,28 @@ QScriptValue convert(QScriptEngine *engine, json j);
 
 QScriptValue typecast(QScriptContext *context, QScriptEngine *engine);
 
+//void RunQScript(const QString &script);
+
 class QApplicationWindow : public QMainWindow {
-Q_OBJECT
+    Q_OBJECT
 public:
-    QApplicationWindow();
+    explicit QApplicationWindow(const QString& filename);
 
     ~QApplicationWindow() override;
 
-//    Q_INVOKABLE QWidget *createWidget(const QString &type, const QString &id = "");
+public Q_SLOTS:
 
-    Q_INVOKABLE void place(QWidget *w, QPoint p) { w->move(p); }
+    Q_INVOKABLE void hotReload();
 
-    Q_INVOKABLE void loadStylesheet(QString filename) { QResource::registerResource(filename); }
+    Q_INVOKABLE void place(QWidget *w, QPoint p);
 
-    Q_INVOKABLE int loadFont(QString filename) { return QFontDatabase::addApplicationFont(filename); }
+    Q_INVOKABLE void setSize(QWidget *w, QSize size);
 
-    Q_INVOKABLE void setDefaultFont(QString fontFamily) { QApplication::setFont(QFont(fontFamily)); }
+    Q_INVOKABLE void loadStylesheet(QString filename);
+
+    Q_INVOKABLE int loadFont(QString filename);
+
+    Q_INVOKABLE void setDefaultFont(QString fontFamily);
 
     Q_INVOKABLE QWidget *qLabel(QString id);
 
@@ -79,6 +57,8 @@ public:
     Q_INVOKABLE QWidget *qNavigator(QString id);
 
     Q_INVOKABLE QWidget *qLineEdit(QString id);
+
+    Q_INVOKABLE QWidget *qLinearSpinner(QString id);
 
     Q_INVOKABLE void setLabelText(QLabel *label, QString text);
 
@@ -97,10 +77,16 @@ public:
     Q_INVOKABLE void setLineEditPlaceholder(QLineEdit *edit, QString text);
 
 private:
+    void load();
+
+    void clear();
+
+private:
     QVector<QWidget *> _widgets;
+
+    QString _scriptPath;
+
+    QScriptEngine _engine;
 };
-
-void RunQScript(const QString &script);
-
 
 #endif //VTKOCC_QSCRIPTFRAMEWORK_H

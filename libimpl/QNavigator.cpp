@@ -1,4 +1,4 @@
-#include "QNavigator.h"
+#include "../include/QNavigator.h"
 
 #include <QtGui/QPainter>
 #include <QtGui/QPalette>

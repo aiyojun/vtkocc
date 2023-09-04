@@ -1,16 +1,5 @@
 #include "QOccWidget.h"
 
-#include <BRepTools.hxx>
-#include <BRepPrimAPI_MakeBox.hxx>
-#include <AIS_Shape.hxx>
-#include <AIS_ViewController.hxx>
-#include <Aspect_SkydomeBackground.hxx>
-#include <QtGui/QMouseEvent>
-#include <QtCore/QPoint>
-#include <XCAFApp_Application.hxx>
-
-#include "HighRender.h"
-
 Graphic3d_Vec2i QPoint2Graphic3d_Vec2i(const QPoint &p) {
     Graphic3d_Vec2i pos(p.x(), p.y());
     return pos;

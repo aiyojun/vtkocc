@@ -2,7 +2,7 @@
 #define VTKOCC_QOCCWIDGET_H
 
 #include <QtWidgets/QWidget>
-#include "PerformanceImporter.h"
+#include "basic_occ.h"
 #include "QRenderThread.h"
 
 class QOccWidget : public QWidget {

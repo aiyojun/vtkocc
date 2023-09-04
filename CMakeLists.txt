@@ -6,10 +6,12 @@ include(auto-config.cmake)
 
 set(CMAKE_BUILD_TYPE Release)
 
-include_directories(libs3rd)
-include_directories(libshare)
-include_directories(occutils)
+add_rcc(resources/rsrcs.qrc ${CMAKE_SOURCE_DIR}/rsrcs.rcc)
 
-add_subdirectory(vtk)
+include_directories(include)
+
+add_subdirectory(libimpl)
+
 add_subdirectory(occviewer)
-add_subdirectory(jspace)
+
+add_subdirectory(qsviewer)

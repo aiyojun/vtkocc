@@ -10,6 +10,9 @@ set(CMAKE_RCC_COMPILER "${QT5_HOME}/bin/rcc.exe")
 message(STATUS "CMAKE_BINARY_DIR : ${CMAKE_BINARY_DIR}")
 message(STATUS "CMAKE_MOC_COMPILER : ${CMAKE_MOC_COMPILER}")
 
+set(QT5_MOC_DIR ${CMAKE_BINARY_DIR}/gen)
+file(MAKE_DIRECTORY ${QT5_MOC_DIR})
+
 function(add_moc input output)
     add_custom_command(
             OUTPUT ${output} PRE_BUILD

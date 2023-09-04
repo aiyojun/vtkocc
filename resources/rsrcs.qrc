@@ -1,5 +1,9 @@
 <RCC>
     <qresource prefix="/">
+        <file>main.js</file>
+        <file>themes/basic.qss</file>
+        <file>qscriptpreload.js</file>
+        <file>qscripthints.d.ts</file>
         <file>ui.qml</file>
         <file>ui.json</file>
         <file>ui.qss</file>
