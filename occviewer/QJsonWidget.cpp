@@ -1,5 +1,5 @@
 #include "QJsonWidget.h"
-#include "QOccWidget.h"
+#include "QOccViewer.h"
 #include "QLinearSpinner.h"
 #include "QNavigator.h"
 #include "basic_qt.h"
@@ -87,7 +87,7 @@ QJsonWidget::QJsonWidget(const json &ui, QRenderThread *r, QWidget *parent): QMa
                    cssstyle_compute(0, _ui["height"].get<std::string>()));
     qDebug() << "-- Parsing ui.json";
     parse(JvContext(ui, beginPos));
-    QOccWidget *viewer = (QOccWidget *) getWidget("occViewer");
+    QOccViewer *viewer = (QOccViewer *) getWidget("occViewer");
     viewer->setRender(_render);
     qDebug() << "-- Prepare opengl context";
     _render->onCreate((void *) (viewer->winId()));
@@ -132,8 +132,8 @@ void QJsonWidget::parse(JvContext context) {
             parse(JvContext(child, QRect(area.x(), biasY, w, h)));
             biasY += h;
         }
-    } else if (type == "QOccWidget") {
-        auto *widget = new QOccWidget(this);
+    } else if (type == "QOccViewer") {
+        auto *widget = new QOccViewer(this);
         addWidget(name, (QWidget *) widget);
     } else if (type == "QColorLabel") {
         js::expectString(ui, "text");

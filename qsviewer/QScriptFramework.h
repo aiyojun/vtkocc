@@ -5,9 +5,12 @@
 #include "QColorLabel.h"
 #include "QLinearSpinner.h"
 #include "QNavigator.h"
+#include "QOccViewer.h"
 #include "json.hpp"
 
 using nlohmann::json;
+
+class QApplicationWindow;
 
 QString readFile(const QString &path);
 
@@ -25,14 +28,21 @@ QScriptValue typecast(QScriptContext *context, QScriptEngine *engine);
 
 //void RunQScript(const QString &script);
 
+QScriptValue setTimeout(QScriptContext *context, QScriptEngine *engine, void *w);
+
 class QApplicationWindow : public QMainWindow {
+
     Q_OBJECT
+
 public:
+
     explicit QApplicationWindow(const QString& filename);
 
     ~QApplicationWindow() override;
 
 public Q_SLOTS:
+
+    void callback();
 
     Q_INVOKABLE void hotReload();
 
@@ -60,6 +70,8 @@ public Q_SLOTS:
 
     Q_INVOKABLE QWidget *qLinearSpinner(QString id);
 
+    Q_INVOKABLE QWidget *qOccViewer(QString id);
+
     Q_INVOKABLE void setLabelText(QLabel *label, QString text);
 
     Q_INVOKABLE void setWidgetGeometry(QWidget *widget, QRect geo);
@@ -76,17 +88,27 @@ public Q_SLOTS:
 
     Q_INVOKABLE void setLineEditPlaceholder(QLineEdit *edit, QString text);
 
+    Q_INVOKABLE void updateOcc(QOccViewer *w);
+
+    Q_INVOKABLE void createOcc(QOccViewer *w);
+
 private:
+
     void load();
 
     void clear();
 
 private:
+
     QVector<QWidget *> _widgets;
 
     QString _scriptPath;
 
     QScriptEngine _engine;
+
+    QScriptValue _callback;
+
+    friend QScriptValue setTimeout(QScriptContext *context, QScriptEngine *engine, void *window);
 };
 
 #endif //VTKOCC_QSCRIPTFRAMEWORK_H

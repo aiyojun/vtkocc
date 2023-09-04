@@ -1,5 +1,5 @@
 @echo off
-rmdir /Q /S cmake-build-release
+@REM rmdir /Q /S cmake-build-release
 @REM rcc -binary .\resources\rsrcs.qrc -o .\rsrcs.rcc || exit /b %errorlevel%
 @REM echo -- Finished rcc stage
 cmake -S . --fresh -DCMAKE_BUILD_TYPE=Release -B cmake-build-release -Wno-dev || exit /b %errorlevel%

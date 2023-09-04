@@ -91,8 +91,9 @@ interface QNavigator extends QWidget {
 interface QLineEdit extends QWidget {
 }
 
-interface QLinearSpinner extends QWidget {
-}
+interface QLinearSpinner extends QWidget {}
+
+interface QOccViewer extends QWidget {}
 
 interface QApplicationWindow extends QWidget {
     findChild(s: string): QWidget;
@@ -121,6 +122,8 @@ interface QApplicationWindow extends QWidget {
 
     qLinearSpinner(id: string): QLinearSpinner;
 
+    qOccViewer(id: string): QOccViewer;
+
     setLabelText(label: QLabel, text: string): void;
 
     setWidgetGeometry(widget: QWidget, geo: QVariant<QVariantObject>): void;
@@ -136,6 +139,11 @@ interface QApplicationWindow extends QWidget {
     setLineEditText(edit: QLineEdit, text: string): void;
 
     setLineEditPlaceholder(edit: QLineEdit, text: string): void;
+
+    updateOcc(occ: QOccViewer): void;
+
+    createOcc(occ: QOccViewer): void;
+
 }
 
 declare var qApplicationWindow: QApplicationWindow;

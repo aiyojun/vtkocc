@@ -1,5 +1,5 @@
 #include "QJsonWidget.h"
-#include "QOccWidget.h"
+#include "QOccViewer.h"
 #include "json.hpp"
 #include "basic_qt.h"
 

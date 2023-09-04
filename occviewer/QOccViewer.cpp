@@ -1,4 +1,4 @@
-#include "QOccWidget.h"
+#include "QOccViewer.h"
 
 Graphic3d_Vec2i QPoint2Graphic3d_Vec2i(const QPoint &p) {
     Graphic3d_Vec2i pos(p.x(), p.y());
@@ -22,22 +22,31 @@ Aspect_VKeyMouse QtMouseButton2Aspect_VKeyMouse(const Qt::MouseButton &button) {
     return rb;
 }
 
-QOccWidget::QOccWidget(QWidget *parent) : QWidget(parent), initialized(false), _ctrlKey(false), _altKey(false), _shiftKey(false) {
+QOccViewer::QOccViewer(QWidget *parent)
+    : QWidget(parent), initialized(false),
+      _ctrlKey(false), _altKey(false), _shiftKey(false),
+      _render(new QRenderThread) {
 //    setAttribute(Qt::WA_PaintOnScreen);
 //    setAttribute(Qt::WA_NoSystemBackground);
     setMouseTracking(true);
 //    setFocusPolicy(Qt::StrongFocus);
+    _render->startLoopRender();
 }
 
-void QOccWidget::paintEvent(QPaintEvent *theEvent) {
+QOccViewer::~QOccViewer() {
+    _render->close();
+    R_PTR(_render);
+}
+
+void QOccViewer::paintEvent(QPaintEvent *theEvent) {
     _render->onUpdate();
 }
 
-void QOccWidget::resizeEvent(QResizeEvent *theEvent) {
+void QOccViewer::resizeEvent(QResizeEvent *theEvent) {
     _render->onResize();
 }
 
-void QOccWidget::mousePressEvent(QMouseEvent *event) {
+void QOccViewer::mousePressEvent(QMouseEvent *event) {
     const QPoint &cursor = event->pos();
     const Graphic3d_Vec2i pos(cursor.x(), cursor.y());
     const Aspect_VKeyFlags flags = Aspect_VKeyFlags_NONE
@@ -48,7 +57,7 @@ void QOccWidget::mousePressEvent(QMouseEvent *event) {
     _render->onMousePressEvent(pos, button, flags);
 }
 
-void QOccWidget::mouseReleaseEvent(QMouseEvent *event) {
+void QOccViewer::mouseReleaseEvent(QMouseEvent *event) {
     const QPoint &cursor = event->pos();
     const Graphic3d_Vec2i pos(cursor.x(), cursor.y());
     const Aspect_VKeyFlags flags = Aspect_VKeyFlags_NONE
@@ -59,7 +68,7 @@ void QOccWidget::mouseReleaseEvent(QMouseEvent *event) {
     _render->onMouseReleaseEvent(pos, button, flags);
 }
 
-void QOccWidget::mouseMoveEvent(QMouseEvent *event) {
+void QOccViewer::mouseMoveEvent(QMouseEvent *event) {
     const QPoint &cursor = event->pos();
     const Graphic3d_Vec2i pos(cursor.x(), cursor.y());
     const Aspect_VKeyFlags flags = Aspect_VKeyFlags_NONE
@@ -70,7 +79,7 @@ void QOccWidget::mouseMoveEvent(QMouseEvent *event) {
     _render->onMouseMoveEvent(pos, button, flags);
 }
 
-void QOccWidget::wheelEvent(QWheelEvent *event) {
+void QOccViewer::wheelEvent(QWheelEvent *event) {
     const QPoint &cursor = event->pos();
     const int delta = event->delta();
     const double deltaF = double(delta) / double(QWheelEvent::DefaultDeltasPerStep);
@@ -82,7 +91,7 @@ void QOccWidget::wheelEvent(QWheelEvent *event) {
     _render->onWheelEvent(Aspect_ScrollDelta(pos, deltaF, flags));
 }
 
-void QOccWidget::keyPressEvent(QKeyEvent *event) {
+void QOccViewer::keyPressEvent(QKeyEvent *event) {
     switch (event->key()) {
         case Qt::Key::Key_Shift:
             _shiftKey = true;
@@ -101,7 +110,7 @@ void QOccWidget::keyPressEvent(QKeyEvent *event) {
     }
 }
 
-void QOccWidget::keyReleaseEvent(QKeyEvent *event) {
+void QOccViewer::keyReleaseEvent(QKeyEvent *event) {
     switch (event->key()) {
         case Qt::Key::Key_Shift:
             _shiftKey = false;
@@ -114,4 +123,8 @@ void QOccWidget::keyReleaseEvent(QKeyEvent *event) {
             break;
         default:;
     }
+}
+
+void QOccViewer::setRender(QRenderThread *r) {
+    _render->onCreate((void *) (winId()));
 }

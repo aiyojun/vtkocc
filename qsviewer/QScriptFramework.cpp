@@ -1,4 +1,5 @@
 #include "QScriptFramework.h"
+#include "QRenderThread.h"
 
 QString readFile(const QString &path) {
     QFile file(path);
@@ -156,6 +157,14 @@ QApplicationWindow::~QApplicationWindow() {
     clear();
 }
 
+QScriptValue setTimeout(QScriptContext *context, QScriptEngine *engine, void *window) {
+    ((QApplicationWindow *) window)->_callback = context->argument(0);
+    auto timeout = context->argument(1);
+    QTimer::singleShot(timeout.toInt32(), (QApplicationWindow *)window, SLOT(callback()));
+    return engine->undefinedValue();
+}
+
+
 void QApplicationWindow::load() {
     QString preload = readFile(":/qscriptpreload.js");
     QScriptEngine& engine = _engine;
@@ -169,6 +178,7 @@ void QApplicationWindow::load() {
 //    auto *window = new QApplicationWindow();
     engine.globalObject().setProperty("console", console);
     engine.globalObject().setProperty("typecast", engine.newFunction(typecast));
+    engine.globalObject().setProperty("setTimeout", engine.newFunction(setTimeout, this));
     engine.globalObject().setProperty("qApplicationWindow", engine.newQObject(window));
     engine.evaluate(preload);
     QScriptValue result = engine.evaluate(QtUtils::readFile(_scriptPath));
@@ -183,7 +193,7 @@ void QApplicationWindow::clear() {
 }
 
 void QApplicationWindow::hotReload() {
-    qDebug() << "QApplicationWindow::hotReload()";
+    qDebug() << "[QMain] QApplicationWindow::hotReload()";
     clear();
     repaint();
     hide();
@@ -197,27 +207,27 @@ void QApplicationWindow::hotReload() {
 }
 
 void QApplicationWindow::place(QWidget *w, QPoint p) {
-    qDebug() << "QApplicationWindow::place(" << w->objectName() << ", " << p << ")";
+    qDebug() << "[QMain] QApplicationWindow::place(" << w->objectName() << ", " << p << ")";
     w->move(p);
 }
 
 void QApplicationWindow::setSize(QWidget *w, QSize size) {
-    qDebug() << "QApplicationWindow::setSize(" << w->objectName() << ", " << size << ")";
+    qDebug() << "[QMain] QApplicationWindow::setSize(" << w->objectName() << ", " << size << ")";
     w->resize(size);
 }
 
 void QApplicationWindow::loadStylesheet(QString filename) {
-    qDebug() << "QApplicationWindow::loadStylesheet(" << filename << ")";
+    qDebug() << "[QMain] QApplicationWindow::loadStylesheet(" << filename << ")";
     setStyleSheet(QtUtils::readFile(filename));
 }
 
 int QApplicationWindow::loadFont(QString filename) {
-    qDebug() << "QApplicationWindow::loadFont(" << filename << ")";
+    qDebug() << "[QMain] QApplicationWindow::loadFont(" << filename << ")";
     return QFontDatabase::addApplicationFont(filename);
 }
 
 void QApplicationWindow::setDefaultFont(QString fontFamily) {
-    qDebug() << "QApplicationWindow::setDefaultFont(" << fontFamily << ")";
+    qDebug() << "[QMain] QApplicationWindow::setDefaultFont(" << fontFamily << ")";
     QApplication::setFont(QFont(fontFamily));
 }
 
@@ -255,13 +265,17 @@ QWidget *QApplicationWindow::qLinearSpinner(QString id) {
     IMPLEMENTATION_BUILD_WIDGET(QLinearSpinner)
 }
 
+QWidget *QApplicationWindow::qOccViewer(QString id) {
+    IMPLEMENTATION_BUILD_WIDGET(QOccViewer)
+}
+
 void QApplicationWindow::setWidgetGeometry(QWidget *widget, QRect geo) {
-    qDebug() << "QApplicationWindow::setWidgetGeometry(" << widget->objectName() << ", " << geo << ")";
+    qDebug() << "[QMain] QApplicationWindow::setWidgetGeometry(" << widget->objectName() << ", " << geo << ")";
     widget->setGeometry(geo);
 }
 
 void QApplicationWindow::setWidgetVisible(QWidget *widget, bool visible) {
-    qDebug() << "QApplicationWindow::setWidgetVisible(" << widget->objectName() << ", " << (visible ? "true" : "false") << ")";
+    qDebug() << "[QMain] QApplicationWindow::setWidgetVisible(" << widget->objectName() << ", " << (visible ? "true" : "false") << ")";
     if (visible)
         widget->show();
     else
@@ -269,17 +283,17 @@ void QApplicationWindow::setWidgetVisible(QWidget *widget, bool visible) {
 }
 
 void QApplicationWindow::setButtonText(QAbstractButton *button, QString text) {
-    qDebug() << "QApplicationWindow::setButtonText(" << button->objectName() << ", " << text << ")";
+    qDebug() << "[QMain] QApplicationWindow::setButtonText(" << button->objectName() << ", " << text << ")";
     button->setText(text);
 }
 
 void QApplicationWindow::setButtonIcon(QAbstractButton *button, QString icon) {
-    qDebug() << "QApplicationWindow::setButtonIcon(" << button->objectName() << ", " << icon << ")";
+    qDebug() << "[QMain] QApplicationWindow::setButtonIcon(" << button->objectName() << ", " << icon << ")";
     button->setIcon(QIcon(icon));
 }
 
 void QApplicationWindow::setButtonIconSize(QAbstractButton *button, QSize size) {
-    qDebug() << "QApplicationWindow::setButtonIconSize(" << button->objectName() << ", " << size << ")";
+    qDebug() << "[QMain] QApplicationWindow::setButtonIconSize(" << button->objectName() << ", " << size << ")";
     button->setIconSize(size);
 }
 
@@ -293,6 +307,21 @@ void QApplicationWindow::setLineEditPlaceholder(QLineEdit *edit, QString text) {
 
 void QApplicationWindow::setLabelText(QLabel *label, QString text) {
     label->setText(text);
+}
+
+void QApplicationWindow::updateOcc(QOccViewer *w) {
+    w->render().onUpdate();
+}
+
+void QApplicationWindow::callback() {
+    if (_callback.isFunction()) {
+        qDebug() << "[QMain] callback : " << _callback.toString();
+        _engine.evaluate(_callback.toString());
+    }
+}
+
+void QApplicationWindow::createOcc(QOccViewer *w) {
+    w->setRender(nullptr);
 }
 
 //QWidget *QApplicationWindow::createWidget(const QString& type, const QString& id) {

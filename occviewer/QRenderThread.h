@@ -6,8 +6,11 @@
 #include "basic_occ.h"
 
 class QRenderThread : public QObject {
-Q_OBJECT
+
+    Q_OBJECT
+
 public:
+
     enum TaskType {
         NONE, CREATE, RESIZE, UPDATE, MOUSE_PRESS, MOUSE_RELEASE, MOUSE_MOVE, WHEEL, KEY_PRESS, KEY_RELEASE, READ,
         MAKE_BEVEL, MAKE_CUBE, PROJ_FRONT, PROJ_LEFT, PROJ_TOP
@@ -48,6 +51,7 @@ public:
     void onBevel();
 
 public:
+
     void doCreate(void *hd);
 
     void doResize();
@@ -97,9 +101,11 @@ public Q_SLOTS:
     void switchLeftView();
 
 private:
+
     void render();
 
 private:
+
     bool _isWorking = false;
     TaskType _taskType;
     void *arg_hd;

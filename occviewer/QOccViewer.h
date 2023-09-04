@@ -1,22 +1,28 @@
-#ifndef VTKOCC_QOCCWIDGET_H
-#define VTKOCC_QOCCWIDGET_H
+#ifndef VTKOCC_QOCCVIEWER_H
+#define VTKOCC_QOCCVIEWER_H
 
 #include <QtWidgets/QWidget>
 #include "basic_occ.h"
 #include "QRenderThread.h"
 
-class QOccWidget : public QWidget {
-Q_OBJECT
-public:
-    explicit QOccWidget(QWidget *parent = nullptr);
+class QOccViewer : public QWidget {
 
-    ~QOccWidget() override = default;
+    Q_OBJECT
+
+public:
+
+    explicit QOccViewer(QWidget *parent = nullptr);
+
+    ~QOccViewer() override;
 
     QPaintEngine *paintEngine() const override { return nullptr; }
 
-    void setRender(QRenderThread *r) { _render = r; }
+    void setRender(QRenderThread *r);
+
+    QRenderThread& render() { return *_render; }
 
 protected:
+
     void paintEvent(QPaintEvent *theEvent) override;
 
     void resizeEvent(QResizeEvent *theEvent) override;
@@ -34,6 +40,7 @@ protected:
     void wheelEvent(QWheelEvent *event) override;
 
 private:
+
     bool _ctrlKey;
     bool _altKey;
     bool _shiftKey;
@@ -41,4 +48,4 @@ private:
     QRenderThread *_render;
 };
 
-#endif //VTKOCC_QOCCWIDGET_H
+#endif //VTKOCC_QOCCVIEWER_H

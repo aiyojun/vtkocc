@@ -3,6 +3,8 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QDebug>
+#include <QtCore/QTimer>
+#include <QtCore/QTime>
 #include <QtCore/QMap>
 #include <QtCore/QVector>
 #include <QtCore/QString>
