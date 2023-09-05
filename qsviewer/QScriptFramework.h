@@ -62,6 +62,8 @@ public:
 
 public Q_SLOTS:
 
+    Q_INVOKABLE void setWindowIcon(const QString& filename);
+
     Q_INVOKABLE void hotReload();
 
     Q_INVOKABLE void place(QWidget *w, QPoint p);

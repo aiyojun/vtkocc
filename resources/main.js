@@ -11,6 +11,8 @@ function move(widget, x, y) {
 function resize(widget, width, height) {
     window.setSize(widget, typecast("QSize", new QSize(width, height)))
 }
+window.setWindowTitle("3D Viewer")
+window.setWindowIcon(":/icons/3d.svg")
 window.loadFont(":/titillium-web-font/TitilliumWeb-1eq2.ttf")
 window.loadStylesheet(":/themes/basic.qss")
 window.setDefaultFont("Titillium Web")
@@ -20,8 +22,15 @@ resize(window, 900, 600)
 var label = window.qColorLabel("label0")
 setGeometry(label, 0, 0, 200, 32)
 label.text = "Hello"
-label.alignment = 0x82
+label.alignment = 0x84
 console.info(label.alignment)
+
+var button = window.qPushButton("btn0")
+setGeometry(button, 0, 36, 200, 32)
+button.text = "Hello World"
+button["clicked()"].connect(function() {
+    console.info("click Hello World")
+})
 
 // var occ = window.qOccViewer("occViewer")
 //

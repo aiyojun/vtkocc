@@ -18,6 +18,7 @@
 #include <QtCore/QWaitCondition>
 #include <QtCore/QFileSystemWatcher>
 #include <QtGui/QFont>
+#include <QtGui/QIcon>
 #include <QtGui/QFontDatabase>
 #include <QtGui/QPainter>
 #include <QtGui/QResizeEvent>

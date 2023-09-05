@@ -121,7 +121,11 @@ interface QOccViewer extends QWidget {
 }
 
 interface QApplicationWindow extends QWidget {
-    findChild(s: string): QWidget;
+    findChild(objectName: string): QWidget;
+
+    setWindowTitle(title: string): void;
+
+    setWindowIcon(filename: string): void;
 
     place(w: QWidget, x: QVariant<QVariantObject>): void;
 

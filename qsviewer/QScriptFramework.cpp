@@ -25,7 +25,7 @@ QScriptValue println(QScriptContext *context, QScriptEngine *engine) {
             s.append(arg.toString());
         }
     }
-    qDebug().noquote() << "[QScript] " << s;
+    qDebug().noquote() << "[QScript]" << s;
     return engine->undefinedValue();
 }
 
@@ -309,6 +309,10 @@ void QApplicationWindow::setLabelText(QLabel *label, QString text) {
 
 void QApplicationWindow::updateOcc(QOccViewer *w) {
     w->render().onUpdate();
+}
+
+void QApplicationWindow::setWindowIcon(const QString& filename) {
+    QWidget::setWindowIcon(QIcon(filename));
 }
 
 //QWidget *QApplicationWindow::createWidget(const QString& type, const QString& id) {
