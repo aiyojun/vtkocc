@@ -19,9 +19,9 @@ var occ = window.qOccViewer("occViewer")
 setGeometry(occ, 0, 0, 900, 600)
 
 setTimeout(function () {
-    qApplicationWindow.createOcc(qApplicationWindow.findChild("occViewer"))
+    // qApplicationWindow.createOcc(occ)
     setTimeout(function () {
-        qApplicationWindow.updateOcc(qApplicationWindow.findChild("occViewer"))
+        qApplicationWindow.updateOcc(occ)
     }, 1000);
 }, 1000);
 

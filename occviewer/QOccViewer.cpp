@@ -29,8 +29,10 @@ QOccViewer::QOccViewer(QWidget *parent)
 //    setAttribute(Qt::WA_PaintOnScreen);
 //    setAttribute(Qt::WA_NoSystemBackground);
     setMouseTracking(true);
+    Message::SendInfo() << "-- QOccViewer render start loop ...";
 //    setFocusPolicy(Qt::StrongFocus);
     _render->startLoopRender();
+    _render->onCreate((void *) (winId()));
 }
 
 QOccViewer::~QOccViewer() {
@@ -126,5 +128,5 @@ void QOccViewer::keyReleaseEvent(QKeyEvent *event) {
 }
 
 void QOccViewer::setRender(QRenderThread *r) {
-    _render->onCreate((void *) (winId()));
+
 }

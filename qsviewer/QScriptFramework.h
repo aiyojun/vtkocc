@@ -90,7 +90,7 @@ public Q_SLOTS:
 
     Q_INVOKABLE void updateOcc(QOccViewer *w);
 
-    Q_INVOKABLE void createOcc(QOccViewer *w);
+//    Q_INVOKABLE void createOcc(QOccViewer *w);
 
 private:
 

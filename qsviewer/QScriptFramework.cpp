@@ -315,14 +315,15 @@ void QApplicationWindow::updateOcc(QOccViewer *w) {
 
 void QApplicationWindow::callback() {
     if (_callback.isFunction()) {
-        qDebug() << "[QMain] callback : " << _callback.toString();
-        _engine.evaluate(_callback.toString());
+        auto script = "(" + _callback.toString() + ")()";
+        qDebug() << "[QMain] callback : " << script;
+        _engine.evaluate(script);
     }
 }
 
-void QApplicationWindow::createOcc(QOccViewer *w) {
-    w->setRender(nullptr);
-}
+//void QApplicationWindow::createOcc(QOccViewer *w) {
+//    w->setRender(nullptr);
+//}
 
 //QWidget *QApplicationWindow::createWidget(const QString& type, const QString& id) {
 //    QWidget *p;

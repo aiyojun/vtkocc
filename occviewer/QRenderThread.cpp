@@ -137,6 +137,7 @@ void QRenderThread::onRead(QString filename) {
 // -----
 
 void QRenderThread::doCreate(void *hd) {
+    Message::SendInfo() << "-- QRenderThread::doCreate";
     _viewer = HighRender::BuildViewer();
     _viewContext = HighRender::BuildContext(_viewer);
     _cubeContext = HighRender::BuildContext(_viewer);
@@ -161,10 +162,12 @@ void QRenderThread::doCreate(void *hd) {
 
 void QRenderThread::doResize() {
     if (!_view.IsNull())
+        Message::SendInfo() << "-- QRenderThread::doResize";
         _view->MustBeResized();
 }
 
 void QRenderThread::doUpdate() {
+    Message::SendInfo() << "-- QRenderThread::doUpdate";
     _view->Redraw();
 }
 
