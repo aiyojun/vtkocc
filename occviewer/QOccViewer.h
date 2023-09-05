@@ -21,6 +21,8 @@ public:
 
     QRenderThread& render() { return *_render; }
 
+    Q_INVOKABLE QObject* qRenderThread() { return _render; }
+
 protected:
 
     void paintEvent(QPaintEvent *theEvent) override;

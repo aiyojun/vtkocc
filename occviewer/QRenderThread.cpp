@@ -272,6 +272,7 @@ void QRenderThread::render() {
 }
 
 void QRenderThread::doProjFront() {
+    Message::SendInfo() << "-- QRenderThread::doProjFront";
     _viewController->UpdateViewOrientation(V3d_Yneg, true);
     _cubeController->UpdateViewOrientation(V3d_Yneg, true);
     _viewController->FlushViewEvents(_viewContext, _view, true);
@@ -279,6 +280,7 @@ void QRenderThread::doProjFront() {
 }
 
 void QRenderThread::doProjTop() {
+    Message::SendInfo() << "-- QRenderThread::doProjTop";
     _viewController->UpdateViewOrientation(V3d_Zpos, true);
     _cubeController->UpdateViewOrientation(V3d_Zpos, true);
     _viewController->FlushViewEvents(_viewContext, _view, true);
@@ -286,6 +288,7 @@ void QRenderThread::doProjTop() {
 }
 
 void QRenderThread::doProjLeft() {
+    Message::SendInfo() << "-- QRenderThread::doProjLeft";
     _viewController->UpdateViewOrientation(V3d_Xpos, true);
     _cubeController->UpdateViewOrientation(V3d_Xpos, true);
     _viewController->FlushViewEvents(_viewContext, _view, true);

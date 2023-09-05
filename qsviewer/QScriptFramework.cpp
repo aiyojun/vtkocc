@@ -189,21 +189,20 @@ void QApplicationWindow::load() {
 }
 
 void QApplicationWindow::clear() {
-    for (auto &p : _widgets) { p->hide(); R_PTR(p) } _widgets.clear();
+    for (auto &p : _widgets) { p->hide(); p->deleteLater(); } _widgets.clear();
 }
 
 void QApplicationWindow::hotReload() {
     qDebug() << "[QMain] QApplicationWindow::hotReload()";
     clear();
     repaint();
-    hide();
     QScriptEngine& engine = _engine;
     QScriptValue result = engine.evaluate(QtUtils::readFile(_scriptPath));
     if (engine.hasUncaughtException())  {
         int line = engine.uncaughtExceptionLineNumber();
         qFatal(QString("uncaught exception at line ").append(std::to_string(line).c_str()).append(" : ").append(result.toString()).toStdString().c_str());
     }
-    show();
+    for (auto p : _widgets) { p->show(); }
 }
 
 void QApplicationWindow::place(QWidget *w, QPoint p) {

@@ -69,6 +69,7 @@ interface QWidget {
 }
 
 interface QLabel extends QWidget {
+    text: string;
     setText(text: string): void;
 }
 
@@ -76,10 +77,11 @@ interface QColorLabel extends QLabel {
 }
 
 interface QAbstractButton extends QWidget {
+    text: string;
+    setText(text: string): void;
 }
 
 interface QPushButton extends QAbstractButton {
-    readonly text: string;
 }
 
 interface QToolButton extends QAbstractButton {
@@ -89,11 +91,29 @@ interface QNavigator extends QWidget {
 }
 
 interface QLineEdit extends QWidget {
+    text: string;
+    setText(text: string): void;
 }
 
 interface QLinearSpinner extends QWidget {}
 
-interface QOccViewer extends QWidget {}
+interface QOccRender {
+    importModelFile(filename: string): void;
+
+    makeBevel(): void;
+
+    makeCube(): void;
+
+    switchFrontView(): void;
+
+    switchTopView(): void;
+
+    switchLeftView(): void;
+}
+
+interface QOccViewer extends QWidget {
+    qRenderThread(): QOccRender;
+}
 
 interface QApplicationWindow extends QWidget {
     findChild(s: string): QWidget;
