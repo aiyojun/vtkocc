@@ -335,13 +335,13 @@ void QApplicationWindow::updateOcc(QOccViewer *w) {
 //}
 
 QScriptTimer *QScriptTimerManager::create(QScriptValue v)  {
-    QVector<size_t> finishedTimers;
+    QVector<int> finishedTimers;
     for (int i = 0; i < _timers.length(); i++) {
         if (_timers[i]->isFinished())
             finishedTimers.push_back(i);
     }
     for (int j = finishedTimers.length() - 1; j > -1; j--) {
-        size_t i = finishedTimers[j];
+        int i = finishedTimers[j];
         delete _timers[i];
         _timers.remove(i);
     }

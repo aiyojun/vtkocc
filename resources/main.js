@@ -16,25 +16,35 @@ window.loadStylesheet(":/themes/basic.qss")
 window.setDefaultFont("Titillium Web")
 resize(window, 900, 600)
 
-var occ = window.qOccViewer("occViewer")
 
-setGeometry(occ, 0, 0, 900, 600)
+var label = window.qColorLabel("label0")
+setGeometry(label, 0, 0, 200, 32)
+label.text = "Hello"
+label.alignment = 0x82
+console.info(label.alignment)
+
+// var occ = window.qOccViewer("occViewer")
+//
+// setGeometry(occ, 0, 0, 900, 600)
+//
+//
+// console.info(Object.keys(occ.qRenderThread()));
+//
+// setTimeout(function () {
+//     qApplicationWindow.updateOcc(occ)
+//
+//     setTimeout(function () {
+//
+//
+//
+//         occ.qRenderThread().switchLeftView()
+//
+//     }, 2000)
+//
+// }, 1000);
+//
 
 
-console.info(Object.keys(occ.qRenderThread()));
-
-setTimeout(function () {
-    qApplicationWindow.updateOcc(occ)
-
-    setTimeout(function () {
-
-
-
-        occ.qRenderThread().switchLeftView()
-
-    }, 2000)
-
-}, 1000);
 
 
 

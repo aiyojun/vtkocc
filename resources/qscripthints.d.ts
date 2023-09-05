@@ -70,6 +70,8 @@ interface QWidget {
 
 interface QLabel extends QWidget {
     text: string;
+    alignment: number;
+
     setText(text: string): void;
 }
 
@@ -78,6 +80,7 @@ interface QColorLabel extends QLabel {
 
 interface QAbstractButton extends QWidget {
     text: string;
+
     setText(text: string): void;
 }
 
@@ -92,10 +95,12 @@ interface QNavigator extends QWidget {
 
 interface QLineEdit extends QWidget {
     text: string;
+
     setText(text: string): void;
 }
 
-interface QLinearSpinner extends QWidget {}
+interface QLinearSpinner extends QWidget {
+}
 
 interface QOccRender {
     importModelFile(filename: string): void;
