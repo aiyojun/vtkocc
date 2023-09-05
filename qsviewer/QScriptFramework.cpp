@@ -158,12 +158,11 @@ QApplicationWindow::~QApplicationWindow() {
 }
 
 QScriptValue setTimeout(QScriptContext *context, QScriptEngine *engine, void *window) {
-    ((QApplicationWindow *) window)->_callback = context->argument(0);
+    auto timer = ((QApplicationWindow *) window)->_timerManager.create(context->argument(0));
     auto timeout = context->argument(1);
-    QTimer::singleShot(timeout.toInt32(), (QApplicationWindow *)window, SLOT(callback()));
+    QTimer::singleShot(timeout.toInt32(), timer, SLOT(callback()));
     return engine->undefinedValue();
 }
-
 
 void QApplicationWindow::load() {
     QString preload = readFile(":/qscriptpreload.js");
@@ -176,10 +175,10 @@ void QApplicationWindow::load() {
     console.setProperty("log"  , engine.newFunction(println));
     auto *window = this;
 //    auto *window = new QApplicationWindow();
-    engine.globalObject().setProperty("console", console);
-    engine.globalObject().setProperty("typecast", engine.newFunction(typecast));
-    engine.globalObject().setProperty("setTimeout", engine.newFunction(setTimeout, this));
-    engine.globalObject().setProperty("qApplicationWindow", engine.newQObject(window));
+    engine.globalObject().setProperty("console"             , console);
+    engine.globalObject().setProperty("typecast"            , engine.newFunction(typecast));
+    engine.globalObject().setProperty("setTimeout"          , engine.newFunction(setTimeout, this));
+    engine.globalObject().setProperty("qApplicationWindow"  , engine.newQObject(window));
     engine.evaluate(preload);
     QScriptValue result = engine.evaluate(QtUtils::readFile(_scriptPath));
     if (engine.hasUncaughtException())  {
@@ -312,18 +311,6 @@ void QApplicationWindow::updateOcc(QOccViewer *w) {
     w->render().onUpdate();
 }
 
-void QApplicationWindow::callback() {
-    if (_callback.isFunction()) {
-        auto script = "(" + _callback.toString() + ")()";
-        qDebug() << "[QMain] callback : " << script;
-        _engine.evaluate(script);
-    }
-}
-
-//void QApplicationWindow::createOcc(QOccViewer *w) {
-//    w->setRender(nullptr);
-//}
-
 //QWidget *QApplicationWindow::createWidget(const QString& type, const QString& id) {
 //    QWidget *p;
 //    QWidget *parent = this;
@@ -347,3 +334,26 @@ void QApplicationWindow::callback() {
 //    return p;
 //}
 
+QScriptTimer *QScriptTimerManager::create(QScriptValue v)  {
+    QVector<size_t> finishedTimers;
+    for (int i = 0; i < _timers.length(); i++) {
+        if (_timers[i]->isFinished())
+            finishedTimers.push_back(i);
+    }
+    for (int j = finishedTimers.length() - 1; j > -1; j--) {
+        size_t i = finishedTimers[j];
+        delete _timers[i];
+        _timers.remove(i);
+    }
+    auto t = new QScriptTimer(v);
+    _timers.push_back(t);
+    return t;
+}
+
+void QScriptTimer::callback()  {
+    if (_fn.isFunction()) {
+        qDebug() << "[QMain] setTimeout -> " << _fn.toString();
+        _fn.call();
+    }
+    _finished = true;
+};

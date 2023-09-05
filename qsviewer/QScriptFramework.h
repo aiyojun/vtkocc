@@ -30,6 +30,26 @@ QScriptValue typecast(QScriptContext *context, QScriptEngine *engine);
 
 QScriptValue setTimeout(QScriptContext *context, QScriptEngine *engine, void *w);
 
+
+class QScriptTimer : public QObject {
+    Q_OBJECT
+public:
+    QScriptTimer(QScriptValue fn): QObject(), _fn(fn), _finished(false) {}
+    bool isFinished() { return _finished; }
+public Q_SLOTS:
+    void callback();
+private:
+    bool _finished;
+    QScriptValue _fn;
+};
+
+class QScriptTimerManager {
+public:
+    QScriptTimer *create(QScriptValue v);
+private:
+    QVector<QScriptTimer*> _timers;
+};
+
 class QApplicationWindow : public QMainWindow {
 
     Q_OBJECT
@@ -41,8 +61,6 @@ public:
     ~QApplicationWindow() override;
 
 public Q_SLOTS:
-
-    void callback();
 
     Q_INVOKABLE void hotReload();
 
@@ -90,8 +108,6 @@ public Q_SLOTS:
 
     Q_INVOKABLE void updateOcc(QOccViewer *w);
 
-//    Q_INVOKABLE void createOcc(QOccViewer *w);
-
 private:
 
     void load();
@@ -106,7 +122,7 @@ private:
 
     QScriptEngine _engine;
 
-    QScriptValue _callback;
+    QScriptTimerManager _timerManager;
 
     friend QScriptValue setTimeout(QScriptContext *context, QScriptEngine *engine, void *window);
 };
