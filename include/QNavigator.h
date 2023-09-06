@@ -8,6 +8,9 @@
 #include <QtWidgets/QScrollArea>
 #include <QtWidgets/QBoxLayout>
 #include "basic_tree.h"
+#include "json.hpp"
+
+using nlohmann::json;
 
 struct NavItem {
     QString icon;
@@ -43,7 +46,7 @@ public:
 };
 
 class QNavigator : public QWidget {
-Q_OBJECT
+    Q_OBJECT
 
 public:
     explicit QNavigator(QWidget *parent = nullptr);
@@ -51,6 +54,14 @@ public:
     ~QNavigator() override;
 
     void setTopNavigation(Navigation *nav);
+
+    static Navigation* loopParseTree(const json& node, int depth = 0);
+
+Q_SIGNALS:
+    void clicked(QString chain);
+
+public Q_SLOTS:
+    void parse(QString tree);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -69,6 +80,8 @@ private:
     void calc(int hi, int depth, QRect &image, QRect &text, QRect &mark);
 
     void dropNavTo(QVector<Navigation *> &list, Navigation *nav);
+
+    QString chainOf(Navigation *nav);
 
 private:
     QVector<Navigation *> _navSeq;

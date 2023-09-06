@@ -322,6 +322,10 @@ void QRenderThread::switchLeftView() {
     onProjLeft();
 }
 
+void QRenderThread::fresh() {
+    onUpdate();
+}
+
 
 
 

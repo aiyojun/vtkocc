@@ -7,6 +7,7 @@
 #include <QtCore/QTime>
 #include <QtCore/QMap>
 #include <QtCore/QVector>
+#include <QtCore/QList>
 #include <QtCore/QString>
 #include <QtCore/QFile>
 #include <QtCore/QResource>

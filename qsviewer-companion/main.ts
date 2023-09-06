@@ -1,24 +1,18 @@
 // QScript ui generator framework.
 // First of all, make an alias for qApplicationWindow.
-var app = qApplicationWindow;
-function QPoint(x, y)
-{ this.x = x || 0; this.y = y || 0; }
-function QSize(width, height)
-{ this.width = width || 0; this.height = height || 0; }
-function QRect(x, y, width, height)
-{ this.x = x || 0; this.y = y || 0; this.width = width || 0; this.height = height || 0; }
+const app = qApplicationWindow;
 // Prepare necessary functions for context. More concise api.
-function layout(widget, x, y, width, height)
+function layout(widget: QWidget, x: number, y: number, width: number, height: number)
 { app.setWidgetGeometry(widget, typecast("QRect", new QRect(x, y, width, height))); }
-function resize(widget, width, height)
+function resize(widget: QWidget, width: number, height: number)
 { app.setSize(widget, typecast("QSize", new QSize(width, height))); }
-function locate(widget, x, y)
+function locate(widget: QWidget, x: number, y: number)
 { app.place(widget, typecast("QPoint", new QPoint(x, y))); }
-function $click(widget, callback)
+function $click(widget: QWidget, callback: () => void)
 { widget["clicked()"].connect(callback); }
-String.prototype.replaceAll = function (regex, str)
+String.prototype.replaceAll = function (regex: RegExp | string, str: string)
 { return this.toString().split(regex).join(str); }
-function exists(o, k) {
+function exists(o: any, k: any) {
     if (k === undefined)
         return o !== undefined && o !== null
     return typeof o === 'object' && o !== null
@@ -26,7 +20,7 @@ function exists(o, k) {
         && o[k] !== undefined && o[k] !== null
 }
 // ui utils:
-function compute(length, calc) {
+function compute(length: number, calc: string) {
     calc = calc.trim();
     if (/^[0-9]+$/.test(calc)) return parseInt(calc);
     if (/^[0-9]+px$/.test(calc)) return parseInt(calc.substring(0, calc.length - 2));
@@ -34,10 +28,10 @@ function compute(length, calc) {
     calc = calc.replaceAll(" ", "");
     if (/^calc\(([+-]?([0-9]+%|[0-9]+px))+\)$/.test(calc)) {
         calc = calc.substring(5, calc.length - 1);
-        var arr = []
-        var i = 0
+        let arr = []
+        let i = 0
         while (i < calc.length) {
-            var _arr = calc.substring(i).match(/^[+-]?[0-9]+%/);
+            let _arr = calc.substring(i).match(/^[+-]?[0-9]+%/);
             if (_arr !== null && _arr.length > 0) {
                 arr.push(parseInt(calc.substring(i, i + _arr[0].length - 1)) * .01 * length);
                 i = i + _arr[0].length;
@@ -50,75 +44,75 @@ function compute(length, calc) {
             }
             break;
         }
-        var r = 0;
+        let r = 0;
         for (i = 0; i < arr.length; i++) r += arr[i];
         return r;
     }
     return 0;
 }
 
-var manager = {
+let manager: Record<string, any> = {
     counter: 0,
     widgets: {},
-    supplyWidgetName: function(_ui) {
+    supplyWidgetName: function(_ui: Record<string, any>) {
         if (!exists(_ui, "name"))
             _ui["name"] = "widget-" + (this.counter++);
         return _ui["name"];
     },
-    widgetOf: function (name) {
+    widgetOf: function (name: string) {
         return this.widgets[name];
     },
-    QBasicButton: function (_ui) {
-        var name = _ui["name"];
-        var w = app.qPushButton(name);
+    QBasicButton: function (_ui: Record<string, any>) {
+        let name = _ui["name"];
+        let w = app.qPushButton(name);
         w.text = _ui["text"] || "";
         this.widgets[name] = w;
         return w;
     },
-    QLabel: function (_ui) {
-        var name = _ui["name"];
-        var w = app.qLabel(name);
+    QLabel: function (_ui: Record<string, any>) {
+        let name = _ui["name"];
+        let w = app.qLabel(name);
         w.text = _ui["text"] || "";
         if (name !== "") this.widgets[name] = w;
         return w;
     },
-    QColorLabel: function (_ui) {
-        var name = _ui["name"];
-        var w = app.qColorLabel(name);
+    QColorLabel: function (_ui: Record<string, any>) {
+        let name = _ui["name"];
+        let w = app.qColorLabel(name);
         w.text = _ui["text"] || "";
         if (name !== "") this.widgets[name] = w;
         return w;
     },
-    QLineEdit: function (_ui) {
-        var name = _ui["name"];
-        var w = app.qLineEdit(name);
+    QLineEdit: function (_ui: Record<string, any>) {
+        let name = _ui["name"];
+        let w = app.qLineEdit(name);
         w.text = _ui["text"] || "";
         w.placeHolderText = _ui["placeholder"] || "";
         if (name !== "") this.widgets[name] = w;
         return w;
     },
-    QOccViewer: function (_ui) {
-        var name = _ui["name"];
-        var w = app.qOccViewer(name);
+    QOccViewer: function (_ui: Record<string, any>) {
+        let name = _ui["name"];
+        let w = app.qOccViewer(name);
         if (name !== "") this.widgets[name] = w;
         return w;
     },
-    QNavigator: function (_ui) {
-        var name = _ui["name"];
-        var w = app.qNavigator(name);
+    QNavigator: function (_ui: Record<string, any>) {
+        let name = _ui["name"];
+        let w = app.qNavigator(name);
         if (name !== "") this.widgets[name] = w;
         return w;
     },
-    QLinearSpinner: function (_ui) {
-        var name = _ui["name"];
-        var w = app.qLinearSpinner(name);
+    QLinearSpinner: function (_ui: Record<string, any>) {
+        let name = _ui["name"];
+        let w = app.qLinearSpinner(name);
         if (name !== "") this.widgets[name] = w;
         return w;
     },
 }
 
 // Register life cycle functions.
-var ui_declare = {
+let ui_declare = {
     type: "QVBoxLayout", width: "1280px", height: "960px", children: [
         { type: "QHBoxLayout", width: "100%", height: "32px", children: [
                 {type: "QLabel", name: "logo", text: "VTK OCC", width: "100px", height: "100%"},
@@ -141,11 +135,11 @@ app["windowSizeChanged(int, int)"].connect(onUpdate)
 ///////////////////////////////////////////////////////
 // Main function definitions:
 ///////////////////////////////////////////////////////
-function loopCreate(_ui) {
-    var type = _ui["type"];
+function loopCreate(_ui: Record<string, any>) {
+    let type = _ui["type"];
     if (/^Q.*Layout$/.test(type)) {
-        var children = _ui["children"];
-        for (var i = 0; i < children.length; i++) {
+        let children = _ui["children"];
+        for (let i = 0; i < children.length; i++) {
             loopCreate(children[i]);
         }
         return;
@@ -155,7 +149,7 @@ function loopCreate(_ui) {
         manager[type](_ui);
 }
 
-function layoutAbsolute(_ui, x, y, width, height) {
+function layoutAbsolute(_ui: Record<string, any>, x: number, y: number, width: number, height: number) {
     if (exists(_ui, "position") && _ui["position"] === "absolute") {
         loopLayout(_ui,
             x + compute(width, _ui["x"]), y + compute(height, _ui["y"]),
@@ -165,19 +159,19 @@ function layoutAbsolute(_ui, x, y, width, height) {
     return false;
 }
 
-function loopLayout(_ui, x, y, width, height) {
-    var type = _ui["type"];
+function loopLayout(_ui: Record<string, any>, x: number, y: number, width: number, height: number) {
+    let type = _ui["type"];
     if (!/^Q.*Layout$/.test(type)) {
         layout(manager.widgetOf(_ui["name"]), x, y, width, height);
         return;
     }
     if (type === "QVBoxLayout") {
-        var children = _ui["children"];
-        var reverse = _ui["reverse"] || false;
-        var dy = reverse ? (y + height) : y;
-        for (var i = 0; i < children.length; i++) {
+        let children = _ui["children"];
+        let reverse = _ui["reverse"] || false;
+        let dy = reverse ? (y + height) : y;
+        for (let i = 0; i < children.length; i++) {
             if (layoutAbsolute(children[i], x, y, width, height)) continue;
-            var _height = compute(height, children[i]["height"]);
+            let _height = compute(height, children[i]["height"]);
             loopLayout(children[i], x, dy, compute(width, children[i]["width"]), _height);
             if ( reverse) dy -= _height;
             if (!reverse) dy += _height;
@@ -185,12 +179,12 @@ function loopLayout(_ui, x, y, width, height) {
         return;
     }
     if (type === "QHBoxLayout") {
-        var children = _ui["children"];
-        var reverse = _ui["reverse"] || false;
-        var dx = reverse ? (x + width) : x;
-        for (var i = 0; i < children.length; i++) {
+        let children = _ui["children"];
+        let reverse = _ui["reverse"] || false;
+        let dx = reverse ? (x + width) : x;
+        for (let i = 0; i < children.length; i++) {
             if (layoutAbsolute(children[i], x, y, width, height)) continue;
-            var _width = compute(width, children[i]["width"]);
+            let _width = compute(width, children[i]["width"]);
             loopLayout(children[i], dx, y, _width, compute(height, children[i]["height"]));
             if ( reverse) dx -= _width;
             if (!reverse) dx += _width;
@@ -204,18 +198,18 @@ function onCreate() {
     app.loadFont(":/titillium-web-font/TitilliumWeb-1eq2.ttf");
     app.setDefaultFont("Titillium Web");
     app.loadStylesheet(":/themes/basic.qss");
-    var width  = compute(0, ui_declare.width);
-    var height = compute(0, ui_declare.height);
+    let width  = compute(0, ui_declare.width);
+    let height = compute(0, ui_declare.height);
     resize(app, width, height);
     loopCreate(ui_declare);
     onUpdate(width, height);
-    var occViewer = manager.widgetOf("occViewer");
-    var occRender = occViewer.qRenderThread();
-    var navigator = manager.widgetOf("navigator");
-    var logo = manager.widgetOf("logo");
+    let occViewer = manager.widgetOf("occViewer");
+    let occRender = occViewer.qRenderThread();
+    let navigator = manager.widgetOf("navigator");
+    let logo = manager.widgetOf("logo");
     logo.alignment = 0x81;
     $click(manager.widgetOf("openLocalFilesystem"), function () {
-        var filename = app.openLocalFilesystem();
+        let filename = app.openLocalFilesystem();
         console.info("open local file : ", filename);
         occRender.importModelFile(filename);
     })
@@ -224,14 +218,14 @@ function onCreate() {
     //
     // });
 }
-function onUpdate(w, h) {
+function onUpdate(w: number, h: number) {
     loopLayout(ui_declare, 0, 0, w, h);
-    var occViewer = manager.widgetOf("occViewer");
-    var occRender = occViewer.qRenderThread();
+    let occViewer = manager.widgetOf("occViewer");
+    let occRender = occViewer.qRenderThread();
     occRender.fresh();
 }
 
-for (var x in [1, 2, 3]) {
+for (let x in [1, 2, 3]) {
     console.info(x);
 }
 

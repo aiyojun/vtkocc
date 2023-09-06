@@ -1,4 +1,5 @@
-#include "../include/QNavigator.h"
+#include "QNavigator.h"
+#include "basic_json.h"
 
 #include <QtGui/QPainter>
 #include <QtGui/QPalette>
@@ -111,6 +112,7 @@ void QNavigator::mouseReleaseEvent(QMouseEvent *event) {
     int d = pos.y() / _navHeight;
     _selectedNav = d <= _navSeq.length() ? d - 1 : -1;
     if (_selectedNav != -1) {
+        emit clicked(chainOf(_navSeq[_selectedNav]));
         auto *nav = _navSeq[_selectedNav];
         if (nav->hasSubNav()) {
             nav->setFold(!nav->isFold());
@@ -140,6 +142,35 @@ void QNavigator::setTopNavigation(Navigation *nav)  {
     _navSeq = buildNavList();
     resize(width(), _navHeight * (_navSeq.length() + 2));
     repaint();
+}
+
+Navigation* QNavigator::loopParseTree(const json& node, int depth) {
+    auto *nav = Navigation::build(js::get_string(node, "text").c_str(), js::get_string(node, "icon").c_str());
+    if (js::has_array(node, "children") && !node["children"].empty()) {
+        for (const auto &j : node["children"]) {
+            auto *c = loopParseTree(j, depth + 1);
+            nav->addSubNav(c);
+        }
+    }
+    nav->setDepth(depth);
+    return nav;
+}
+
+void QNavigator::parse(QString tree) {
+    json j = json::parse(tree.toStdString());
+    setTopNavigation(loopParseTree(j));
+}
+
+QString QNavigator::chainOf(Navigation *nav) {
+    QList<QString> chain;
+    Navigation *p = nav;
+    chain.push_back(p->getData().text);
+    while (p->getParent() != nullptr) {
+        p = (Navigation *) p->getParent();
+        chain.push_back(p->getData().text);
+    }
+    std::reverse(chain.begin(), chain.end());
+    return chain.join(".");
 }
 
 

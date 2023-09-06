@@ -1,3 +1,7 @@
+interface String {
+    replaceAll(regex: RegExp | string, str: string): string;
+}
+
 interface QObject {
     readonly objectName: string;
 }
@@ -60,7 +64,7 @@ declare function typecast(obj: QVariant<QVariantObject>): QSize | QRect | QPoint
 
 declare function typecast(type: string, obj: QVariantObject): QVariant<QVariantObject>;
 
-interface QWidget {
+interface QWidget extends Record<string, any> {
     show(): void;
 
     hide(): void;
@@ -73,6 +77,8 @@ interface QLabel extends QWidget {
     alignment: number;
 
     setText(text: string): void;
+
+    setAlignment(align: number): void;
 }
 
 interface QColorLabel extends QLabel {
@@ -91,18 +97,24 @@ interface QToolButton extends QAbstractButton {
 }
 
 interface QNavigator extends QWidget {
+    parse(nav: string): void;
 }
 
 interface QLineEdit extends QWidget {
     text: string;
+    placeholderText: string;
 
     setText(text: string): void;
+
+    setPlaceholderText(text: string): void;
 }
 
 interface QLinearSpinner extends QWidget {
 }
 
 interface QOccRender {
+    fresh(): void;
+
     importModelFile(filename: string): void;
 
     makeBevel(): void;
@@ -126,6 +138,8 @@ interface QApplicationWindow extends QWidget {
     setWindowTitle(title: string): void;
 
     setWindowIcon(filename: string): void;
+
+    openLocalFilesystem(): string;
 
     place(w: QWidget, x: QVariant<QVariantObject>): void;
 

@@ -100,6 +100,8 @@ public Q_SLOTS:
 
     void switchLeftView();
 
+    void fresh();
+
 private:
 
     void render();

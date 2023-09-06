@@ -158,14 +158,29 @@ QApplicationWindow::~QApplicationWindow() {
 }
 
 QScriptValue setTimeout(QScriptContext *context, QScriptEngine *engine, void *window) {
-    auto timer = ((QApplicationWindow *) window)->_timerManager.create(context->argument(0));
+    auto &tm = ((QApplicationWindow *) window)->_timerManager;
+    auto hd = tm.create(context->argument(0));
     auto timeout = context->argument(1);
-    QTimer::singleShot(timeout.toInt32(), timer, SLOT(callback()));
-    return engine->undefinedValue();
+    QTimer::singleShot(timeout.toInt32(), tm.timer(hd), SLOT(callback()));
+    return {engine, hd};
+}
+
+QScriptValue parseInt(QScriptContext *context, QScriptEngine *engine) {
+    int radix = 10;
+    if (context->argumentCount() >= 2 && context->argument(1).isNumber() && ((int) context->argument(1).toNumber()) == 16)
+        radix = 16;
+    bool ok;
+    qDebug() << "[QMain] QApplicationWindow::parseInt(" << context->argument(0).toString() << ")";
+    return {engine, radix == 10 ? context->argument(0).toString().toInt() : context->argument(0).toString().toInt(&ok, 16)};
+}
+
+QScriptValue parseFloat(QScriptContext *context, QScriptEngine *engine) {
+    qDebug() << "[QMain] QApplicationWindow::parseFloat(" << context->argument(0).toString() << ")";
+    return {engine, context->argument(0).toString().toDouble()};
 }
 
 void QApplicationWindow::load() {
-    QString preload = readFile(":/qscriptpreload.js");
+    QString preload = readFile(":/lib.qsviewer.js");
     QScriptEngine& engine = _engine;
     QScriptValue console = engine.newObject();
     console.setProperty("info" , engine.newFunction(println));
@@ -177,6 +192,8 @@ void QApplicationWindow::load() {
 //    auto *window = new QApplicationWindow();
     engine.globalObject().setProperty("console"             , console);
     engine.globalObject().setProperty("typecast"            , engine.newFunction(typecast));
+    engine.globalObject().setProperty("parseInt"            , engine.newFunction(parseInt));
+    engine.globalObject().setProperty("parseFloat"          , engine.newFunction(parseFloat));
     engine.globalObject().setProperty("setTimeout"          , engine.newFunction(setTimeout, this));
     engine.globalObject().setProperty("qApplicationWindow"  , engine.newQObject(window));
     engine.evaluate(preload);
@@ -231,7 +248,7 @@ void QApplicationWindow::setDefaultFont(QString fontFamily) {
 
 #define IMPLEMENTATION_BUILD_WIDGET(CLS) \
     auto *p = new CLS(this);\
-    p->setObjectName(id); \
+    if (!id.isEmpty()) p->setObjectName(id); \
     _widgets.push_back(p);\
     return p;
 
@@ -315,6 +332,12 @@ void QApplicationWindow::setWindowIcon(const QString& filename) {
     QWidget::setWindowIcon(QIcon(filename));
 }
 
+void QApplicationWindow::resizeEvent(QResizeEvent *event) {
+    QWidget::resizeEvent(event);
+    auto size = event->size();
+    emit windowSizeChanged(size.width(), size.height());
+}
+
 //QWidget *QApplicationWindow::createWidget(const QString& type, const QString& id) {
 //    QWidget *p;
 //    QWidget *parent = this;
@@ -338,20 +361,25 @@ void QApplicationWindow::setWindowIcon(const QString& filename) {
 //    return p;
 //}
 
-QScriptTimer *QScriptTimerManager::create(QScriptValue v)  {
+int QScriptTimerManager::create(QScriptValue v)  {
     QVector<int> finishedTimers;
-    for (int i = 0; i < _timers.length(); i++) {
-        if (_timers[i]->isFinished())
-            finishedTimers.push_back(i);
+    for (auto hd : _timers.keys()) {
+        if (_timers[hd]->isFinished())
+            finishedTimers.push_back(hd);
     }
-    for (int j = finishedTimers.length() - 1; j > -1; j--) {
-        int i = finishedTimers[j];
-        delete _timers[i];
-        _timers.remove(i);
+    for (auto hd : finishedTimers) {
+        _timers.remove(hd);
     }
     auto t = new QScriptTimer(v);
-    _timers.push_back(t);
-    return t;
+    _mutex.lock();
+    try {
+        _counter++;
+        _timers[_counter] = t;
+    } catch (...) {
+
+    }
+    _mutex.unlock();
+    return _counter;
 }
 
 void QScriptTimer::callback()  {
@@ -361,3 +389,8 @@ void QScriptTimer::callback()  {
     }
     _finished = true;
 };
+
+QString QApplicationWindow::openLocalFilesystem() {
+    return QFileDialog::getOpenFileName((QWidget *) this, QStringLiteral("Select a file"));
+}
+

@@ -30,6 +30,10 @@ QScriptValue typecast(QScriptContext *context, QScriptEngine *engine);
 
 QScriptValue setTimeout(QScriptContext *context, QScriptEngine *engine, void *w);
 
+QScriptValue parseInt(QScriptContext *context, QScriptEngine *engine);
+
+QScriptValue parseFloat(QScriptContext *context, QScriptEngine *engine);
+
 
 class QScriptTimer : public QObject {
     Q_OBJECT
@@ -45,9 +49,12 @@ private:
 
 class QScriptTimerManager {
 public:
-    QScriptTimer *create(QScriptValue v);
+    int create(QScriptValue v);
+    QScriptTimer *timer(int hd) { return _timers.contains(hd) ? _timers[hd] : nullptr; }
 private:
-    QVector<QScriptTimer*> _timers;
+    QMap<int, QScriptTimer*> _timers;
+    QMutex _mutex;
+    int _counter = 0;
 };
 
 class QApplicationWindow : public QMainWindow {
@@ -59,6 +66,12 @@ public:
     explicit QApplicationWindow(const QString& filename);
 
     ~QApplicationWindow() override;
+
+    Q_INVOKABLE QString openLocalFilesystem();
+
+Q_SIGNALS:
+
+    void windowSizeChanged(int w, int h);
 
 public Q_SLOTS:
 
@@ -109,6 +122,10 @@ public Q_SLOTS:
     Q_INVOKABLE void setLineEditPlaceholder(QLineEdit *edit, QString text);
 
     Q_INVOKABLE void updateOcc(QOccViewer *w);
+
+protected:
+
+    void resizeEvent(QResizeEvent *event) override;
 
 private:
 

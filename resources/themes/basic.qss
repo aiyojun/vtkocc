@@ -1,7 +1,8 @@
-* { font-size: 14px; }
+* { font-size: 16px; }
+
 QColorLabel { border-radius: 4px; padding-left: 8px; padding-right: 8px; background-color: lightpink; color: #333; }
 QLineEdit   { border-radius: 4px; padding-left: 8px; padding-right: 8px; border: 1px solid #ddd; }
-QPushButton { background-color: #eee; border: none; }
+QPushButton { border: none; }
 QPushButton:hover { background-color: #ddd; }
 QScrollArea { background-color: #fff; border: none; qproperty-horizontalScrollBarPolicy: ScrollBarAlwaysOff; }
 QNavigator { background-color: #fff; }
@@ -9,5 +10,4 @@ QLinearSpinner { qproperty-spinnerBackgroundRadius: 0; qproperty-spinnerColor: #
 QApplicationWindow { background-color: #FFFFFF; }
 
 
-
-
+#logo { margin-left: 8px; }
