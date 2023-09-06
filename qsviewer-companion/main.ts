@@ -1,3 +1,40 @@
+///////////////////////////////////////////////////////
+// Runtime instances
+///////////////////////////////////////////////////////
+const ui_declare = {
+    type: "QVBoxLayout", width: "1280px", height: "960px", children: [
+        { type: "QHBoxLayout", width: "100%", height: "36px", children: [
+                {type: "QLabel", name: "logo", text: "VTK OCC", width: "100px", height: "100%"},
+                {type: "QHBoxLayout", reverse: true, width: "calc(100% - 200px)", height: "100%", children: [
+                        {type: "QBasicButton", name: "darkModeButton", text: "Dark", width: "100px", height: "100%"},
+                        {type: "QBasicButton", text: "View", width: "100px", height: "100%"},
+                        {type: "QBasicButton", name: "openLocalFilesystem", text: "Open", width: "100px", height: "100%"},
+                    ]},
+            ] },
+        { type: "QHBoxLayout", width: "100%", height: "calc(100% - 36px - 24px)", children: [
+                { type: "QVBoxLayout", width: "240px", height: "100%", children: [
+                        { type: "QVBoxLayout", width: "240px", height: "50%", children: [
+                                { type: "QLabel", name: "label_3d_views", width: "100%", height: "32px", text: "3D views" },
+                                { type: "QHBoxLayout", width: "100%", height: "80px", children: [
+                                    { type: "QToolButton", name: "viewMain", width: "80px", height: "80px", text: "Front", icon: ":/icons/box-front.svg" },
+                                    { type: "QToolButton", name: "viewLeft", width: "80px", height: "80px", text: "Left" , icon: ":/icons/box-left.svg" },
+                                    { type: "QToolButton", name: "viewTop" , width: "80px", height: "80px", text: "Top"  , icon: ":/icons/box-top.svg" },
+                                ] }
+                            ] },
+                        { type: "QVBoxLayout", width: "240px", height: "50%", children: [
+                                { type: "QNavigator", name: "navigator", width: "100%", height: "100%" },
+                                { type: "QScrollArea", name: "navigatorScroll", position: "absolute", x: "0", y: "0", width: "100%", height: "100%" }
+                            ] }
+                    ] },
+                { type: "QOccViewer", name: "occViewer", width: "calc(100% - 240px)", height: "100%" },
+            ] },
+        { type: "QHBoxLayout", width: "100%", height: "24px", children: [
+                {type: "QFrame", position: "absolute", x: "0", y: "0", width: "100px", height: "100%"},
+                { type: "QLabel", name: "statusBar", width: "100%", height: "100%", text: "- Prepared VTK OCC ..." },
+                { type: "QBasicButton", name: "support", position: "absolute", x: "calc(100% - 100px)", y: "0", width: "100px", height: "100%", text: "Support", source: "https://" }
+            ] }
+    ]
+}
 // QScript ui generator framework.
 // First of all, make an alias for qApplicationWindow.
 const app = qApplicationWindow;
@@ -41,6 +78,7 @@ function compute(length: number, calc: string) {
             if (_arr !== null && _arr.length > 0) {
                 arr.push(parseInt(calc.substring(i, i + _arr[0].length - 2)));
                 i = i + _arr[0].length;
+                continue;
             }
             break;
         }
@@ -50,88 +88,138 @@ function compute(length: number, calc: string) {
     }
     return 0;
 }
+///////////////////////////////////////////////////////
+// Runtime instances
+///////////////////////////////////////////////////////
+class Manager {
+    _counter: number = 0;
+    _widgets: Record<string, QWidget> = {};
 
-let manager: Record<string, any> = {
-    counter: 0,
-    widgets: {},
-    supplyWidgetName: function(_ui: Record<string, any>) {
+    supplyWidgetName(_ui: Record<string, any>) {
         if (!exists(_ui, "name"))
-            _ui["name"] = "widget-" + (this.counter++);
+            _ui["name"] = _ui["type"] + "_" + (this._counter++);
         return _ui["name"];
-    },
-    widgetOf: function (name: string) {
-        return this.widgets[name];
-    },
-    QBasicButton: function (_ui: Record<string, any>) {
-        let name = _ui["name"];
-        let w = app.qPushButton(name);
-        w.text = _ui["text"] || "";
-        this.widgets[name] = w;
-        return w;
-    },
-    QLabel: function (_ui: Record<string, any>) {
-        let name = _ui["name"];
-        let w = app.qLabel(name);
-        w.text = _ui["text"] || "";
-        if (name !== "") this.widgets[name] = w;
-        return w;
-    },
-    QColorLabel: function (_ui: Record<string, any>) {
-        let name = _ui["name"];
-        let w = app.qColorLabel(name);
-        w.text = _ui["text"] || "";
-        if (name !== "") this.widgets[name] = w;
-        return w;
-    },
-    QLineEdit: function (_ui: Record<string, any>) {
-        let name = _ui["name"];
-        let w = app.qLineEdit(name);
-        w.text = _ui["text"] || "";
-        w.placeHolderText = _ui["placeholder"] || "";
-        if (name !== "") this.widgets[name] = w;
-        return w;
-    },
-    QOccViewer: function (_ui: Record<string, any>) {
-        let name = _ui["name"];
-        let w = app.qOccViewer(name);
-        if (name !== "") this.widgets[name] = w;
-        return w;
-    },
-    QNavigator: function (_ui: Record<string, any>) {
-        let name = _ui["name"];
-        let w = app.qNavigator(name);
-        if (name !== "") this.widgets[name] = w;
-        return w;
-    },
-    QLinearSpinner: function (_ui: Record<string, any>) {
-        let name = _ui["name"];
-        let w = app.qLinearSpinner(name);
-        if (name !== "") this.widgets[name] = w;
-        return w;
-    },
-}
+    }
 
-// Register life cycle functions.
-let ui_declare = {
-    type: "QVBoxLayout", width: "1280px", height: "960px", children: [
-        { type: "QHBoxLayout", width: "100%", height: "32px", children: [
-                {type: "QLabel", name: "logo", text: "VTK OCC", width: "100px", height: "100%"},
-                {type: "QHBoxLayout", reverse: true, width: "calc(100% - 200px)", height: "100%", children: [
-                    {type: "QBasicButton", name: "openLocalFilesystem", text: "Open", width: "100px", height: "100%"},
-                    {type: "QBasicButton", text: "View", width: "100px", height: "100%"},
-                    ]},
-            ] },
-        { type: "QHBoxLayout", width: "100%", height: "calc(100% - 32px)", children: [
-                { type: "QVBoxLayout", width: "240px", height: "100%", children: [
-                        { type: "QNavigator", name: "navigator", width: "100%", height: "100%" }
-                    ] },
-                { type: "QOccViewer", name: "occViewer", width: "calc(100% - 240px)", height: "100%" },
-            ] }
-    ]
-}
+    widgetOf(name: string): QWidget {
+        console.info("-- widgetOf : ", name, " ", typeof this._widgets[name]);
+        return this._widgets[name];
+    }
 
-onCreate()
-app["windowSizeChanged(int, int)"].connect(onUpdate)
+    create(type: string, _ui: Record<string, any>): QWidget {
+        console.info("-- create widget : ", type);
+        const handles = [
+            {
+                name: "QFrame", builder: (_ui: Record<string, any>) => {
+                    let name = _ui["name"];
+                    let w = app.qFrame(name);
+                    if (name !== "") this._widgets[name] = w;
+                    return w;
+                }
+            },
+            {
+                name: "QLabel", builder: (_ui: Record<string, any>) => {
+                    let name = _ui["name"];
+                    let w = app.qLabel(name);
+                    w.text = _ui["text"] || "";
+                    if (name !== "") this._widgets[name] = w;
+                    return w;
+                }
+            },
+            {
+                name: "QColorLabel", builder: (_ui: Record<string, any>) => {
+                    let name = _ui["name"];
+                    let w = app.qColorLabel(name);
+                    w.text = _ui["text"] || "";
+                    if (name !== "") this._widgets[name] = w;
+                    return w;
+                }
+            },
+            {
+                name: "QLineEdit", builder: (_ui: Record<string, any>) => {
+                    let name = _ui["name"];
+                    let w = app.qLineEdit(name);
+                    w.text = _ui["text"] || "";
+                    w.placeHolderText = _ui["placeholder"] || "";
+                    if (name !== "") this._widgets[name] = w;
+                    return w;
+                }
+            },
+            {
+                name: "QBasicButton", builder: (_ui: Record<string, any>) => {
+                    let name = _ui["name"];
+                    let w = app.qPushButton(name);
+                    w.text = _ui["text"] || "";
+                    this._widgets[name] = w;
+                    return w;
+                }
+            },
+            {
+                name: "QToolButton", builder: (_ui: Record<string, any>) => {
+                    let name = _ui["name"];
+                    let w = app.qToolButton(name);
+                    if (exists(_ui, "icon"))
+                        app.setButtonIcon(w, _ui["icon"]);
+                    // if (exists(_ui, "toolButtonStyle"))
+                    //     w.toolButtonStyle = _ui["toolButtonStyle"] === "ToolButtonTextBesideIcon" ? 2 : 3;
+                    app.setButtonText(w, _ui["text"]);
+                    this._widgets[name] = w;
+                    return w;
+                }
+            },
+            {
+                name: "QTextBrowser", builder: (_ui: Record<string, any>) => {
+                    let name = _ui["name"];
+                    let w = app.qTextBrowser(name);
+                    app.setTextBrowserSource(w, _ui["source"] || "https://")
+                    w.text = _ui["text"] || "";
+                    w.placeHolderText = _ui["placeholder"] || "";
+                    if (name !== "") this._widgets[name] = w;
+                    return w;
+                }
+            },
+            {
+                name: "QOccViewer", builder: (_ui: Record<string, any>) => {
+                    let name = _ui["name"];
+                    let w = app.qOccViewer(name);
+                    if (name !== "") this._widgets[name] = w;
+                    return w;
+                }
+            },
+            {
+                name: "QNavigator", builder: (_ui: Record<string, any>) => {
+                    let name = _ui["name"];
+                    let w = app.qNavigator(name);
+                    if (name !== "") this._widgets[name] = w;
+                    return w;
+                }
+            },
+            {
+                name: "QScrollArea", builder: (_ui: Record<string, any>) => {
+                    let name = _ui["name"];
+                    let w = app.qScrollArea(name);
+                    if (name !== "") this._widgets[name] = w;
+                    return w;
+                }
+            },
+            {
+                name: "QLinearSpinner", builder: (_ui: Record<string, any>) => {
+                    let name = _ui["name"];
+                    let w = app.qLinearSpinner(name);
+                    if (name !== "") this._widgets[name] = w;
+                    return w;
+                }
+            },
+        ];
+        for (let i = 0; i < handles.length; i++) {
+            const handle = handles[i];
+            if (handle.name === type)
+                return handle.builder(_ui);
+        }
+        throw new Error("unknown plugin : " + type);
+    }
+}
+const manager: Manager = new Manager();
 ///////////////////////////////////////////////////////
 // Main function definitions:
 ///////////////////////////////////////////////////////
@@ -144,9 +232,8 @@ function loopCreate(_ui: Record<string, any>) {
         }
         return;
     }
-    if (/^Q.*/.test(type) && manager.hasOwnProperty(type))
-        manager.supplyWidgetName(_ui);
-        manager[type](_ui);
+    manager.supplyWidgetName(_ui);
+    manager.create(type, _ui);
 }
 
 function layoutAbsolute(_ui: Record<string, any>, x: number, y: number, width: number, height: number) {
@@ -197,39 +284,45 @@ function onCreate() {
     app.setWindowIcon(":/icons/3d.svg");
     app.loadFont(":/titillium-web-font/TitilliumWeb-1eq2.ttf");
     app.setDefaultFont("Titillium Web");
-    app.loadStylesheet(":/themes/basic.qss");
-    let width  = compute(0, ui_declare.width);
-    let height = compute(0, ui_declare.height);
+    const width  = compute(0, ui_declare.width);
+    const height = compute(0, ui_declare.height);
     resize(app, width, height);
     loopCreate(ui_declare);
     onUpdate(width, height);
-    let occViewer = manager.widgetOf("occViewer");
-    let occRender = occViewer.qRenderThread();
-    let navigator = manager.widgetOf("navigator");
-    let logo = manager.widgetOf("logo");
+    const occViewer = manager.widgetOf("occViewer") as QOccViewer;
+    const occRender = occViewer.qRenderThread();
+    const navigator = manager.widgetOf("navigator");
+    const navScroll = manager.widgetOf("navigatorScroll") as QScrollArea;
+    const darkModeButton = manager.widgetOf("darkModeButton");
+    $click(darkModeButton, () => {
+        if (darkModeButton.text === "Dark") {
+            darkModeButton.text = "Light";
+            app.loadStylesheet(":/themes/dark.qss");
+        } else {
+            darkModeButton.text = "Dark";
+            app.loadStylesheet(":/themes/basic.qss");
+        }
+    });
+    $click(manager.widgetOf("viewMain"), () => occRender.switchFrontView());
+    $click(manager.widgetOf("viewLeft"), () => occRender.switchLeftView());
+    $click(manager.widgetOf("viewTop" ), () => occRender.switchTopView());
+    app.setScrollWidget(navScroll, navigator);
+    console.info(Object.keys(manager.widgetOf("support")));
+    const logo = manager.widgetOf("logo");
     logo.alignment = 0x81;
-    $click(manager.widgetOf("openLocalFilesystem"), function () {
-        let filename = app.openLocalFilesystem();
-        console.info("open local file : ", filename);
-        occRender.importModelFile(filename);
-    })
-    // occRender["sendAssemblyTree(string)"];
-    // $click(manager.widgetOf("occViewer", function () {
-    //
-    // });
+    $click(manager.widgetOf("openLocalFilesystem"), () => occRender.importModelFile(app.openLocalFilesystem()));
+    occRender["sendAssemblyTree"].connect((info: string) => navigator.parse(info));
+    app.loadStylesheet(":/themes/basic.qss");
 }
+
 function onUpdate(w: number, h: number) {
     loopLayout(ui_declare, 0, 0, w, h);
     let occViewer = manager.widgetOf("occViewer");
     let occRender = occViewer.qRenderThread();
     occRender.fresh();
 }
-
-for (let x in [1, 2, 3]) {
-    console.info(x);
-}
-
-
-
-
-
+///////////////////////////////////////////////////////
+// Register life cycle functions.
+///////////////////////////////////////////////////////
+onCreate();
+app["windowSizeChanged(int, int)"].connect(onUpdate);

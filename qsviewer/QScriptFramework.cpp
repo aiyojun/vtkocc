@@ -170,12 +170,12 @@ QScriptValue parseInt(QScriptContext *context, QScriptEngine *engine) {
     if (context->argumentCount() >= 2 && context->argument(1).isNumber() && ((int) context->argument(1).toNumber()) == 16)
         radix = 16;
     bool ok;
-    qDebug() << "[QMain] QApplicationWindow::parseInt(" << context->argument(0).toString() << ")";
+//    qDebug() << "[QMain] QApplicationWindow::parseInt(" << context->argument(0).toString() << ")";
     return {engine, radix == 10 ? context->argument(0).toString().toInt() : context->argument(0).toString().toInt(&ok, 16)};
 }
 
 QScriptValue parseFloat(QScriptContext *context, QScriptEngine *engine) {
-    qDebug() << "[QMain] QApplicationWindow::parseFloat(" << context->argument(0).toString() << ")";
+//    qDebug() << "[QMain] QApplicationWindow::parseFloat(" << context->argument(0).toString() << ")";
     return {engine, context->argument(0).toString().toDouble()};
 }
 
@@ -194,7 +194,7 @@ void QApplicationWindow::load() {
     engine.globalObject().setProperty("typecast"            , engine.newFunction(typecast));
     engine.globalObject().setProperty("parseInt"            , engine.newFunction(parseInt));
     engine.globalObject().setProperty("parseFloat"          , engine.newFunction(parseFloat));
-    engine.globalObject().setProperty("setTimeout"          , engine.newFunction(setTimeout, this));
+//    engine.globalObject().setProperty("setTimeout"          , engine.newFunction(setTimeout, this));
     engine.globalObject().setProperty("qApplicationWindow"  , engine.newQObject(window));
     engine.evaluate(preload);
     QScriptValue result = engine.evaluate(QtUtils::readFile(_scriptPath));
@@ -252,12 +252,20 @@ void QApplicationWindow::setDefaultFont(QString fontFamily) {
     _widgets.push_back(p);\
     return p;
 
+QWidget *QApplicationWindow::qFrame(QString id) {
+    IMPLEMENTATION_BUILD_WIDGET(QFrame)
+}
+
 QWidget *QApplicationWindow::qLabel(QString id) {
     IMPLEMENTATION_BUILD_WIDGET(QLabel)
 }
 
 QWidget *QApplicationWindow::qColorLabel(QString id) {
     IMPLEMENTATION_BUILD_WIDGET(QColorLabel)
+}
+
+QWidget *QApplicationWindow::qTextBrowser(QString id) {
+    IMPLEMENTATION_BUILD_WIDGET(QTextBrowser)
 }
 
 QWidget *QApplicationWindow::qPushButton(QString id) {
@@ -270,6 +278,10 @@ QWidget *QApplicationWindow::qToolButton(QString id) {
 
 QWidget *QApplicationWindow::qNavigator(QString id) {
     IMPLEMENTATION_BUILD_WIDGET(QNavigator)
+}
+
+QWidget *QApplicationWindow::qScrollArea(QString id) {
+    IMPLEMENTATION_BUILD_WIDGET(QScrollArea)
 }
 
 QWidget *QApplicationWindow::qLineEdit(QString id) {
@@ -393,4 +405,13 @@ void QScriptTimer::callback()  {
 QString QApplicationWindow::openLocalFilesystem() {
     return QFileDialog::getOpenFileName((QWidget *) this, QStringLiteral("Select a file"));
 }
+
+void QApplicationWindow::setScrollWidget(QScrollArea *scroll, QWidget *w) {
+    scroll->setWidget(w);
+}
+
+void QApplicationWindow::setTextBrowserSource(QTextBrowser *w, QString source) {
+    w->setSource(source);
+}
+
 

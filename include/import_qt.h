@@ -33,6 +33,7 @@
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QToolButton>
 #include <QtWidgets/QScrollArea>
+#include <QtWidgets/QTextBrowser>
 #include <QtWidgets/qfiledialog.h>
 #include <QtWidgets/qstyleoption.h>
 #include <QtWidgets/qstylepainter.h>

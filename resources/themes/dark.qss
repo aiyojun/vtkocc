@@ -1,18 +1,17 @@
-* { font-size: 16px; }
+* { font-size: 16px; background-color: #333; color: #fff; }
+
+QApplicationWindow { background-color: #333; }
 
 QFrame { background-color: #272727; }
 QColorLabel { border-radius: 4px; padding-left: 8px; padding-right: 8px; background-color: lightpink; color: #333; }
 QLineEdit   { border-radius: 4px; padding-left: 8px; padding-right: 8px; border: 1px solid #ddd; }
-QPushButton, QToolButton { border: none; color: #fff; }
-QPushButton:hover, QToolButton:hover { background-color: #ddd; }
-QScrollArea { background-color: #fff; border: none; qproperty-horizontalScrollBarPolicy: ScrollBarAlwaysOff; }
-QNavigator { background-color: #fff; }
+QPushButton, QToolButton { border: none; }
+QPushButton:hover, QToolButton:hover { background-color: rgba(255,255,255,0.1); }
+QScrollArea { border: none; qproperty-horizontalScrollBarPolicy: ScrollBarAlwaysOff; }
+QNavigator { }
 QLinearSpinner { qproperty-spinnerBackgroundRadius: 0; qproperty-spinnerColor: #FFFFFF; qproperty-spinnerBackgroundColor: #E0C3FC; qproperty-spinnerRadius: 6; qproperty-spinnerDistance: 25; }
-QApplicationWindow { background-color: #FFFFFF; }
 
-#logo { margin-left: 5px; background-color: rgba(0,0,0,0); }
+#logo { margin-left: 5px; background-color: #333; }
 #statusBar { margin-left: 8px; font-size: 14px; color: #eee; }
 #support { color: #eee; }
 #support:hover { background-color: #555; }
-QLabel { background-color: #fff; color: #333; }
-#label_3d_views { background-color: #fff; color: #333; margin-left: 5px; }

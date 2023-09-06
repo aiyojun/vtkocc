@@ -2,7 +2,7 @@ interface String {
     replaceAll(regex: RegExp | string, str: string): string;
 }
 
-interface QObject {
+interface QObject extends Record<string, any> {
     readonly objectName: string;
 }
 
@@ -64,12 +64,15 @@ declare function typecast(obj: QVariant<QVariantObject>): QSize | QRect | QPoint
 
 declare function typecast(type: string, obj: QVariantObject): QVariant<QVariantObject>;
 
-interface QWidget extends Record<string, any> {
+interface QWidget extends QObject {
     show(): void;
 
     hide(): void;
 
     setGeometry(rect: QRect): void;
+}
+
+interface QFrame extends QWidget {
 }
 
 interface QLabel extends QWidget {
@@ -94,10 +97,19 @@ interface QPushButton extends QAbstractButton {
 }
 
 interface QToolButton extends QAbstractButton {
+    toolButtonStyle: number;
+
+    setToolButtonStyle(n: number): void;
 }
 
 interface QNavigator extends QWidget {
     parse(nav: string): void;
+}
+
+interface QScrollArea extends QWidget {
+    alignment: number;
+
+    setAlignment(alignment: number): void;
 }
 
 interface QLineEdit extends QWidget {
@@ -109,10 +121,13 @@ interface QLineEdit extends QWidget {
     setPlaceholderText(text: string): void;
 }
 
+interface QTextBrowser extends QLineEdit {
+}
+
 interface QLinearSpinner extends QWidget {
 }
 
-interface QOccRender {
+interface QOccRender extends QObject {
     fresh(): void;
 
     importModelFile(filename: string): void;
@@ -151,6 +166,8 @@ interface QApplicationWindow extends QWidget {
 
     setDefaultFont(fontFamily: string): void;
 
+    qFrame(id: string): QFrame;
+
     qLabel(id: string): QLabel;
 
     qColorLabel(id: string): QColorLabel;
@@ -161,7 +178,11 @@ interface QApplicationWindow extends QWidget {
 
     qNavigator(id: string): QNavigator;
 
+    qScrollArea(id: string): QScrollArea;
+
     qLineEdit(id: string): QLineEdit;
+
+    qTextBrowser(id: string): QTextBrowser;
 
     qLinearSpinner(id: string): QLinearSpinner;
 
@@ -186,6 +207,10 @@ interface QApplicationWindow extends QWidget {
     updateOcc(occ: QOccViewer): void;
 
     createOcc(occ: QOccViewer): void;
+
+    setScrollWidget(scroll: QScrollArea, widget: QWidget): void;
+
+    setTextBrowserSource(textBrowser: QTextBrowser, source: string): void;
 
 }
 

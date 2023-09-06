@@ -69,6 +69,10 @@ public:
 
     Q_INVOKABLE QString openLocalFilesystem();
 
+    Q_INVOKABLE void setScrollWidget(QScrollArea *scroll, QWidget *w);
+
+    Q_INVOKABLE void setTextBrowserSource(QTextBrowser *w, QString source);
+
 Q_SIGNALS:
 
     void windowSizeChanged(int w, int h);
@@ -89,15 +93,21 @@ public Q_SLOTS:
 
     Q_INVOKABLE void setDefaultFont(QString fontFamily);
 
+    Q_INVOKABLE QWidget *qFrame(QString id);
+
     Q_INVOKABLE QWidget *qLabel(QString id);
 
     Q_INVOKABLE QWidget *qColorLabel(QString id);
+
+    Q_INVOKABLE QWidget *qTextBrowser(QString id);
 
     Q_INVOKABLE QWidget *qPushButton(QString id);
 
     Q_INVOKABLE QWidget *qToolButton(QString id);
 
     Q_INVOKABLE QWidget *qNavigator(QString id);
+
+    Q_INVOKABLE QWidget *qScrollArea(QString id);
 
     Q_INVOKABLE QWidget *qLineEdit(QString id);
 

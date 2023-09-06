@@ -57,7 +57,7 @@ void QNavigator::calc(int hi, int depth, QRect &image, QRect &text, QRect &mark)
 void QNavigator::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
     painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
-    painter.setPen(QColor(0, 0, 0));
+//    painter.setPen(QColor(0, 0, 0));
     painter.drawText(QRect(_navMargin, 0, width() - _navMargin * 2, _navHeight), Qt::AlignVCenter, "Navigator");
     for (int i = 0; i < _navSeq.size(); i++) {
         auto *nav = _navSeq[i];

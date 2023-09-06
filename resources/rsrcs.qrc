@@ -2,6 +2,7 @@
     <qresource prefix="/">
 <!--        <file>main.js</file>-->
         <file>themes/basic.qss</file>
+        <file>themes/dark.qss</file>
         <file alias="lib.qsviewer.js">../qsviewer-companion/libs/lib.qsviewer.js</file>
 <!--        <file>qscriptpreload.js</file>-->
 <!--        <file>qscripthints.d.ts</file>-->
