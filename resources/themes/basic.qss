@@ -1,18 +1,37 @@
-* { font-size: 16px; }
-
-QFrame { background-color: #272727; }
-QColorLabel { border-radius: 4px; padding-left: 8px; padding-right: 8px; background-color: lightpink; color: #333; }
+* { font-size: 16px; color: #333; background-color: #fff; }
+QLabel      { color: #333; background-color: #fff; }
+QColorLabel { color: #333; background-color: lightpink; border-radius: 4px; }
 QLineEdit   { border-radius: 4px; padding-left: 8px; padding-right: 8px; border: 1px solid #ddd; }
-QPushButton, QToolButton { border: none; color: #fff; }
-QPushButton:hover, QToolButton:hover { background-color: #ddd; }
+QToolButton { qproperty-toolButtonStyle: "ToolButtonTextUnderIcon"; padding-top: 10px; }
+QPushButton, QToolButton { color: #333; background-color: #fff; border: none; }
+QPushButton:hover, QToolButton:hover { color: #333; background-color: #ddd; }
 QScrollArea { background-color: #fff; border: none; qproperty-horizontalScrollBarPolicy: ScrollBarAlwaysOff; }
-QNavigator { background-color: #fff; }
-QLinearSpinner { qproperty-spinnerBackgroundRadius: 0; qproperty-spinnerColor: #FFFFFF; qproperty-spinnerBackgroundColor: #E0C3FC; qproperty-spinnerRadius: 6; qproperty-spinnerDistance: 25; }
-QApplicationWindow { background-color: #FFFFFF; }
+QNavigator  { background-color: #fff; }
+QLinearSpinner { qproperty-spinnerBackgroundRadius: 0; qproperty-spinnerColor: #fff; qproperty-spinnerBackgroundColor: #E0C3FC; qproperty-spinnerRadius: 6; qproperty-spinnerDistance: 25; }
+QFrame { background-color: #fff; }
+QApplicationWindow { background-color: #fff; }
 
-#logo { margin-left: 5px; background-color: rgba(0,0,0,0); }
-#statusBar { margin-left: 8px; font-size: 14px; color: #eee; }
-#support { color: #eee; }
-#support:hover { background-color: #555; }
-QLabel { background-color: #fff; color: #333; }
+
+QScrollBar { background: transparent; }
+QScrollBar:vertical { width: 8px; background: transparent; margin: 0; padding-bottom: 0; }
+QScrollBar::handle:vertical { width: 8px; background: #aaa; border-radius: 4px; min-height: 20px; }
+QScrollBar::handle:vertical:hover { width: 8px; background: #aaa; border-radius: 4px; min-height: 20px; }
+QScrollBar::add-line:vertical { height: 0; subcontrol-position: bottom; }
+QScrollBar::sub-line:vertical { height: 0; width: 8px; subcontrol-position: top; }
+QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical { background: #eee; }
+
+
+#logo       { margin-left: 5px; }
+#statusBar  { margin-left: 5px; font-size: 14px; color: #777; }
+#support    { color: #eee; }
+#support:hover  { background-color: #ddd; }
 #label_3d_views { background-color: #fff; color: #333; margin-left: 5px; }
+#label_3d_infos { background-color: #fff; color: #333; margin-left: 5px; }
+#qclDepth, #qclName, #qclParts, #qclFormat, #qclAssembly { color: #fff; background-color: lightpink; border-radius: 16px; margin-left: 16px; padding-left: 8px; padding-right: 8px; }
+#qclFormat { background-color: #E0C3FC; }
+#qclParts  { background-color: #8EC5FC; }
+#qclName   { background-color: #FBAB7E; }
+#qclDepth  { background-color: #85FFBD; }
+
+
+

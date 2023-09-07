@@ -99,6 +99,9 @@ interface QPushButton extends QAbstractButton {
 interface QToolButton extends QAbstractButton {
     toolButtonStyle: number;
 
+    /**
+     * @deprecated please use qApplicationWindow.setToolButtonStyle() as substitute.
+     */
     setToolButtonStyle(n: number): void;
 }
 
@@ -156,9 +159,9 @@ interface QApplicationWindow extends QWidget {
 
     openLocalFilesystem(): string;
 
-    place(w: QWidget, x: QVariant<QVariantObject>): void;
+    place(w: QWidget, x: QVariant<QPoint>): void;
 
-    setSize(w: QWidget, size: QVariant<QVariantObject>): void;
+    setSize(w: QWidget, size: QVariant<QSize>): void;
 
     loadStylesheet(filename: string): void;
 
@@ -190,7 +193,7 @@ interface QApplicationWindow extends QWidget {
 
     setLabelText(label: QLabel, text: string): void;
 
-    setWidgetGeometry(widget: QWidget, geo: QVariant<QVariantObject>): void;
+    setWidgetGeometry(widget: QWidget, geo: QVariant<QRect>): void;
 
     setWidgetVisible(widget: QWidget, visible: boolean): void;
 
@@ -198,7 +201,9 @@ interface QApplicationWindow extends QWidget {
 
     setButtonIcon(button: QAbstractButton, icon: string): void;
 
-    setButtonIconSize(button: QAbstractButton, size: QSize): void;
+    setButtonIconSize(button: QAbstractButton, size: QVariant<QSize>): void;
+
+    setToolButtonStyle(button: QToolButton, style: number): void;
 
     setLineEditText(edit: QLineEdit, text: string): void;
 
@@ -211,6 +216,8 @@ interface QApplicationWindow extends QWidget {
     setScrollWidget(scroll: QScrollArea, widget: QWidget): void;
 
     setTextBrowserSource(textBrowser: QTextBrowser, source: string): void;
+
+    setLabelAutoWidth(label: QLabel, padding: numer = 5): void;
 
 }
 

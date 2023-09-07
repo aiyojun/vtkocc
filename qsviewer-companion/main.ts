@@ -6,20 +6,33 @@ const ui_declare = {
         { type: "QHBoxLayout", width: "100%", height: "36px", children: [
                 {type: "QLabel", name: "logo", text: "VTK OCC", width: "100px", height: "100%"},
                 {type: "QHBoxLayout", reverse: true, width: "calc(100% - 200px)", height: "100%", children: [
-                        {type: "QBasicButton", name: "darkModeButton", text: "Dark", width: "100px", height: "100%"},
-                        {type: "QBasicButton", text: "View", width: "100px", height: "100%"},
-                        {type: "QBasicButton", name: "openLocalFilesystem", text: "Open", width: "100px", height: "100%"},
+                        {type: "QPushButton", name: "darkModeButton", text: "Dark", size: 20, icon: ":/icons/laptop.svg", width: "100px", height: "100%"},
+                        {type: "QPushButton", text: "View", size: 20, icon: ":/icons/box-axonometric.svg", width: "100px", height: "100%"},
+                        {type: "QPushButton", name: "openLocalFilesystem", text: "Open", size: 20, icon: ":/icons/open-folder.svg", width: "100px", height: "100%"},
                     ]},
             ] },
         { type: "QHBoxLayout", width: "100%", height: "calc(100% - 36px - 24px)", children: [
                 { type: "QVBoxLayout", width: "240px", height: "100%", children: [
                         { type: "QVBoxLayout", width: "240px", height: "50%", children: [
-                                { type: "QLabel", name: "label_3d_views", width: "100%", height: "32px", text: "3D views" },
+                                { type: "QLabel", name: "label_3d_views", width: "100%", height: "32px", text: "View" },
                                 { type: "QHBoxLayout", width: "100%", height: "80px", children: [
-                                    { type: "QToolButton", name: "viewMain", width: "80px", height: "80px", text: "Front", icon: ":/icons/box-front.svg" },
-                                    { type: "QToolButton", name: "viewLeft", width: "80px", height: "80px", text: "Left" , icon: ":/icons/box-left.svg" },
-                                    { type: "QToolButton", name: "viewTop" , width: "80px", height: "80px", text: "Top"  , icon: ":/icons/box-top.svg" },
-                                ] }
+                                    { type: "QToolButton", name: "viewMain", width: "80px", height: "80px", text: "Front", size: 20, icon: ":/icons/box-front.svg", toolButtonStyle: "ToolButtonTextUnderIcon" },
+                                    { type: "QToolButton", name: "viewLeft", width: "80px", height: "80px", text: "Left" , size: 20, icon: ":/icons/box-left.svg" , toolButtonStyle: "ToolButtonTextUnderIcon" },
+                                    { type: "QToolButton", name: "viewTop" , width: "80px", height: "80px", text: "Top"  , size: 20, icon: ":/icons/box-top.svg"  , toolButtonStyle: "ToolButtonTextUnderIcon" },
+                                ] },
+                                { type: "QLabel", name: "label_3d_infos", width: "100%", height: "32px", text: "Statistics" },
+                                { type: "QVBoxLayout", width: "100%", height: "80px", children: [
+                                        { type: "QColorLabel", name: "qclAssembly", padding: "20px", width: "auto", height: "32px", text: "Assembly: yes" },
+                                        { type: "QFrame", width: "0", height: "5px" },
+                                        { type: "QColorLabel", name: "qclFormat"  , padding: "20px", width: "auto", height: "32px", text: "Format: none" },
+                                        { type: "QFrame", width: "0", height: "5px" },
+                                        { type: "QColorLabel", name: "qclParts"   , padding: "20px", width: "auto", height: "32px", text: "Parts: 0" },
+                                        { type: "QFrame", width: "0", height: "5px" },
+                                        { type: "QColorLabel", name: "qclName", padding: "20px", width: "auto", height: "32px", text: "Name: none" },
+                                        { type: "QFrame", width: "0", height: "5px" },
+                                        { type: "QColorLabel", name: "qclDepth", padding: "20px", width: "auto", height: "32px", text: "Depth: 0" },
+                                        { type: "QFrame", width: "0", height: "5px" },
+                                    ] },
                             ] },
                         { type: "QVBoxLayout", width: "240px", height: "50%", children: [
                                 { type: "QNavigator", name: "navigator", width: "100%", height: "100%" },
@@ -31,7 +44,7 @@ const ui_declare = {
         { type: "QHBoxLayout", width: "100%", height: "24px", children: [
                 {type: "QFrame", position: "absolute", x: "0", y: "0", width: "100px", height: "100%"},
                 { type: "QLabel", name: "statusBar", width: "100%", height: "100%", text: "- Prepared VTK OCC ..." },
-                { type: "QBasicButton", name: "support", position: "absolute", x: "calc(100% - 100px)", y: "0", width: "100px", height: "100%", text: "Support", source: "https://" }
+                { type: "QPushButton", name: "support", position: "absolute", x: "calc(100% - 100px)", y: "0", width: "100px", height: "100%", text: "Support", source: "https://" }
             ] }
     ]
 }
@@ -146,9 +159,13 @@ class Manager {
                 }
             },
             {
-                name: "QBasicButton", builder: (_ui: Record<string, any>) => {
+                name: "QPushButton", builder: (_ui: Record<string, any>) => {
                     let name = _ui["name"];
                     let w = app.qPushButton(name);
+                    if (exists(_ui, "icon"))
+                        app.setButtonIcon(w, _ui["icon"]);
+                    if (exists(_ui, "size"))
+                        app.setButtonIconSize(w, typecast("QSize", new QSize(_ui["size"], _ui["size"])));
                     w.text = _ui["text"] || "";
                     this._widgets[name] = w;
                     return w;
@@ -160,8 +177,9 @@ class Manager {
                     let w = app.qToolButton(name);
                     if (exists(_ui, "icon"))
                         app.setButtonIcon(w, _ui["icon"]);
-                    // if (exists(_ui, "toolButtonStyle"))
-                    //     w.toolButtonStyle = _ui["toolButtonStyle"] === "ToolButtonTextBesideIcon" ? 2 : 3;
+                    if (exists(_ui, "size"))
+                        app.setButtonIconSize(w, typecast("QSize", new QSize(_ui["size"], _ui["size"])));
+                    app.setToolButtonStyle(w, (exists(_ui, "toolButtonStyle") && _ui["toolButtonStyle"] === "ToolButtonTextUnderIcon") ? 3 : 2)
                     app.setButtonText(w, _ui["text"]);
                     this._widgets[name] = w;
                     return w;
@@ -250,6 +268,11 @@ function loopLayout(_ui: Record<string, any>, x: number, y: number, width: numbe
     let type = _ui["type"];
     if (!/^Q.*Layout$/.test(type)) {
         layout(manager.widgetOf(_ui["name"]), x, y, width, height);
+
+        if (type === "QColorLabel") {
+            app.setLabelAutoWidth(manager.widgetOf(_ui["name"]) as QLabel, compute(0, _ui["padding"] || "5px"));
+        }
+
         return;
     }
     if (type === "QVBoxLayout") {
@@ -279,6 +302,10 @@ function loopLayout(_ui: Record<string, any>, x: number, y: number, width: numbe
     }
 }
 
+const cache = {
+    importFilename: "",
+}
+
 function onCreate() {
     app.setWindowTitle("3D Viewer");
     app.setWindowIcon(":/icons/3d.svg");
@@ -294,6 +321,8 @@ function onCreate() {
     const navigator = manager.widgetOf("navigator");
     const navScroll = manager.widgetOf("navigatorScroll") as QScrollArea;
     const darkModeButton = manager.widgetOf("darkModeButton");
+    const statusBar = manager.widgetOf("statusBar");
+    const emitStatus = (msg: string) => statusBar.text = "- " + msg;
     $click(darkModeButton, () => {
         if (darkModeButton.text === "Dark") {
             darkModeButton.text = "Light";
@@ -310,8 +339,15 @@ function onCreate() {
     console.info(Object.keys(manager.widgetOf("support")));
     const logo = manager.widgetOf("logo");
     logo.alignment = 0x81;
-    $click(manager.widgetOf("openLocalFilesystem"), () => occRender.importModelFile(app.openLocalFilesystem()));
-    occRender["sendAssemblyTree"].connect((info: string) => navigator.parse(info));
+    $click(manager.widgetOf("openLocalFilesystem"), () => {
+        cache.importFilename = app.openLocalFilesystem();
+        emitStatus("loading " + cache.importFilename);
+        occRender.importModelFile(cache.importFilename);
+    });
+    occRender["finishedReadModel"].connect(() => {
+        emitStatus("Finished import " + cache.importFilename);
+    });
+    occRender["sendAssemblyTree"].connect((info: string) => navigator.parse(JSON.stringify(statistic(JSON.parse(info)))));
     app.loadStylesheet(":/themes/basic.qss");
 }
 
@@ -320,6 +356,60 @@ function onUpdate(w: number, h: number) {
     let occViewer = manager.widgetOf("occViewer");
     let occRender = occViewer.qRenderThread();
     occRender.fresh();
+}
+
+function statistic(info: Record<string, any>) {
+    const qcl0 = (manager.widgetOf("qclAssembly") as QLabel);
+    const qcl1 = (manager.widgetOf("qclFormat")   as QLabel);
+    const qcl2 = (manager.widgetOf("qclParts")    as QLabel);
+    const qcl3 = (manager.widgetOf("qclDepth")    as QLabel);
+    const qcl4 = (manager.widgetOf("qclName")     as QLabel);
+    qcl0.text = "Assembly: no";
+    qcl1.text = "Format: none";
+    qcl2.text = "Parts: 0";
+    qcl3.text = "Depth: 0";
+    qcl4.text = "Name: none";
+    if (info["text"] !== "---") return info;
+    let _r = info;
+    _r["text"] = "Model";
+    let shapes: Record<string, any> | null = null;
+    for (let i = 0; i < _r["children"].length; i++) {
+        if (_r["children"][i]["text"] === "Shapes") {
+            shapes = _r["children"][i];
+            break;
+        }
+    }
+    let maxDepth = 0
+    let counter = 0;
+    const loopAnalysis = (_j: Record<string, any>, _depth: number = 0) => {
+        if (_depth > maxDepth) { maxDepth = _depth; }
+        counter++;
+        if (!exists(_j, "children")) return _j;
+        const arr = [];
+        for (let i = 0; i < _j["children"].length; i++) {
+            const node = _j["children"][i];
+            if (node["text"] === "???" || node["text"] === "---")
+                continue;
+            arr.push(loopAnalysis(node, _depth + 1));
+        }
+        _j["children"] = arr;
+        return _j;
+    }
+    loopAnalysis(_r);
+    if (shapes !== null) {
+        const shapesChildren = shapes["children"];
+        qcl0.text = "Assembly: " + (shapesChildren.length > 1 ? "yes" : "no");
+        qcl1.text = "Format: " + cache.importFilename.substring(cache.importFilename.lastIndexOf(".") + 1).toLowerCase();
+        qcl2.text = "Parts: " + shapesChildren.length;
+        qcl3.text = "Depth: " + (maxDepth - 1);
+        qcl4.text = "Name: " + cache.importFilename.substring(cache.importFilename.lastIndexOf("/") + 1, cache.importFilename.lastIndexOf(".")).toLowerCase();
+        app.setLabelAutoWidth(qcl0, 20);
+        app.setLabelAutoWidth(qcl1, 20);
+        app.setLabelAutoWidth(qcl2, 20);
+        app.setLabelAutoWidth(qcl3, 20);
+        app.setLabelAutoWidth(qcl4, 20);
+    }
+    return _r;
 }
 ///////////////////////////////////////////////////////
 // Register life cycle functions.

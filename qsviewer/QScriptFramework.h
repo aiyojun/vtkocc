@@ -119,11 +119,15 @@ public Q_SLOTS:
 
     Q_INVOKABLE void setWidgetGeometry(QWidget *widget, QRect geo);
 
+    Q_INVOKABLE void setLabelAutoWidth(QLabel *label, int padding = 5);
+
     Q_INVOKABLE void setWidgetVisible(QWidget *widget, bool visible);
 
     Q_INVOKABLE void setButtonText(QAbstractButton *button, QString text);
 
     Q_INVOKABLE void setButtonIcon(QAbstractButton *button, QString icon);
+
+    Q_INVOKABLE void setToolButtonStyle(QToolButton *button, int style);
 
     Q_INVOKABLE void setButtonIconSize(QAbstractButton *button, QSize size);
 

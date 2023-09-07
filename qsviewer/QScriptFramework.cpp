@@ -319,6 +319,11 @@ void QApplicationWindow::setButtonIcon(QAbstractButton *button, QString icon) {
     button->setIcon(QIcon(icon));
 }
 
+void QApplicationWindow::setToolButtonStyle(QToolButton *button, int style) {
+    qDebug() << "[QMain] QApplicationWindow::setToolButtonStyle(" << button->objectName() << ", " << style << ")";
+    button->setToolButtonStyle((Qt::ToolButtonStyle) style);
+}
+
 void QApplicationWindow::setButtonIconSize(QAbstractButton *button, QSize size) {
     qDebug() << "[QMain] QApplicationWindow::setButtonIconSize(" << button->objectName() << ", " << size << ")";
     button->setIconSize(size);
@@ -412,6 +417,12 @@ void QApplicationWindow::setScrollWidget(QScrollArea *scroll, QWidget *w) {
 
 void QApplicationWindow::setTextBrowserSource(QTextBrowser *w, QString source) {
     w->setSource(source);
+}
+
+void QApplicationWindow::setLabelAutoWidth(QLabel *widget, int padding) {
+    auto *label = (QColorLabel *) widget;
+    QFontMetrics metrics(label->font());
+    label->setGeometry(widget->x(), widget->y(), metrics.width(label->text()) + padding * 2, widget->height());
 }
 
 
