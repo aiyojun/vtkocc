@@ -2,7 +2,7 @@
 // Runtime instances
 ///////////////////////////////////////////////////////
 const ui_declare = {
-    type: "QVBoxLayout", width: "1280px", height: "960px", children: [
+    type: "QVBoxLayout", width: "900px", height: "600px", children: [
         { type: "QHBoxLayout", width: "100%", height: "36px", children: [
                 {type: "QLabel", name: "logo", text: "VTK OCC", width: "100px", height: "100%"},
                 {type: "QHBoxLayout", reverse: true, width: "calc(100% - 200px)", height: "100%", children: [
@@ -28,18 +28,22 @@ const ui_declare = {
                                         { type: "QFrame", width: "0", height: "5px" },
                                         { type: "QColorLabel", name: "qclParts"   , padding: "20px", width: "auto", height: "32px", text: "Parts: 0" },
                                         { type: "QFrame", width: "0", height: "5px" },
-                                        { type: "QColorLabel", name: "qclName", padding: "20px", width: "auto", height: "32px", text: "Name: none" },
+                                        { type: "QColorLabel", name: "qclName"    , padding: "20px", width: "auto", height: "32px", text: "Name: none" },
                                         { type: "QFrame", width: "0", height: "5px" },
-                                        { type: "QColorLabel", name: "qclDepth", padding: "20px", width: "auto", height: "32px", text: "Depth: 0" },
+                                        { type: "QColorLabel", name: "qclDepth"   , padding: "20px", width: "auto", height: "32px", text: "Depth: 0" },
                                         { type: "QFrame", width: "0", height: "5px" },
                                     ] },
                             ] },
                         { type: "QVBoxLayout", width: "240px", height: "50%", children: [
                                 { type: "QNavigator", name: "navigator", width: "100%", height: "100%" },
                                 { type: "QScrollArea", name: "navigatorScroll", position: "absolute", x: "0", y: "0", width: "100%", height: "100%" }
-                            ] }
+                            ] },
                     ] },
-                { type: "QOccViewer", name: "occViewer", width: "calc(100% - 240px)", height: "100%" },
+                { type: "QHBoxLayout", width: "calc(100% - 240px)", height: "100%", children: [
+                        { type: "QOccViewer", name: "occViewer", position: "absolute", x: "0", y: "0", width: "100%", height: "100%", visible: true },
+                        { type: "QFrame", name: "occBack", position: "absolute", x: "0", y: "0", width: "100%", height: "100%", visible: false },
+                        { type: "QLinearSpinner", name: "spinner", position: "absolute", x: "calc(50% - 100px)", y: "calc(50% - 60px)", width: "200px", height: "120px", visible: false },
+                    ] },
             ] },
         { type: "QHBoxLayout", width: "100%", height: "24px", children: [
                 {type: "QFrame", position: "absolute", x: "0", y: "0", width: "100px", height: "100%"},
@@ -127,6 +131,7 @@ class Manager {
                     let name = _ui["name"];
                     let w = app.qFrame(name);
                     if (name !== "") this._widgets[name] = w;
+                    if (exists(_ui, "visible") && !_ui["visible"]) w.hide();
                     return w;
                 }
             },
@@ -136,6 +141,7 @@ class Manager {
                     let w = app.qLabel(name);
                     w.text = _ui["text"] || "";
                     if (name !== "") this._widgets[name] = w;
+                    if (exists(_ui, "visible") && !_ui["visible"]) w.hide();
                     return w;
                 }
             },
@@ -145,6 +151,7 @@ class Manager {
                     let w = app.qColorLabel(name);
                     w.text = _ui["text"] || "";
                     if (name !== "") this._widgets[name] = w;
+                    if (exists(_ui, "visible") && !_ui["visible"]) w.hide();
                     return w;
                 }
             },
@@ -155,6 +162,7 @@ class Manager {
                     w.text = _ui["text"] || "";
                     w.placeHolderText = _ui["placeholder"] || "";
                     if (name !== "") this._widgets[name] = w;
+                    if (exists(_ui, "visible") && !_ui["visible"]) w.hide();
                     return w;
                 }
             },
@@ -168,6 +176,7 @@ class Manager {
                         app.setButtonIconSize(w, typecast("QSize", new QSize(_ui["size"], _ui["size"])));
                     w.text = _ui["text"] || "";
                     this._widgets[name] = w;
+                    if (exists(_ui, "visible") && !_ui["visible"]) w.hide();
                     return w;
                 }
             },
@@ -182,6 +191,7 @@ class Manager {
                     app.setToolButtonStyle(w, (exists(_ui, "toolButtonStyle") && _ui["toolButtonStyle"] === "ToolButtonTextUnderIcon") ? 3 : 2)
                     app.setButtonText(w, _ui["text"]);
                     this._widgets[name] = w;
+                    if (exists(_ui, "visible") && !_ui["visible"]) w.hide();
                     return w;
                 }
             },
@@ -193,6 +203,7 @@ class Manager {
                     w.text = _ui["text"] || "";
                     w.placeHolderText = _ui["placeholder"] || "";
                     if (name !== "") this._widgets[name] = w;
+                    if (exists(_ui, "visible") && !_ui["visible"]) w.hide();
                     return w;
                 }
             },
@@ -201,6 +212,7 @@ class Manager {
                     let name = _ui["name"];
                     let w = app.qOccViewer(name);
                     if (name !== "") this._widgets[name] = w;
+                    if (exists(_ui, "visible") && !_ui["visible"]) w.hide();
                     return w;
                 }
             },
@@ -209,6 +221,7 @@ class Manager {
                     let name = _ui["name"];
                     let w = app.qNavigator(name);
                     if (name !== "") this._widgets[name] = w;
+                    if (exists(_ui, "visible") && !_ui["visible"]) w.hide();
                     return w;
                 }
             },
@@ -217,6 +230,7 @@ class Manager {
                     let name = _ui["name"];
                     let w = app.qScrollArea(name);
                     if (name !== "") this._widgets[name] = w;
+                    if (exists(_ui, "visible") && !_ui["visible"]) w.hide();
                     return w;
                 }
             },
@@ -225,6 +239,7 @@ class Manager {
                     let name = _ui["name"];
                     let w = app.qLinearSpinner(name);
                     if (name !== "") this._widgets[name] = w;
+                    if (exists(_ui, "visible") && !_ui["visible"]) w.hide();
                     return w;
                 }
             },
@@ -302,9 +317,7 @@ function loopLayout(_ui: Record<string, any>, x: number, y: number, width: numbe
     }
 }
 
-const cache = {
-    importFilename: "",
-}
+const cache = { importFilename: "", }
 
 function onCreate() {
     app.setWindowTitle("3D Viewer");
@@ -322,6 +335,7 @@ function onCreate() {
     const navScroll = manager.widgetOf("navigatorScroll") as QScrollArea;
     const darkModeButton = manager.widgetOf("darkModeButton");
     const statusBar = manager.widgetOf("statusBar");
+    // occViewer.hide();
     const emitStatus = (msg: string) => statusBar.text = "- " + msg;
     $click(darkModeButton, () => {
         if (darkModeButton.text === "Dark") {
@@ -341,11 +355,14 @@ function onCreate() {
     logo.alignment = 0x81;
     $click(manager.widgetOf("openLocalFilesystem"), () => {
         cache.importFilename = app.openLocalFilesystem();
+        if (cache.importFilename === "") return;
         emitStatus("loading " + cache.importFilename);
+        viewerState(true);
         occRender.importModelFile(cache.importFilename);
     });
     occRender["finishedReadModel"].connect(() => {
         emitStatus("Finished import " + cache.importFilename);
+        viewerState(false);
     });
     occRender["sendAssemblyTree"].connect((info: string) => navigator.parse(JSON.stringify(statistic(JSON.parse(info)))));
     app.loadStylesheet(":/themes/basic.qss");
@@ -356,6 +373,18 @@ function onUpdate(w: number, h: number) {
     let occViewer = manager.widgetOf("occViewer");
     let occRender = occViewer.qRenderThread();
     occRender.fresh();
+}
+
+function viewerState(loading: boolean) {
+    if (loading) {
+        manager.widgetOf("occViewer").hide();
+        manager.widgetOf("occBack").show();
+        manager.widgetOf("spinner").show();
+    } else {
+        manager.widgetOf("occViewer").show();
+        manager.widgetOf("occBack").hide();
+        manager.widgetOf("spinner").hide();
+    }
 }
 
 function statistic(info: Record<string, any>) {

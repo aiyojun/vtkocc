@@ -7,9 +7,8 @@ QPushButton, QToolButton { color: #333; background-color: #fff; border: none; }
 QPushButton:hover, QToolButton:hover { color: #333; background-color: #ddd; }
 QScrollArea { background-color: #fff; border: none; qproperty-horizontalScrollBarPolicy: ScrollBarAlwaysOff; }
 QNavigator  { background-color: #fff; }
-QLinearSpinner { qproperty-spinnerBackgroundRadius: 0; qproperty-spinnerColor: #fff; qproperty-spinnerBackgroundColor: #E0C3FC; qproperty-spinnerRadius: 6; qproperty-spinnerDistance: 25; }
-QFrame { background-color: #fff; }
-QApplicationWindow { background-color: #fff; }
+QLinearSpinner { qproperty-spinnerBackgroundRadius: 20; qproperty-spinnerColor: #E0C3FC; qproperty-spinnerRadius: 6; qproperty-spinnerDistance: 25; }
+QFrame { background-color: #fff; border: none; }
 
 
 QScrollBar { background: transparent; }
@@ -32,6 +31,7 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical { background: #eee;
 #qclParts  { background-color: #8EC5FC; }
 #qclName   { background-color: #FBAB7E; }
 #qclDepth  { background-color: #85FFBD; }
+#occBack   { background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #f8f8ff, stop:1 #fff); }
 
 
 

@@ -100,7 +100,7 @@ interface QToolButton extends QAbstractButton {
     toolButtonStyle: number;
 
     /**
-     * @deprecated please use qApplicationWindow.setToolButtonStyle() as substitute.
+     * @deprecated May no effect, please use qApplicationWindow.setToolButtonStyle() as substitution.
      */
     setToolButtonStyle(n: number): void;
 }

@@ -42,10 +42,10 @@ void QLinearSpinner::paintEvent(QPaintEvent *event) {
     painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
     if (!painter.isActive())
         painter.begin(this);
-    QPainterPath path;
-    QRect plane(0, 0, QWidget::width(), QWidget::height());
-    path.addRoundedRect(plane, _spinnerBackgroundRadius, _spinnerBackgroundRadius);
-    painter.fillPath(path, QBrush(QColor(_spinnerBackgroundColor)));
+//    QPainterPath path;
+//    QRect plane(0, 0, QWidget::width(), QWidget::height());
+//    path.addRoundedRect(plane, _spinnerBackgroundRadius, _spinnerBackgroundRadius);
+//    painter.fillPath(path, QBrush(QColor(_spinnerBackgroundColor)));
     painter.setBrush(QBrush(QColor(_spinnerColor)));
     painter.setPen(Qt::PenStyle::NoPen);
     painter.drawEllipse(computeCircle(w_2, h_2 + _spinnerDistance, int(_spinnerRadius * qCos(ratio))));
@@ -61,4 +61,23 @@ void QLinearSpinner::paintEvent(QPaintEvent *event) {
 
 QLinearSpinner::~QLinearSpinner() {
     delete _animation;
+}
+
+void QLinearSpinner::resizeEvent(QResizeEvent *event) {
+    QWidget::resizeEvent(event);
+    auto r = _spinnerBackgroundRadius;
+    auto d = 2 * r;
+    QRegion rect0(r, 0, width() - d, height());
+    QRegion rect1(0, r, width(), height() - d);
+    QRegion circle0(0, 0, d, d, QRegion::Ellipse);
+    QRegion circle1(width() - d, 0, d, d, QRegion::Ellipse);
+    QRegion circle2(width() - d, height() - d, d, d, QRegion::Ellipse);
+    QRegion circle3(0, height() - d, d, d, QRegion::Ellipse);
+    QRegion area = rect1.united(rect0);
+    area = area.united(circle0);
+    area = area.united(circle1);
+    area = area.united(circle2);
+    area = area.united(circle3);
+    clearMask();
+    setMask(area);
 }

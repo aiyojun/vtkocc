@@ -22,6 +22,7 @@
 #include <QtGui/QIcon>
 #include <QtGui/QFontDatabase>
 #include <QtGui/QPainter>
+#include <QtGui/QBitmap>
 #include <QtGui/QResizeEvent>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QMainWindow>
