@@ -28,6 +28,7 @@ QNavigator::~QNavigator() {
 }
 
 void QNavigator::calc(int hi, int depth, QRect &image, QRect &text) {
+    hi--;
     image.setX(_navMargin + _navPadding + depth * _navMargin);
     image.setY(_navHeight * (hi + 1) + _navGap);
     image.setWidth (_navHeight - _navGap * 2);
@@ -39,6 +40,7 @@ void QNavigator::calc(int hi, int depth, QRect &image, QRect &text) {
 }
 
 void QNavigator::calc(int hi, int depth, QRect &image, QRect &text, QRect &mark) {
+    hi--;
     image.setX(_navMargin + _navPadding + depth * _navMargin);
     image.setY(_navHeight * (hi + 1) + _navGap);
     image.setWidth (_navHeight - _navGap * 2);
@@ -58,7 +60,7 @@ void QNavigator::paintEvent(QPaintEvent *event) {
     QPainter painter(this);
     painter.setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
 //    painter.setPen(QColor(0, 0, 0));
-    painter.drawText(QRect(_navMargin, 0, width() - _navMargin * 2, _navHeight), Qt::AlignVCenter, "Navigator");
+//    painter.drawText(QRect(_navMargin, 0, width() - _navMargin * 2, _navHeight), Qt::AlignVCenter, "Navigator");
     for (int i = 0; i < _navSeq.size(); i++) {
         auto *nav = _navSeq[i];
         QRect box(_navMargin, _navHeight * (i + 1), width() - _navMargin * 2, _navHeight);
@@ -102,7 +104,7 @@ void QNavigator::mouseMoveEvent(QMouseEvent *event) {
 
 void QNavigator::mouseReleaseEvent(QMouseEvent *event) {
     QPoint pos = event->pos();
-    if (pos.y() < _navHeight || pos.y() >= _navHeight * (_navSeq.length() + 1)) {
+    if (pos.y() < 0 || pos.y() >= _navHeight * _navSeq.length()) {
         if (_selectedNav != -1) {
             _selectedNav = -1;
             repaint();
@@ -110,7 +112,7 @@ void QNavigator::mouseReleaseEvent(QMouseEvent *event) {
         return;
     }
     int d = pos.y() / _navHeight;
-    _selectedNav = d <= _navSeq.length() ? d - 1 : -1;
+    _selectedNav = d < _navSeq.length() ? d : -1;
     if (_selectedNav != -1) {
         emit clicked(chainOf(_navSeq[_selectedNav]));
         auto *nav = _navSeq[_selectedNav];

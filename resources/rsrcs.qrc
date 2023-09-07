@@ -38,5 +38,7 @@
         <file>icons/x-module.svg</file>
         <file>icons/x-order.svg</file>
         <file>icons/x-setting.svg</file>
+        <file>icons/y-box.svg</file>
+        <file>icons/y-rotate.svg</file>
     </qresource>
 </RCC>

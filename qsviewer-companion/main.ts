@@ -4,6 +4,7 @@
 const ui_declare = {
     type: "QVBoxLayout", width: "900px", height: "600px", children: [
         { type: "QHBoxLayout", width: "100%", height: "36px", children: [
+                {type: "QFrame", name: "headerBack", position: "absolute", x: "0", y: "0", width: "100%", height: "100%"},
                 {type: "QLabel", name: "logo", text: "VTK OCC", width: "100px", height: "100%"},
                 {type: "QHBoxLayout", reverse: true, width: "calc(100% - 200px)", height: "100%", children: [
                         {type: "QPushButton", name: "darkModeButton", text: "Dark", size: 20, icon: ":/icons/laptop.svg", width: "100px", height: "100%"},
@@ -13,44 +14,56 @@ const ui_declare = {
             ] },
         { type: "QHBoxLayout", width: "100%", height: "calc(100% - 36px - 24px)", children: [
                 { type: "QVBoxLayout", width: "240px", height: "100%", children: [
-                        { type: "QVBoxLayout", width: "240px", height: "50%", children: [
-                                { type: "QLabel", name: "label_3d_views", width: "100%", height: "32px", text: "View" },
+                        { type: "QVBoxLayout", width: "240px", height: "390px", children: [
+                                { type: "QLabel", name: "label_3d_views", width: "100%", height: "32px", text: "Viewer Panel" },
                                 { type: "QHBoxLayout", width: "100%", height: "80px", children: [
                                     { type: "QToolButton", name: "viewMain", width: "80px", height: "80px", text: "Front", size: 20, icon: ":/icons/box-front.svg", toolButtonStyle: "ToolButtonTextUnderIcon" },
                                     { type: "QToolButton", name: "viewLeft", width: "80px", height: "80px", text: "Left" , size: 20, icon: ":/icons/box-left.svg" , toolButtonStyle: "ToolButtonTextUnderIcon" },
                                     { type: "QToolButton", name: "viewTop" , width: "80px", height: "80px", text: "Top"  , size: 20, icon: ":/icons/box-top.svg"  , toolButtonStyle: "ToolButtonTextUnderIcon" },
                                 ] },
+                                { type: "QHBoxLayout", width: "100%", height: "80px", children: [
+                                        { type: "QToolButton", name: "vChamfer", width: "80px", height: "80px", text: "Chamfer", size: 20, icon: ":/icons/box-bevel.svg" , toolButtonStyle: "ToolButtonTextUnderIcon" },
+                                        { type: "QToolButton", name: "vPrism"  , width: "80px", height: "80px", text: "Prism"  , size: 20, icon: ":/icons/y-box.svg"     , toolButtonStyle: "ToolButtonTextUnderIcon" },
+                                        { type: "QToolButton", name: "vRevol"  , width: "80px", height: "80px", text: "Revol"  , size: 20, icon: ":/icons/y-rotate.svg"  , toolButtonStyle: "ToolButtonTextUnderIcon" },
+                                    ] },
                                 { type: "QLabel", name: "label_3d_infos", width: "100%", height: "32px", text: "Statistics" },
-                                { type: "QVBoxLayout", width: "100%", height: "80px", children: [
-                                        { type: "QColorLabel", name: "qclAssembly", padding: "20px", width: "auto", height: "32px", text: "Assembly: yes" },
+                                { type: "QLabel", name: "label_3d_xxxxx", width: "100%", height: "10px", text: "" },
+                                { type: "QVBoxLayout", width: "100%", height: "165px", children: [
+                                        { type: "QColorLabel", name: "qclAssembly", padding: "20px", width: "auto", height: "28px", text: "Assembly: yes" },
                                         { type: "QFrame", width: "0", height: "5px" },
-                                        { type: "QColorLabel", name: "qclFormat"  , padding: "20px", width: "auto", height: "32px", text: "Format: none" },
+                                        { type: "QColorLabel", name: "qclFormat"  , padding: "20px", width: "auto", height: "28px", text: "Format: none" },
                                         { type: "QFrame", width: "0", height: "5px" },
-                                        { type: "QColorLabel", name: "qclParts"   , padding: "20px", width: "auto", height: "32px", text: "Parts: 0" },
+                                        { type: "QColorLabel", name: "qclParts"   , padding: "20px", width: "auto", height: "28px", text: "Parts: 0" },
                                         { type: "QFrame", width: "0", height: "5px" },
-                                        { type: "QColorLabel", name: "qclName"    , padding: "20px", width: "auto", height: "32px", text: "Name: none" },
+                                        { type: "QColorLabel", name: "qclName"    , padding: "20px", width: "auto", height: "28px", text: "Name: none" },
                                         { type: "QFrame", width: "0", height: "5px" },
-                                        { type: "QColorLabel", name: "qclDepth"   , padding: "20px", width: "auto", height: "32px", text: "Depth: 0" },
+                                        { type: "QColorLabel", name: "qclDepth"   , padding: "20px", width: "auto", height: "28px", text: "Depth: 0" },
                                         { type: "QFrame", width: "0", height: "5px" },
                                     ] },
                             ] },
-                        { type: "QVBoxLayout", width: "240px", height: "50%", children: [
-                                { type: "QNavigator", name: "navigator", width: "100%", height: "100%" },
-                                { type: "QScrollArea", name: "navigatorScroll", position: "absolute", x: "0", y: "0", width: "100%", height: "100%" }
+                        { type: "QVBoxLayout", width: "240px", height: "calc(100% - 390px)", children: [
+                                { type: "QLabel", name: "label_navigator", width: "100%", height: "32px", text: "Mesh" },
+                                {  type: "QVBoxLayout", width: "100%", height: "calc(100% - 32px)", children: [
+                                        { type: "QNavigator", name: "navigator", width: "100%", height: "100%" },
+                                        { type: "QScrollArea", name: "navigatorScroll", position: "absolute", x: "0", y: "0", width: "100%", height: "100%" }
+                                    ] },
                             ] },
+
+                        { type: "QFrame", name: "divider_0", position: "absolute", x: "0", y:  "32px", width: "100%", height: "1px" },
+                        { type: "QFrame", name: "divider_1", position: "absolute", x: "0", y: "226px", width: "100%", height: "1px" },
                     ] },
                 { type: "QHBoxLayout", width: "calc(100% - 240px)", height: "100%", children: [
                         { type: "QOccViewer", name: "occViewer", position: "absolute", x: "0", y: "0", width: "100%", height: "100%", visible: true },
                         { type: "QFrame", name: "occBack", position: "absolute", x: "0", y: "0", width: "100%", height: "100%", visible: false },
                         { type: "QLinearSpinner", name: "spinner", position: "absolute", x: "calc(50% - 100px)", y: "calc(50% - 60px)", width: "200px", height: "120px", visible: false },
-                        { type: "QVBoxLayout", width: "240px", height: "100%", children: [
+                        // { type: "QVBoxLayout", width: "240px", height: "100%", children: [
                                 // { type: "QColorLabel", name: "viewerText", width: "auto", height: "32px", text: "Viewer text" }
-                            ] },
+                            // ] },
                     ] },
             ] },
         { type: "QHBoxLayout", width: "100%", height: "24px", children: [
-                { type: "QFrame", position: "absolute", x: "0", y: "0", width: "100px", height: "100%" },
-                { type: "QLabel", name: "statusBar", width: "100%", height: "100%", text: "- Prepared VTK OCC ..." },
+                { type: "QFrame", name: "statusBack", position: "absolute", x: "0", y: "0", width: "100%", height: "100%" },
+                { type: "QLabel", name: "statusBar" , width: "100%", height: "100%", text: "- Prepared VTK OCC ..." },
                 { type: "QPushButton", name: "support", position: "absolute", x: "calc(100% - 100px)", y: "0", width: "100px", height: "100%", text: "Support", source: "https://" }
             ] }
     ]
@@ -352,6 +365,10 @@ function onCreate() {
     $click(manager.widgetOf("viewMain"), () => occRender.switchFrontView());
     $click(manager.widgetOf("viewLeft"), () => occRender.switchLeftView());
     $click(manager.widgetOf("viewTop" ), () => occRender.switchTopView());
+    $click(manager.widgetOf("vChamfer"), () => occRender.makeBevel());
+    $click(manager.widgetOf("vPrism"  ), () => occRender.makeCube());
+    $click(manager.widgetOf("vRevol"  ), () => occRender.makeCube());
+    /*vChamfer vPrism vRevol*/
     app.setScrollWidget(navScroll, navigator);
     console.info(Object.keys(manager.widgetOf("support")));
     const logo = manager.widgetOf("logo");

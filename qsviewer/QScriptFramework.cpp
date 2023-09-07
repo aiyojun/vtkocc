@@ -150,6 +150,7 @@ QScriptValue typecast(QScriptContext *context, QScriptEngine *engine) {
 //}
 
 QApplicationWindow::QApplicationWindow(const QString& filename): _scriptPath(filename) {
+//    setAttribute(Qt::WA_TranslucentBackground);
     load();
 }
 

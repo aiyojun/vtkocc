@@ -2,6 +2,7 @@
 #define VTKOCC_QOCCVIEWER_H
 
 #include <QtWidgets/QWidget>
+#include <QtWidgets/QOpenGLWidget>
 #include "basic_occ.h"
 #include "QRenderThread.h"
 
