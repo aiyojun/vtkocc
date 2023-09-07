@@ -43,10 +43,13 @@ const ui_declare = {
                         { type: "QOccViewer", name: "occViewer", position: "absolute", x: "0", y: "0", width: "100%", height: "100%", visible: true },
                         { type: "QFrame", name: "occBack", position: "absolute", x: "0", y: "0", width: "100%", height: "100%", visible: false },
                         { type: "QLinearSpinner", name: "spinner", position: "absolute", x: "calc(50% - 100px)", y: "calc(50% - 60px)", width: "200px", height: "120px", visible: false },
+                        { type: "QVBoxLayout", width: "240px", height: "100%", children: [
+                                // { type: "QColorLabel", name: "viewerText", width: "auto", height: "32px", text: "Viewer text" }
+                            ] },
                     ] },
             ] },
         { type: "QHBoxLayout", width: "100%", height: "24px", children: [
-                {type: "QFrame", position: "absolute", x: "0", y: "0", width: "100px", height: "100%"},
+                { type: "QFrame", position: "absolute", x: "0", y: "0", width: "100px", height: "100%" },
                 { type: "QLabel", name: "statusBar", width: "100%", height: "100%", text: "- Prepared VTK OCC ..." },
                 { type: "QPushButton", name: "support", position: "absolute", x: "calc(100% - 100px)", y: "0", width: "100px", height: "100%", text: "Support", source: "https://" }
             ] }

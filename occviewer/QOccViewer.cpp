@@ -28,6 +28,7 @@ QOccViewer::QOccViewer(QWidget *parent)
       _render(new QRenderThread) {
 //    setAttribute(Qt::WA_PaintOnScreen);
 //    setAttribute(Qt::WA_NoSystemBackground);
+//    setAttribute(Qt::WA_TranslucentBackground);
     setMouseTracking(true);
     Message::SendInfo() << "-- QOccViewer render start loop ...";
 //    setFocusPolicy(Qt::StrongFocus);
