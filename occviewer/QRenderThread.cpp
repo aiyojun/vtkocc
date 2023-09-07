@@ -143,7 +143,7 @@ void QRenderThread::doCreate(void *hd) {
     _cubeContext = HighRender::BuildContext(_viewer);
     HighRender::UseDefaultDrawer(_viewContext);
     _view = HighRender::BuildView(_viewer, (Aspect_Handle)hd);
-    HighRender::UseGradientBackground(_view, "#f8f8ff", "#fff");
+    HighRender::UseGradientBackground(_view, "#82A6D0", "#fff");//#82A6D0 #f8f8ff
     _view->SetImmediateUpdate(false);
     _view->MustBeResized();
     HighRender::UseDefaultRenderMode(_view);
