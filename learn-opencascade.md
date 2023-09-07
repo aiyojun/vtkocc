@@ -13,6 +13,20 @@ inc中头文件：8409(劝退警告 ⚠ ⚠ ⚠)
 官方文档：https://dev.opencascade.org/doc/overview/html/
 开发者讨论社区：https://dev.opencascade.org/
 
+youtube上的课程gitlab：https://gitlab.com/ssv/lessons
+部分论坛：https://techoverflow.net/2019/06/14/how-to-export-colored-step-files-in-opencascade/
+
+Good-looking Code fragments duplicated from web:
+
+```c++
+#include <occutils/ExtendedSTEP.hxx>
+#include <occutils/Primitive.hxx>
+TopoDS_Shape cube = Primitive::MakeCube(5 /* mm */);
+STEP::ExtendedSTEPExporter stepExporter;
+stepExporter.AddShapeWithColor(cube, Quantity_NOC_RED);
+stepExporter.Write("ColoredCube.step");
+```
+
 ## 概念
 
 基础：

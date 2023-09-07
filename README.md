@@ -1,9 +1,10 @@
 # vtkocc
 
-learning opencascade, try to develop a opensource project based on VTK and OCCT.
+A opensource and custom CAD product, based on opencadcade and vtk. 
 
-Most code is in a mess, and in developing stage. After several days, I will refactor them.
+## Preview
 
+![image](./doc/demo.png)
 
 ## Build
 
@@ -15,53 +16,50 @@ Or:
 # Now, only support windows, linux will soon
 # Make sure Visual Studio 2022 Community, OpenCASCADE, Qt5.12.0 in your computer!
 env.bat
+# Compile and run occ demo based on QScripts, latest version
+build_qsviewer.bat
+# Compile and run occ demo based on QJsonViewer, an early way of generating ui 
 build_occviewer.bat
 ```
 
-## OCCT Resources
+## Modules
 
-```txt
-https://gitlab.com/ssv/lessons
-```
+- ui library: more Qt widgets, suck as QLinearSpinner, QNavigator(tree-like) ...
+- basic functions library: read/write file, string/filepath processing ...
+- high performance occ library: model file reader, multi-thread rendering ...
+- ui generator library
+- demo
 
-## Construct GUI by Qt
+## Construct GUI by Qt && UI generator ways
 
-Two ways of constructing graphic interface by Qt:
+Until 09.07.2023, I came up with 5 ways of building ui in Qt:
 
-1.   Qt original approach, we will reap ugly UI;
-2.   Use QWebEngineView, good idea, front-end developer friendly, but trashy UI painting mechanism.
+| No | Techs Stack                         | Advantages                                                                                                 | Disadvantages                                                         |
+|----|-------------------------------------|------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------|
+| 1  | QtDesigner                          | easy                                                                                                       | ugly ui                                                               |
+| 2  | QWebEngineView + Pure Web Techs     | front-end Friendly, support Vue/React                                                                      | many bugs exists in event processing, lower performance then electron |
+| 3  | QJsonViewer (based on QtWidgets)    | an early idea about ui auto-generating by specifying a json                                                | waste of time in compiling                                            |
+| 4  | QML + QtWidgets (mixed development) | dynamic QML + origin Qt coding plugins, make ui building quick                                             | QML is in independent environment                                     |
+| 5  | QScripts + Qt Origin + Typescripts  | replace most functions of c++ by typescript/javascript, support hot reload, dynamic programming in runtime | without compiling (less time costing, very important)                 |
 
-Therefore, we are supposed to rebuild UI design system first!
-
-QSS is a good and useful tool, to beatify Qt application GUI.
-
-At current stage(8.22.2023), I implemented a simple rendering framework based on Qt, located on occviewer/QJsonWidget.  The graphic user interface is described by a json file(resoureces/_ui.json).  The step makes UI design easier.
-
-### Supported Plugins
+### Supported Plugins in JSON
 
 - QLabel
+- QColorLabel: colorful label
 - QFrame: useless, just for testing
 - QPushButton: icon and text are defined in (.qss) file
+- QToolButton: make text under icon
 - QLineEdit
 - QVBoxLayout: same functions like QVBoxLayout, but not it!
 - QHBoxLayout
-- QOccWidget
+- QLinearSpinner: a kind of loader
+- QNavigator: tree-like view
+- QOccViewer: 3D
 
 More getWidget plugin expected!
 
-## Collect
+## Themes support
 
-```text
-https://techoverflow.net/2019/06/14/how-to-export-colored-step-files-in-opencascade/
-```
+- basic: light style
+- dark: dark style, incompletely
 
-Good-looking Code fragments duplicated from web:
-
-```c++
-#include <occutils/ExtendedSTEP.hxx>
-#include <occutils/Primitive.hxx>
-TopoDS_Shape cube = Primitive::MakeCube(5 /* mm */);
-STEP::ExtendedSTEPExporter stepExporter;
-stepExporter.AddShapeWithColor(cube, Quantity_NOC_RED);
-stepExporter.Write("ColoredCube.step");
-```
