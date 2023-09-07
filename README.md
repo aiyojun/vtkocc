@@ -2,6 +2,10 @@
 
 A opensource and custom CAD product, based on opencadcade and vtk. 
 
+At current stage, most of the functions refactored by typescript!
+
+Support hot reload, you can modify ui or operate 3d viewer in app runtime(modify qsviewer-companion/main.ts, or modify main.js update ui immediately).
+
 ## Preview
 
 ![image](./doc/demo.png)
