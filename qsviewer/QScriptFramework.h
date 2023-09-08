@@ -81,6 +81,10 @@ public Q_SLOTS:
 
     Q_INVOKABLE void setWindowIcon(const QString& filename);
 
+    Q_INVOKABLE void lift(QWidget *w, int winFlags);
+
+    Q_INVOKABLE void setTranslucence(QWidget *w);
+
     Q_INVOKABLE void hotReload();
 
     Q_INVOKABLE void place(QWidget *w, QPoint p);
@@ -92,6 +96,8 @@ public Q_SLOTS:
     Q_INVOKABLE int loadFont(QString filename);
 
     Q_INVOKABLE void setDefaultFont(QString fontFamily);
+
+    Q_INVOKABLE QWidget *desktop();
 
     Q_INVOKABLE QWidget *qFrame(QString id);
 

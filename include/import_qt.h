@@ -27,6 +27,8 @@
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QWidget>
+#include <QtWidgets/QDialog>
+#include <QtWidgets/QDesktopWidget>
 #include <QtWidgets/QOpenGLWidget>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QLayout>

@@ -55,7 +55,8 @@ const ui_declare = {
                 { type: "QHBoxLayout", width: "calc(100% - 240px)", height: "100%", children: [
                         { type: "QOccViewer", name: "occViewer", position: "absolute", x: "0", y: "0", width: "100%", height: "100%", visible: true },
                         { type: "QFrame", name: "occBack", position: "absolute", x: "0", y: "0", width: "100%", height: "100%", visible: false },
-                        { type: "QLinearSpinner", name: "spinner", position: "absolute", x: "calc(50% - 100px)", y: "calc(50% - 60px)", width: "200px", height: "120px", visible: false },
+                        { type: "QLinearSpinner", name: "spinner", float: true, position: "absolute", x: "calc(50% - 100px)", y: "calc(50% - 60px)", width: "200px", height: "120px", visible: true },
+
                         // { type: "QVBoxLayout", width: "240px", height: "100%", children: [
                                 // { type: "QColorLabel", name: "viewerText", width: "auto", height: "32px", text: "Viewer text" }
                             // ] },
@@ -65,7 +66,8 @@ const ui_declare = {
                 { type: "QFrame", name: "statusBack", position: "absolute", x: "0", y: "0", width: "100%", height: "100%" },
                 { type: "QLabel", name: "statusBar" , width: "100%", height: "100%", text: "- Prepared VTK OCC ..." },
                 { type: "QPushButton", name: "support", position: "absolute", x: "calc(100% - 100px)", y: "0", width: "100px", height: "100%", text: "Support", source: "https://" }
-            ] }
+            ] },
+        // { type: "QOffScreenWidget", name: "testwidget", position: "absolute", x: "0", y: "100", width: "100%", height: "120px" },
     ]
 }
 // QScript ui generator framework.
@@ -260,12 +262,19 @@ class Manager {
                 }
             },
         ];
+        let w: QWidget | null = null;
         for (let i = 0; i < handles.length; i++) {
             const handle = handles[i];
             if (handle.name === type)
-                return handle.builder(_ui);
+                w = handle.builder(_ui);
         }
-        throw new Error("unknown plugin : " + type);
+        if (w === null)
+            throw new Error("unknown plugin : " + type);
+        if (exists(_ui, "float") && _ui["float"]) {
+            app.lift(w, 0x803);
+            app.show();
+        }
+        return w;
     }
 }
 const manager: Manager = new Manager();
@@ -298,7 +307,10 @@ function layoutAbsolute(_ui: Record<string, any>, x: number, y: number, width: n
 function loopLayout(_ui: Record<string, any>, x: number, y: number, width: number, height: number) {
     let type = _ui["type"];
     if (!/^Q.*Layout$/.test(type)) {
-        layout(manager.widgetOf(_ui["name"]), x, y, width, height);
+        if (exists(_ui, "float") && _ui["float"])
+            layout(manager.widgetOf(_ui["name"]), app.x + x, app.y + y, width, height);
+        else
+            layout(manager.widgetOf(_ui["name"]), x, y, width, height);
 
         if (type === "QColorLabel") {
             app.setLabelAutoWidth(manager.widgetOf(_ui["name"]) as QLabel, compute(0, _ui["padding"] || "5px"));
@@ -345,6 +357,7 @@ function onCreate() {
     resize(app, width, height);
     loopCreate(ui_declare);
     onUpdate(width, height);
+    // manager.widgetOf("testwidget").show();
     const occViewer = manager.widgetOf("occViewer") as QOccViewer;
     const occRender = occViewer.qRenderThread();
     const navigator = manager.widgetOf("navigator");

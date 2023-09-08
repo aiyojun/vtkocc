@@ -1,5 +1,6 @@
 #include "QScriptFramework.h"
 #include "QRenderThread.h"
+#include "QOffScreenWidget.h"
 
 QString readFile(const QString &path) {
     QFile file(path);
@@ -425,5 +426,18 @@ void QApplicationWindow::setLabelAutoWidth(QLabel *widget, int padding) {
     QFontMetrics metrics(label->font());
     label->setGeometry(widget->x(), widget->y(), metrics.width(label->text()) + padding * 2, widget->height());
 }
+
+void QApplicationWindow::lift(QWidget *w, int winFlags) {
+    w->setWindowFlags(QFlag(winFlags));
+}
+
+void QApplicationWindow::setTranslucence(QWidget *w) {
+    w->setAttribute(Qt::WA_TranslucentBackground);
+}
+
+QWidget *QApplicationWindow::desktop() {
+    return QApplication::desktop();
+}
+
 
 

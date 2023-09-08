@@ -27,6 +27,7 @@ QOccViewer::QOccViewer(QWidget *parent)
       _ctrlKey(false), _altKey(false), _shiftKey(false),
       _render(new QRenderThread) {
 //    setAttribute(Qt::WA_PaintOnScreen);
+//    setAutoFillBackground(false);
 //    setAttribute(Qt::WA_NoSystemBackground);
 //    setAttribute(Qt::WA_TranslucentBackground);
     setMouseTracking(true);

@@ -11,6 +11,7 @@ add_moc(../occviewer/basic_occ.h        ${QT5_MOC_DIR}/moc_basic_occ.cpp)
 add_moc(../occviewer/QOccViewer.h       ${QT5_MOC_DIR}/moc_QOccViewer.cpp)
 add_moc(../occviewer/QJsonWidget.h      ${QT5_MOC_DIR}/moc_QJsonView.cpp)
 add_moc(../occviewer/QRenderThread.h    ${QT5_MOC_DIR}/moc_QRenderThread.cpp)
+add_moc(../occviewer/QOffScreenWidget.h ${QT5_MOC_DIR}/moc_QOffScreenWidget.cpp)
 
 include_directories(../occviewer)
 
@@ -19,6 +20,7 @@ add_executable(${APP} main.cpp
         ${QT5_MOC_DIR}/moc_basic_occ.cpp ../occviewer/impl_occ.cpp
         ${QT5_MOC_DIR}/moc_QOccViewer.cpp ../occviewer/QOccViewer.cpp
         ${QT5_MOC_DIR}/moc_QRenderThread.cpp ../occviewer/QRenderThread.cpp
+        ${QT5_MOC_DIR}/moc_QOffScreenWidget.cpp ../occviewer/QOffScreenWidget.cpp
 )
 
 target_link_libraries(${APP} basic_qt)

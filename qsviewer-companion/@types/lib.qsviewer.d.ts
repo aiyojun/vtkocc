@@ -159,6 +159,12 @@ interface QApplicationWindow extends QWidget {
 
     openLocalFilesystem(): string;
 
+    lift(w: QWidget, flags: number): void;
+
+    desktop(): QWidget;
+
+    setTranslucence(w: QWidget): void;
+
     place(w: QWidget, x: QVariant<QPoint>): void;
 
     setSize(w: QWidget, size: QVariant<QSize>): void;
